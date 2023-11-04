@@ -5,12 +5,11 @@ import { NotFound } from "utilities";
 import asyncHandler from "express-async-handler";
 import { ProductCategory } from "models";
 import difference from "lodash/difference";
+import { Brand } from "models/Brand";
 
-export const GetProducts = asyncHandler(
-  async (req: Request, res: Response) => {
-    res.json(res.paginatedData);
-  }
-);
+export const GetProducts = asyncHandler(async (req: Request, res: Response) => {
+  res.json(res.paginatedData);
+});
 
 export const GetProductById = asyncHandler(
   async (req: Request, res: Response) => {
@@ -23,13 +22,14 @@ export const GetProductById = asyncHandler(
 export const CreateProduct = asyncHandler(
   async (req: Request, res: Response) => {
     const { user, body, files } = req;
-    const { name, description, price, productCategories } = body;
+    const { name, brand = null, description, price, productCategories } = body;
     const vendor = await Vendor.findOne({ email: user?.email });
     if (!vendor) throw new NotFound("Vendor not found by email: " + user?.name);
     const images = files as [Express.Multer.File];
     const imageNames = images.map((file) => file.filename);
     const createdProduct = await Product.create({
       name,
+      brand,
       description,
       price,
       vendor: user?.id,
@@ -41,20 +41,26 @@ export const CreateProduct = asyncHandler(
       { _id: productCategories },
       { $push: { products: createdProduct._id } }
     );
+    await Brand.findByIdAndUpdate(brand, {
+      $push: { products: createdProduct._id },
+    });
     vendor.products.push(createdProduct);
     await vendor.save();
+    res.json({ result: createdProduct });
   }
 );
 
 export const UpdateProduct = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { name, description, price, productCategories } = req.body;
+    const { name, brand, description, price, productCategories } = req.body;
     const oldProduct = await Product.findById(id);
+    const oldBrand = oldProduct?.brand;
     const oldCategories = oldProduct!.productCategories;
     if (!oldProduct) throw new NotFound();
     Object.assign(oldProduct, {
       name,
+      brand,
       description,
       price,
       productCategories,
@@ -70,6 +76,23 @@ export const UpdateProduct = asyncHandler(
       { _id: removed },
       { $pull: { products: id } }
     );
+    if (oldBrand) {
+      // Remove product from old Brand
+      await Brand.findByIdAndUpdate(
+        { _id: oldBrand },
+        {
+          $pull: { products: id },
+        }
+      );
+    }
+    // Add product from new Brand
+    await Brand.findByIdAndUpdate(
+      { _id: brand },
+      {
+        $push: { products: id },
+      }
+    );
+
     res.json(newProduct);
   }
 );

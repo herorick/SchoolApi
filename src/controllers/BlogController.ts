@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { Blog, BlogCategory } from "models";
 import { Vendor } from "models/Vendor";
 import asyncHandler from "express-async-handler";

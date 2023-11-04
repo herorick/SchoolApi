@@ -1,8 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import { Authenticate, DtoValidationMiddleware } from "middlewares";
-import { CreateProductDTO } from "dtos/ProductDto";
 import { CreateProductCategory, DeleteProductCategory, GetProductCategories, GetProductCategoryById } from "controllers/ProductCategoryController";
-import { CreateProductCategoryDTO } from "dtos/ProductCategory";
+import { CreateProductCategoryDTO } from "dtos/ProductCategoryDto";
 
 const router = express.Router();
 

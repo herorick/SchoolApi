@@ -10,6 +10,7 @@ interface ProductDoc extends Document {
   price: number;
   rating: number;
   images: [string];
+  brand: any;
   productCategories: any[];
 }
 
@@ -22,6 +23,10 @@ const ProductSchema = new Schema(
     price: { type: Number, require: true },
     rating: { type: Number },
     images: { type: [String] },
+    brand: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "brand",
+    },
     productCategories: [
       {
         type: mongoose.SchemaTypes.ObjectId,
