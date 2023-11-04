@@ -1,7 +1,7 @@
 import { Trim } from "class-sanitizer";
-import { IsArray, IsEmail, IsString, MinLength } from "class-validator";
+import { IsArray, IsString, MinLength } from "class-validator";
 
-export class CreateVendorDTO {
+export class CreateProductDTO {
   @IsString()
   @Trim()
   @MinLength(5, { message: "Name should be minimum of 5 characters" })
@@ -9,24 +9,11 @@ export class CreateVendorDTO {
 
   @IsString()
   @Trim()
-  @MinLength(5, { message: "OwnerName should be minimum of 5 characters" })
-  ownerName?: string;
-
-  @IsArray()
-  foodType?: [string];
+  @MinLength(5, { message: "Description should be minimum of 5 characters" })
+  description?: string;
 
   @IsString()
-  pinCode?: string;
+  price?: [number];
 
-  @IsString()
-  address?: string;
-
-  @IsString()
-  phone?: string;
-
-  @IsEmail()
-  email?: string;
-
-  @IsString()
-  password?: string;
+  images?: [any]
 }

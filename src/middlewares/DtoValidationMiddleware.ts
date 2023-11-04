@@ -3,11 +3,12 @@ import { plainToClass } from "class-transformer";
 import { validate, ValidationError } from "class-validator";
 import { sanitize } from "class-sanitizer";
 
-export const dtoValidationMiddleware = (
+export const DtoValidationMiddleware = (
   type: any,
   skipMissingProperties = false
 ): RequestHandler => {
   return (req, res, next) => {
+    console.log({req: req})
     const dtoObj = plainToClass(type, req.body);
     validate(dtoObj, { skipMissingProperties }).then(
       (errors: ValidationError[]) => {

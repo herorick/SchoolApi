@@ -5,8 +5,6 @@ import { VendorPayload } from "interfaces/Vendor";
 import jwt from "jsonwebtoken";
 import { APP_SECRET } from "./VariableUtility";
 
-console.log(APP_SECRET)
-
 export const GenerateSalt = async () => {
   return await bcrypt.genSalt();
 };
@@ -20,22 +18,27 @@ export const validatePassword = async (
   savePassword: string,
   salt: string
 ) => {
-  return (await generatePassword(enteredPassword, salt)) === savePassword;
+  return await generatePassword(enteredPassword, salt) === savePassword;
 };
 
 export const generateSignature = (payload: VendorPayload) => {
-  return jwt.sign(payload, APP_SECRET, {
-    expiresIn: "1d",
-  });
+  return jwt.sign(payload, APP_SECRET, { expiresIn: '90d'});
+
 };
 
 export const validateSignature = async (req: Request) => {
   const signature = req.get("Authorization");
   if (signature) {
-    const payload = await jwt.verify(signature.split(" ")[1], APP_SECRET) as AuthPayload;
-    // @ts-ignore
-    req.user = payload;
-    return true;
+    try {
+      const payload = (await jwt.verify(
+        signature.split(" ")[1],
+        APP_SECRET
+      )) as AuthPayload;
+      req.user = payload;
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
   return false;
 };

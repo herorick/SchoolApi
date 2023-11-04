@@ -6,6 +6,7 @@ import {
   generateSignature,
   validatePassword,
 } from "utilities";
+import { removeImage } from "utilities/FileUntility";
 
 export const VendorLogin = async (
   req: Request,
@@ -44,7 +45,9 @@ export const GetVendorProfile = async (
 ) => {
   const user = req.user!;
   console.log({ user });
-  const existingVendor = await Vendor.findOne({ email: user.email });
+  const existingVendor = await Vendor.findOne({ email: user.email })
+    .populate("products")
+    .exec();
   return res.json(existingVendor);
 };
 
@@ -70,3 +73,24 @@ export const UpdateVendorProfile = async (
   }
 };
 
+export const UpdateVendorCoverImage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user!;
+    const files = req.files as [Express.Multer.File];
+    const existingVendor = await Vendor.findOne({ email: user.email });
+    if (!existingVendor) {
+      throw new NotFound("Vendor not found with email: " + user.email);
+    }
+    const images = files.map((file) => file.filename);
+    await removeImage(existingVendor.coverImage);
+    existingVendor.coverImage = images[0];
+    const result = await existingVendor.save();
+    return res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};

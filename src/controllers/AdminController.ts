@@ -13,16 +13,18 @@ export const CreateVendor = async (
   next: NextFunction
 ) => {
   try {
+    const { body, files } = req;
+    console.log({req})
     const {
       name,
       address,
       email,
-      foodType,
-      ownerName,
       password,
       phone,
-      pinCode,
-    } = req.body;
+    } = body;
+
+    const images = files as [Express.Multer.File];
+    const imageNames = images.map((file) => file.filename);
 
     const existingVendor = await Vendor.findOne({ email });
 
@@ -39,16 +41,14 @@ export const CreateVendor = async (
     const createdVendor = await Vendor.create({
       name,
       address,
-      pinCode,
-      foodType,
       email,
       password: encryptedPassword,
       salt: salt,
-      ownerName,
       phone,
       rating: 0,
-      serviceAvailable: true,
-      coverImage: [],
+      coverImage: imageNames[0],
+      products: [],
+      blogs: []
     });
 
     return res.json(createdVendor);

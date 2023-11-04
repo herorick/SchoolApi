@@ -22,10 +22,10 @@ const ProductSchema = new Schema(
     price: { type: Number, require: true },
     rating: { type: Number },
     images: { type: [String] },
-    productsCategories: [
+    productCategories: [
       {
         type: mongoose.SchemaTypes.ObjectId,
-        ref: "productsCategories",
+        ref: "productCategory",
       },
     ],
   },

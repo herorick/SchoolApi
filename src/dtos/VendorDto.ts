@@ -14,17 +14,6 @@ export class CreateVendorDTO {
   name?: string;
 
   @IsString()
-  @Trim()
-  @MinLength(5, { message: "OwnerName should be minimum of 5 characters" })
-  ownerName?: string;
-
-  @IsArray()
-  foodType?: [string];
-
-  @IsString()
-  pinCode?: string;
-
-  @IsString()
   address?: string;
 
   @IsString()

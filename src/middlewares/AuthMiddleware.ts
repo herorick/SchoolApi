@@ -8,8 +8,12 @@ declare global {
     interface Request {
       user?: AuthPayload;
     }
+    interface Response {
+      paginatedData: any
+    }
   }
 }
+
 export const Authenticate = async (
   req: Request,
   res: Response,
@@ -22,3 +26,4 @@ export const Authenticate = async (
     return res.json({ message: "user not Authenticated" });
   }
 };
+
