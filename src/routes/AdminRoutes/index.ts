@@ -20,7 +20,6 @@ router.post(
   CreateVendor
 );
 
-// router.post("/vendors", DtoValidationMiddleware(CreateVendorDTO), CreateVendor);
 router.get("/vendors", GetVendors);
 router.get("/vendors/:id", GetVendorById);
 router.patch("/vendors/:id", UpdateVendor);

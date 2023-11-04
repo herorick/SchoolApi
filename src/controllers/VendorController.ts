@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { Vendor } from "models/Vendor";
 import {
   NotFound,
@@ -7,56 +7,42 @@ import {
   validatePassword,
 } from "utilities";
 import { removeImage } from "utilities/FileUntility";
+import asyncHandler from "express-async-handler";
 
-export const VendorLogin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { email, password } = req.body;
-    const existingVendor = await Vendor.findOne({ email });
-    if (existingVendor === null) {
-      throw new NotFound("not found vendor with email: " + email);
-    }
-    const isValidPassword = await validatePassword(
-      password,
-      existingVendor.password,
-      existingVendor.salt
-    );
-    if (!isValidPassword) {
-      throw new Unauthorized("password is not correctly");
-    }
-    const signature = generateSignature({
-      id: existingVendor._id,
-      email: existingVendor.email,
-      name: existingVendor.name,
-    });
-    return res.json({ message: "Login success", token: signature });
-  } catch (err) {
-    next(err);
+export const VendorLogin = asyncHandler(async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  const existingVendor = await Vendor.findOne({ email });
+  if (existingVendor === null) {
+    throw new NotFound("not found vendor with email: " + email);
   }
-};
+  const isValidPassword = await validatePassword(
+    password,
+    existingVendor.password,
+    existingVendor.salt
+  );
+  if (!isValidPassword) {
+    throw new Unauthorized("password is not correctly");
+  }
+  const signature = generateSignature({
+    id: existingVendor._id,
+    email: existingVendor.email,
+    name: existingVendor.name,
+  });
+  res.json({ message: "Login success", token: signature });
+});
 
-export const GetVendorProfile = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const user = req.user!;
-  console.log({ user });
-  const existingVendor = await Vendor.findOne({ email: user.email })
-    .populate("products")
-    .exec();
-  return res.json(existingVendor);
-};
+export const GetVendorProfile = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = req.user!;
+    const existingVendor = await Vendor.findOne({ email: user.email })
+      .populate("products")
+      .exec();
+    res.json(existingVendor);
+  }
+);
 
-export const UpdateVendorProfile = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const UpdateVendorProfile = asyncHandler(
+  async (req: Request, res: Response) => {
     const { name, address, phone } = req.body;
     const user = req.user!;
     const existingVendor = await Vendor.findOne({ email: user.email });
@@ -68,17 +54,11 @@ export const UpdateVendorProfile = async (
     existingVendor.phone = phone;
     const savedResult = await existingVendor.save();
     res.json(savedResult);
-  } catch (err) {
-    next(err);
   }
-};
+);
 
-export const UpdateVendorCoverImage = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const UpdateVendorCoverImage = asyncHandler(
+  async (req: Request, res: Response) => {
     const user = req.user!;
     const files = req.files as [Express.Multer.File];
     const existingVendor = await Vendor.findOne({ email: user.email });
@@ -89,8 +69,6 @@ export const UpdateVendorCoverImage = async (
     await removeImage(existingVendor.coverImage);
     existingVendor.coverImage = images[0];
     const result = await existingVendor.save();
-    return res.json(result);
-  } catch (err) {
-    next(err);
+    res.json(result);
   }
-};
+);

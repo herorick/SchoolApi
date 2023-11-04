@@ -1,33 +1,25 @@
 import express, { Request, Response, NextFunction } from "express";
-import { GetVendorProfile } from "controllers/VendorController";
 import { Authenticate, DtoValidationMiddleware } from "middlewares";
-import {
-  CreateProduct,
-  DeleteProduct,
-  GetProductById,
-  GetProducts,
-} from "controllers";
 import { CreateProductDTO } from "dtos/ProductDto";
-import { initMulter } from "config/multer";
+import { CreateProductCategory, DeleteProductCategory, GetProductCategories, GetProductCategoryById } from "controllers/ProductCategoryController";
+import { CreateProductCategoryDTO } from "dtos/ProductCategory";
 
 const router = express.Router();
-const imagesMiddleware = initMulter();
 
-router.get("", GetProducts);
-router.get("/:id", GetProductById);
+router.get("", GetProductCategories);
+router.get("/:id", GetProductCategoryById);
 router.post(
   "/",
   Authenticate,
-  imagesMiddleware,
-  DtoValidationMiddleware(CreateProductDTO),
-  CreateProduct
+  DtoValidationMiddleware(CreateProductCategoryDTO),
+  CreateProductCategory
 );
-router.patch(
-  "/:id",
-  Authenticate,
-  DtoValidationMiddleware(CreateProductDTO),
-  GetVendorProfile
-);
-router.delete("/:id", Authenticate, DeleteProduct);
+// router.patch(
+//   "/:id",
+//   Authenticate,
+//   DtoValidationMiddleware(CreateProductDTO),
+//   GetVendorProfile
+// );
+router.delete("/:id", Authenticate, DeleteProductCategory);
 
 export { router as ProductCategoryRoute };

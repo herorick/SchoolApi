@@ -1,9 +1,9 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
 import compression from "compression";
-import morgan from "morgan"
+import morgan from "morgan";
 
 import { connectDB } from "config";
 import {
@@ -12,6 +12,7 @@ import {
   ProductRoutes,
   BlogCategoryRoutes,
   BlogRoutes,
+  ProductCategoryRoute,
 } from "routes";
 import { errorHandler, notFoundHandler } from "./middlewares";
 
@@ -41,13 +42,13 @@ app.use("/uploads", express.static(uploadPath));
 app.use("/admin", AdminRoutes);
 app.use("/vendor", VendorRoutes);
 app.use("/product", ProductRoutes);
-app.use("/product-category", ProductRoutes);
+app.use("/product-category", ProductCategoryRoute);
 app.use("/blog", BlogRoutes);
 app.use("/blog-category", BlogCategoryRoutes);
 
 // ERROR HANDLER MIDDLEWARE (Last middleware to use)
 app.use(errorHandler);
-app.use(notFoundHandler)
+app.use(notFoundHandler);
 
 app.listen(8000, () => {
   console.log("App is learning port 8000");

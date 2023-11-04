@@ -15,5 +15,6 @@ export class CreateProductDTO {
   @IsString()
   price?: [number];
 
-  images?: [any]
+  @IsArray()
+  productCategories?: [string];
 }

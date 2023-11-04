@@ -1,54 +1,54 @@
 import { NextFunction, Request, Response } from "express";
-import { BlogCategory, ProductCategory } from "models";
-import { Product } from "models/Product";
-import { Vendor } from "models/Vendor";
-import { NotFound } from "utilities";
-import { asyncHandler } from "utilities/AsyncHandler";
+import { Product, ProductCategory } from "models";
+import asyncHandler from "express-async-handler";
 
-export const GetProductCategories = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const GetProductCategories = asyncHandler(
+  async (req: Request, res: Response) => {
     const result = await ProductCategory.find();
-    return res.json({ result });
-  } catch (err) {
-    next(err);
+    res.json({ result });
   }
-};
-
-export const UpdateProductCategory = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { params, body } = req;
-    const { id } = params;
-    const result = await BlogCategory.findByIdAndUpdate(id, body, {
-      new: true,
-    });
-    return res.json({ result });
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const CreateProductCategory = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { body } = req;
-  const result = await BlogCategory.create({ ...body, products: [] });
-  return res.json({ result });
-};
-
-export const DeleteProductCategory = asyncHandler(
-  (req: Request, res: Response, next: NextFunction) => {}
 );
 
 export const GetProductCategoryById = asyncHandler(
-  (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response) => {
+    const { params, body } = req;
+    const { id } = params;
+    const result = await ProductCategory.findById(id)
+      .populate("products")
+      .exec();
+    res.json(result);
+  }
+);
+
+export const UpdateProductCategory = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { params, body } = req;
+    const { id } = params;
+    const result = await ProductCategory.findByIdAndUpdate(id, body, {
+      new: true,
+    });
+    res.json({ result });
+  }
+);
+
+export const CreateProductCategory = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { body } = req;
+    const result = await ProductCategory.create({
+      ...body,
+    });
+    res.json({ result });
+  }
+);
+
+export const DeleteProductCategory = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { params, body } = req;
+    const { id } = params;
+    const deletedRecord = await ProductCategory.findByIdAndDelete(id);
+    const productIds = deletedRecord?.products || [];
+    await ProductCategory.findByIdAndDelete(id);
+    await Product.deleteMany({ _id: productIds });
+    res.json(deletedRecord);
+  }
 );

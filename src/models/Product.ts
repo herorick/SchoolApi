@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 interface ProductDoc extends Document {
-  vendorId: string;
+  vendor: any;
   name: string;
   description: string;
   category: string;
@@ -10,12 +10,12 @@ interface ProductDoc extends Document {
   price: number;
   rating: number;
   images: [string];
-  productsCategories: any[];
+  productCategories: any[];
 }
 
 const ProductSchema = new Schema(
   {
-    vendorId: { type: String, require: true },
+    vendor: { type: String, require: true },
     name: { type: String, require: true },
     description: { type: String, require: true },
     category: { type: String, require: true },

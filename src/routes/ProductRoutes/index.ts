@@ -1,11 +1,11 @@
-import express, { Request, Response, NextFunction } from "express";
-import { GetVendorProfile } from "controllers/VendorController";
+import express from "express";
 import { Authenticate, DtoValidationMiddleware } from "middlewares";
 import {
   CreateProduct,
   DeleteProduct,
   GetProductById,
   GetProducts,
+  UpdateProduct,
 } from "controllers";
 import { CreateProductDTO } from "dtos/ProductDto";
 import { initMulter } from "config/multer";
@@ -27,8 +27,9 @@ router.post(
 router.patch(
   "/:id",
   Authenticate,
+  imagesMiddleware,
   DtoValidationMiddleware(CreateProductDTO),
-  GetVendorProfile
+  UpdateProduct
 );
 router.delete("/:id", Authenticate, DeleteProduct);
 

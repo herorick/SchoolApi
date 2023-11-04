@@ -8,7 +8,6 @@ export const DtoValidationMiddleware = (
   skipMissingProperties = false
 ): RequestHandler => {
   return (req, res, next) => {
-    console.log({req: req})
     const dtoObj = plainToClass(type, req.body);
     validate(dtoObj, { skipMissingProperties }).then(
       (errors: ValidationError[]) => {

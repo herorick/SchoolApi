@@ -1,14 +1,14 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 interface ProductCategoryDoc extends Document {
-  name: string;
+  title: string;
   description: string;
   products: any[]
 }
 
 const ProductCategorySchema = new Schema(
   {
-    name: { type: String, require: true },
+    title: { type: String, require: true },
     description: { type: String, require: true },
     products: [
       {

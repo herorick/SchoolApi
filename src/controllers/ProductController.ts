@@ -2,36 +2,28 @@ import { NextFunction, Request, Response } from "express";
 import { Product } from "models/Product";
 import { Vendor } from "models/Vendor";
 import { NotFound } from "utilities";
-import { asyncHandler } from "utilities/AsyncHandler";
+import asyncHandler from "express-async-handler";
+import { ProductCategory } from "models";
+import difference from "lodash/difference";
 
 export const GetProducts = asyncHandler(
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     res.json(res.paginatedData);
   }
 );
 
-export const GetProductById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const GetProductById = asyncHandler(
+  async (req: Request, res: Response) => {
     const { id } = req.params;
     const product = await Product.findById(id);
-    return res.json({ product });
-  } catch (err) {
-    next(err);
+    res.json({ product });
   }
-};
+);
 
-export const CreateProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const CreateProduct = asyncHandler(
+  async (req: Request, res: Response) => {
     const { user, body, files } = req;
-    const { name, description, price } = body;
+    const { name, description, price, productCategories } = body;
     const vendor = await Vendor.findOne({ email: user?.email });
     if (!vendor) throw new NotFound("Vendor not found by email: " + user?.name);
     const images = files as [Express.Multer.File];
@@ -40,46 +32,58 @@ export const CreateProduct = async (
       name,
       description,
       price,
-      vendorId: user?.id,
+      vendor: user?.id,
       rating: 0,
       images: imageNames,
+      productCategories,
     });
+    await ProductCategory.updateMany(
+      { _id: productCategories },
+      { $push: { products: createdProduct._id } }
+    );
     vendor.products.push(createdProduct);
     await vendor.save();
-    return res.json({ product: createdProduct });
-  } catch (err) {
-    console.log({ err });
-    next(err);
   }
-};
+);
 
-export const UpdateProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const user = req.user;
-  const { id } = req.params;
-  const { name, description, price } = req.body;
-  const vendor = await Vendor.findOne({ email: user?.email });
-  if (!vendor) throw new NotFound("Vendor not found by email: " + user?.name);
-  const existingProduct = await Product.findById(id);
-  if (!existingProduct) throw new NotFound("Product not found with id: " + id);
-  existingProduct.name = name;
-  existingProduct.price = price;
-  existingProduct.description = description;
-};
-
-export const DeleteProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const UpdateProduct = asyncHandler(
+  async (req: Request, res: Response) => {
     const { id } = req.params;
-    await Product.findByIdAndDelete(id);
-    return res.json({ message: "Remove is successfully" });
-  } catch (err) {
-    next(err);
+    const { name, description, price, productCategories } = req.body;
+    const oldProduct = await Product.findById(id);
+    const oldCategories = oldProduct!.productCategories;
+    if (!oldProduct) throw new NotFound();
+    Object.assign(oldProduct, {
+      name,
+      description,
+      price,
+      productCategories,
+    });
+    const newProduct = await oldProduct.save();
+    const added = difference(productCategories, oldCategories);
+    const removed = difference(oldCategories, productCategories);
+    await ProductCategory.updateMany(
+      { _id: added },
+      { $addToSet: { products: id } }
+    );
+    await ProductCategory.updateMany(
+      { _id: removed },
+      { $pull: { products: id } }
+    );
+    res.json(newProduct);
   }
-};
+);
+
+export const DeleteProduct = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) throw new NotFound();
+    await product.deleteOne();
+    await ProductCategory.updateMany(
+      { _id: product.productCategories },
+      { $pull: { products: product._id } }
+    );
+    res.json({ message: "Remove is successfully" });
+  }
+);
