@@ -13,9 +13,11 @@ import {
   BlogCategoryRoutes,
   BlogRoutes,
   ProductCategoryRoute,
+  BrandRoutes,
+  CouponRoutes,
 } from "routes";
 import { errorHandler, notFoundHandler } from "./middlewares";
-import { BrandRoutes } from "routes/BrandRoutes";
+
 
 dotenv.config();
 connectDB();
@@ -47,7 +49,7 @@ app.use("/product-category", ProductCategoryRoute);
 app.use("/blog", BlogRoutes);
 app.use("/blog-category", BlogCategoryRoutes);
 app.use("/brand", BrandRoutes);
-
+app.use("/coupon", CouponRoutes)
 
 // ERROR HANDLER MIDDLEWARE (Last middleware to use)
 app.use(errorHandler);

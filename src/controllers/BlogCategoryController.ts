@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { Blog, BlogCategory } from "models";
-import { Vendor } from "models/Vendor";
+import { Blog, BlogCategory, Vendor } from "models";
 import { NotFound } from "utilities";
 import asyncHandler from "express-async-handler";
 

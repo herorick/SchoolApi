@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { Product, ProductCategory } from "models";
 import asyncHandler from "express-async-handler";
 

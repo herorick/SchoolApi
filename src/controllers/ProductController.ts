@@ -1,11 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { Product } from "models/Product";
-import { Vendor } from "models/Vendor";
 import { NotFound } from "utilities";
 import asyncHandler from "express-async-handler";
-import { ProductCategory } from "models";
+import { Brand, Product, ProductCategory, Vendor } from "models";
 import difference from "lodash/difference";
-import { Brand } from "models/Brand";
 
 export const GetProducts = asyncHandler(async (req: Request, res: Response) => {
   res.json(res.paginatedData);

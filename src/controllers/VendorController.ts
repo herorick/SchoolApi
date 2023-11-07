@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { Vendor } from "models/Vendor";
 import {
   NotFound,
   Unauthorized,
@@ -8,6 +7,7 @@ import {
 } from "utilities";
 import { removeImage } from "utilities/FileUntility";
 import asyncHandler from "express-async-handler";
+import { Vendor } from "models";
 
 export const VendorLogin = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
