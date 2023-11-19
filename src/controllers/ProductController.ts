@@ -43,7 +43,7 @@ export const CreateProduct = asyncHandler(
     });
     vendor.products.push(createdProduct);
     await vendor.save();
-    res.json({ result: createdProduct });
+    res.json({ results: createdProduct });
   }
 );
 

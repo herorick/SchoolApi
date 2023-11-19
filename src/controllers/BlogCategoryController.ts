@@ -18,11 +18,11 @@ export const CreateBlogCategory = asyncHandler(
     if (!existingVendor) {
       throw new NotFound("Vendor not found with email: " + user.email);
     }
-    const result = await BlogCategory.create({
+    const results = await BlogCategory.create({
       title: body.title,
       description: body.description,
     });
-    res.json({ result });
+    res.json({ results });
   }
 );
 
@@ -30,10 +30,10 @@ export const GetBlogsByCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { params } = req;
     const { id } = params;
-    const result = await BlogCategory.findOne({ _id: id })
+    const results = await BlogCategory.findOne({ _id: id })
       .populate("blogs")
       .exec();
-    res.json({ result });
+    res.json({ results });
   }
 );
 
@@ -46,11 +46,11 @@ export const UpdateBlogCategory = asyncHandler(
     if (!existingVendor) {
       throw new NotFound("Vendor not found with email: " + user.email);
     }
-    const result = await BlogCategory.findByIdAndUpdate(id, {
+    const results = await BlogCategory.findByIdAndUpdate(id, {
       title: body.title,
       description: body.description,
     });
-    res.json({ result });
+    res.json({ results });
   }
 );
 

@@ -4,7 +4,6 @@ interface ProductDoc extends Document {
   vendor: any;
   name: string;
   description: string;
-  category: string;
   foodType: string;
   readyTime: number;
   price: number;
@@ -43,6 +42,15 @@ const ProductSchema = new Schema(
     timestamps: true,
   }
 );
+
+// @ts-ignore
+var autoPopulateLead = function(next) {
+  // @ts-ignore
+  this.populate('brand').populate('productCategories');
+  next();
+};
+
+ProductSchema.pre("find", autoPopulateLead);
 
 const Product = mongoose.model<ProductDoc>("product", ProductSchema);
 

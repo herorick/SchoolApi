@@ -68,7 +68,7 @@ export const UpdateVendorCoverImage = asyncHandler(
     const images = files.map((file) => file.filename);
     await removeImage(existingVendor.coverImage);
     existingVendor.coverImage = images[0];
-    const result = await existingVendor.save();
-    res.json(result);
+    const results = await existingVendor.save();
+    res.json(results);
   }
 );

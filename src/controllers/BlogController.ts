@@ -5,7 +5,7 @@ import asyncHandler from "express-async-handler";
 export const CreateBlog = asyncHandler(async (req: Request, res: Response) => {
   const { body } = req;
   const user = req.user!;
-  const result = await Blog.create({
+  const results = await Blog.create({
     title: body.title,
     tags: body.tags,
     content: body.content,
@@ -13,22 +13,22 @@ export const CreateBlog = asyncHandler(async (req: Request, res: Response) => {
     blogCategory: body.categoryId,
   });
   await Promise.all([
-    Vendor.findByIdAndUpdate(user.id, { $push: { blogs: result._id } }),
+    Vendor.findByIdAndUpdate(user.id, { $push: { blogs: results._id } }),
     BlogCategory.findByIdAndUpdate(body.categoryId, {
-      $push: { blogs: result._id },
+      $push: { blogs: results._id },
     }),
   ]);
-  res.json({ result });
+  res.json({ results });
 });
 
 export const GetBlogById = asyncHandler(async (req: Request, res: Response) => {
   const { params } = req;
   const { id } = params;
-  const result = await Blog.findById(id)
+  const results = await Blog.findById(id)
     .populate("author")
     .populate("blogCategory")
     .exec();
-  res.json({ result });
+  res.json({ results });
 });
 
 export const DeleteBlogById = asyncHandler(
@@ -56,6 +56,6 @@ export const GetAllBlog = asyncHandler(async (req: Request, res: Response) => {
 export const UpdateBlog = asyncHandler(async (req: Request, res: Response) => {
   const { params, body } = req;
   const { id } = params;
-  const result = await Blog.findByIdAndUpdate(id, body, { new: true });
-  res.json({ result });
+  const results = await Blog.findByIdAndUpdate(id, body, { new: true });
+  res.json({ results });
 });

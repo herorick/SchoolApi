@@ -4,8 +4,8 @@ import asyncHandler from "express-async-handler";
 
 export const GetProductCategories = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await ProductCategory.find();
-    res.json({ result });
+    const results = await ProductCategory.find();
+    res.json({ results });
   }
 );
 
@@ -13,10 +13,10 @@ export const GetProductCategoryById = asyncHandler(
   async (req: Request, res: Response) => {
     const { params, body } = req;
     const { id } = params;
-    const result = await ProductCategory.findById(id)
+    const results = await ProductCategory.findById(id)
       .populate("products")
       .exec();
-    res.json(result);
+    res.json(results);
   }
 );
 
@@ -24,20 +24,20 @@ export const UpdateProductCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { params, body } = req;
     const { id } = params;
-    const result = await ProductCategory.findByIdAndUpdate(id, body, {
+    const results = await ProductCategory.findByIdAndUpdate(id, body, {
       new: true,
     });
-    res.json({ result });
+    res.json({ results });
   }
 );
 
 export const CreateProductCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { body } = req;
-    const result = await ProductCategory.create({
+    const results = await ProductCategory.create({
       ...body,
     });
-    res.json({ result });
+    res.json({ results });
   }
 );
 
