@@ -4,8 +4,7 @@ interface ProductDoc extends Document {
   vendor: any;
   name: string;
   description: string;
-  foodType: string;
-  readyTime: number;
+  category: string;
   price: number;
   rating: number;
   images: [string];

@@ -1,10 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
-import { LoginVendorDTO, UpdateVendorDTO } from "dtos";
+import { LoginVendorDTO, UpdateVendorDTO, UpdateVendorPasswordDTO } from "dtos";
 import {
   VendorLogin,
   GetVendorProfile,
   UpdateVendorProfile,
   UpdateVendorCoverImage,
+  UpdateVendorPassword,
 } from "controllers";
 import { Authenticate, DtoValidationMiddleware } from "middlewares";
 import { initMulter } from "config/multer";
@@ -29,6 +30,12 @@ router.patch(
   Authenticate,
   DtoValidationMiddleware(UpdateVendorDTO),
   UpdateVendorProfile
+);
+router.post(
+  "/profile/updatePassword",
+  Authenticate,
+  DtoValidationMiddleware(UpdateVendorPasswordDTO),
+  UpdateVendorPassword
 );
 
 export { router as VendorRoutes };

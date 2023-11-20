@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import {
+  GenerateSalt,
   NotFound,
   Unauthorized,
+  generatePassword,
   generateSignature,
   validatePassword,
 } from "utilities";
@@ -68,6 +70,34 @@ export const UpdateVendorCoverImage = asyncHandler(
     const images = files.map((file) => file.filename);
     await removeImage(existingVendor.coverImage);
     existingVendor.coverImage = images[0];
+    const results = await existingVendor.save();
+    res.json(results);
+  }
+);
+
+export const UpdateVendorPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = req.user!;
+    const { currentPassword, newPassword } = req.body;
+    const existingVendor = await Vendor.findOne({ email: user.email });
+    if (!existingVendor) {
+      throw new NotFound("Vendor not found with email: " + user.email);
+    }
+    const isValidPassword = await validatePassword(
+      currentPassword,
+      existingVendor.password,
+      existingVendor.salt
+    );
+    if (!isValidPassword) {
+      throw new Unauthorized("password is not correctly");
+    }
+
+    // generate a salt
+    const salt = await GenerateSalt();
+
+    // encrypt the password using salt
+    const encryptedPassword = await generatePassword(newPassword, salt);
+    existingVendor.password = encryptedPassword;
     const results = await existingVendor.save();
     res.json(results);
   }

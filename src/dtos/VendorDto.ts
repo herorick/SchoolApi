@@ -41,9 +41,18 @@ export class UpdateVendorDTO {
   name?: string;
 
   @IsString()
-  address?: string
+  address?: string;
 
   @IsString()
-  phone?: string
+  phone?: string;
+}
 
+export class UpdateVendorPasswordDTO {
+  @IsString()
+  @Trim()
+  newPassword?: string;
+
+  @IsString()
+  @Trim()
+  currentPassword?: string;
 }
