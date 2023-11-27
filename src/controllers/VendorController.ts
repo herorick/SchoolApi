@@ -11,6 +11,18 @@ import { removeImage } from "utilities/FileUntility";
 import asyncHandler from "express-async-handler";
 import { Vendor } from "models";
 
+export const VendorGetAll = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { email } = req.body;
+    const existingVendor = await Vendor.findOne({ email });
+    if (existingVendor === null) {
+      throw new NotFound("not found vendor with email: " + email);
+    }
+    const vendors = await Vendor.find({});
+    res.json({ results: vendors });
+  }
+);
+
 export const VendorLogin = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const existingVendor = await Vendor.findOne({ email });
@@ -63,6 +75,7 @@ export const UpdateVendorCoverImage = asyncHandler(
   async (req: Request, res: Response) => {
     const user = req.user!;
     const files = req.files as [Express.Multer.File];
+    console.log({files})
     const existingVendor = await Vendor.findOne({ email: user.email });
     if (!existingVendor) {
       throw new NotFound("Vendor not found with email: " + user.email);
@@ -83,6 +96,7 @@ export const UpdateVendorPassword = asyncHandler(
     if (!existingVendor) {
       throw new NotFound("Vendor not found with email: " + user.email);
     }
+    console.log({ existingVendor, currentPassword });
     const isValidPassword = await validatePassword(
       currentPassword,
       existingVendor.password,
@@ -98,6 +112,7 @@ export const UpdateVendorPassword = asyncHandler(
     // encrypt the password using salt
     const encryptedPassword = await generatePassword(newPassword, salt);
     existingVendor.password = encryptedPassword;
+    existingVendor.salt = salt;
     const results = await existingVendor.save();
     res.json(results);
   }

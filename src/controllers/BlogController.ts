@@ -50,7 +50,9 @@ export const DeleteBlogById = asyncHandler(
 );
 
 export const GetAllBlog = asyncHandler(async (req: Request, res: Response) => {
-  res.json(res.paginatedData);
+  const data = await Blog.find().populate("blogCategoryId").exec()
+  res.json(data)
+  // res.json(res.paginatedData);
 });
 
 export const UpdateBlog = asyncHandler(async (req: Request, res: Response) => {

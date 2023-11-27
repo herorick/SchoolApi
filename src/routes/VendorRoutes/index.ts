@@ -13,9 +13,7 @@ import { initMulter } from "config/multer";
 const router = express.Router();
 const imagesMiddleware = initMulter();
 
-router.get("/", (req: Request, res: Response, next: NextFunction) => {
-  res.json({ message: "Hello from Vendor" });
-});
+router.get("/", Authenticate, GetVendorProfile);
 
 router.post("/login", DtoValidationMiddleware(LoginVendorDTO), VendorLogin);
 router.get("/profile", Authenticate, GetVendorProfile);

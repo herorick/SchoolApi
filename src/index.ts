@@ -42,6 +42,9 @@ app.use(
 export const uploadPath = path.join(__dirname, "/uploads/");
 app.use("/uploads", express.static(uploadPath));
 
+
+app.use(express.static(__dirname + 'uploadPath'))
+
 app.use("/admin", AdminRoutes);
 app.use("/vendor", VendorRoutes);
 app.use("/product", ProductRoutes);
