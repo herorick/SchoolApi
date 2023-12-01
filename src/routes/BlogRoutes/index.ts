@@ -11,6 +11,7 @@ import {
 } from "controllers/BlogController";
 import { PaginateResultsMiddleware } from "middlewares/PaginationMiddleware";
 import { Blog } from "models";
+import { ValidateObjectId } from "middlewares/ValidateObjectId";
 
 const router = express.Router();
 
@@ -23,15 +24,16 @@ router.post(
 
 router.patch(
   "/:id",
+  ValidateObjectId,
   Authenticate,
   UpdateBlog
 );
 
-router.delete("/:id", Authenticate, DeleteBlogById);
+router.delete("/:id", ValidateObjectId, Authenticate, DeleteBlogById);
 
 router.get("/", PaginateResultsMiddleware(Blog), GetAllBlog);
 
-router.get("/:id", GetBlogById);
+router.get("/:id", ValidateObjectId, GetBlogById);
 
 
 export { router as BlogRoutes };

@@ -7,11 +7,12 @@ import {
   RemoveCoupon,
 } from "controllers/CouponController";
 import { CreateCouponDTO } from "dtos/CouponDto";
+import { ValidateObjectId } from "middlewares/ValidateObjectId";
 
 const router = express.Router();
 
 router.get("", GetAllCoupon);
-router.get("/:id", GetCoupon);
+router.get("/:id", ValidateObjectId, GetCoupon);
 router.post(
   "/",
   Authenticate,
@@ -20,10 +21,11 @@ router.post(
 );
 router.patch(
   "/:id",
+  ValidateObjectId,
   Authenticate,
   DtoValidationMiddleware(CreateCouponDTO),
   CreateCoupon
 );
-router.delete("/:id", Authenticate, RemoveCoupon);
+router.delete("/:id", ValidateObjectId, Authenticate, RemoveCoupon);
 
 export { router as CouponRoutes };

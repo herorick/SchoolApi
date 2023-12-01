@@ -2,11 +2,23 @@ import { Request } from "express";
 import multer from "multer";
 import fs from "fs";
 
+const FILE_TYPE_MAP: any = {
+  "image/png": "png",
+  "image/jpeg": "jpeg",
+  "image/jpg": "jpg",
+};
+
 const fileFilter = (req: Request, file: Express.Multer.File, callback: any) => {
+  const isValid = FILE_TYPE_MAP[file.mimetype];
+  let uploadError: Error | null = null;
   if (file.mimetype.split("/")[0] === "image") {
-    callback(null, true);
+    uploadError = new Error("invalid please send image type");
+    callback(null, false);
+  } else if (isValid) {
+    uploadError = new Error("invalid image type");
+    callback(uploadError, false);
   } else {
-    callback(new multer.MulterError("LIMIT_UNEXPECTED_FILE"), false);
+    callback(null, true);
   }
 };
 

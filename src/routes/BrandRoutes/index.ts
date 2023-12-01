@@ -8,6 +8,7 @@ import {
   UpdateBrand,
 } from "controllers/BrandController";
 import { CreateBrandDTO } from "dtos/BrandDto";
+import { ValidateObjectId } from "middlewares/ValidateObjectId";
 
 const router = express.Router();
 
@@ -18,12 +19,12 @@ router.post(
   CreateBrand
 );
 
-router.patch("/:id", Authenticate, UpdateBrand);
+router.patch("/:id", ValidateObjectId, Authenticate, UpdateBrand);
 
-router.delete("/:id", Authenticate, DeleteBrand);
+router.delete("/:id", ValidateObjectId, Authenticate, DeleteBrand);
 
 router.get("/", GetAllBrand);
 
-router.get("/:id", GetBrand);
+router.get("/:id", ValidateObjectId, GetBrand);
 
 export { router as BrandRoutes };

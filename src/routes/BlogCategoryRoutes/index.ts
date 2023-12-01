@@ -6,13 +6,14 @@ import {
   DeleteBlogCategory,
   UpdateBlogCategory,
   GetBlogsByCategory,
-  GetCategories
+  GetCategories,
 } from "controllers/BlogCategoryController";
+import { ValidateObjectId } from "middlewares/ValidateObjectId";
 
 const router = express.Router();
 
 router.get("/", GetCategories);
-router.get("/:id", GetBlogsByCategory);
+router.get("/:id", ValidateObjectId, GetBlogsByCategory);
 
 router.use(Authenticate);
 router.post(
@@ -22,6 +23,7 @@ router.post(
 );
 router.patch(
   "/:id",
+  ValidateObjectId,
   DtoValidationMiddleware(CreateBlogCategoryDTO),
   UpdateBlogCategory
 );

@@ -10,6 +10,7 @@ import {
 import { CreateVendorDTO } from "dtos";
 import express from "express";
 import { DtoValidationMiddleware } from "middlewares";
+import { ValidateObjectId } from "middlewares/ValidateObjectId";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();
@@ -21,9 +22,9 @@ router.post(
 );
 
 router.get("/vendors", GetVendors);
-router.get("/vendors/:id", GetVendorById);
-router.patch("/vendors/:id", UpdateVendor);
-router.delete("/vendors:/id", DeleteVendorById);
+router.get("/vendors/:id", ValidateObjectId, GetVendorById);
+router.patch("/vendors/:id", ValidateObjectId, UpdateVendor);
+router.delete("/vendors:/id", ValidateObjectId, DeleteVendorById);
 router.delete("/vendors", DeleteAllVendors);
 
 export { router as AdminRoutes };
