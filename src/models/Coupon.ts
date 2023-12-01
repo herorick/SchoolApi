@@ -19,10 +19,15 @@ const CouponSchema = new Schema(
       transform(doc, record) {
         delete record.__v, delete record.createAt, delete record.updateAt;
       },
+      virtuals: true,
     },
     timestamps: true,
   }
 );
+
+CouponSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
 
 const Coupon = mongoose.model<CouponDoc>("coupon", CouponSchema);
 

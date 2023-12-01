@@ -22,10 +22,15 @@ const ProductCategorySchema = new Schema(
       transform(doc, record) {
         delete record.__v, delete record.createAt, delete record.updateAt;
       },
+      virtuals: true,
     },
     timestamps: true,
   }
 );
+
+ProductCategorySchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
 
 const ProductCategory = mongoose.model<ProductCategoryDoc>(
   "productCategory",

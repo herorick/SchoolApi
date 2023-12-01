@@ -20,10 +20,15 @@ const BrandSchema = new Schema(
       transform(doc, record) {
         delete record.__v, delete record.createAt, delete record.updateAt;
       },
+      virtuals: true,
     },
     timestamps: true,
   }
 );
+
+BrandSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
 
 const Brand = mongoose.model<BrandDoc>("brand", BrandSchema);
 

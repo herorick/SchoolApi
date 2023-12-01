@@ -42,10 +42,15 @@ const VendorSchema = new Schema(
       transform(doc, record) {
         delete record.password, delete record.salt;
       },
+      virtuals: true,
     },
     timestamps: true,
   }
 );
+
+VendorSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
 
 const Vendor = mongoose.model<VendorDoc>("vendor", VendorSchema);
 

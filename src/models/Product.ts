@@ -37,15 +37,20 @@ const ProductSchema = new Schema(
       transform(doc, record) {
         delete record.__v, delete record.createAt, delete record.updateAt;
       },
+      virtuals: true,
     },
     timestamps: true,
   }
 );
 
+ProductSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
+
 // @ts-ignore
-var autoPopulateLead = function(next) {
+var autoPopulateLead = function (next) {
   // @ts-ignore
-  this.populate('brand').populate('productCategories');
+  this.populate("brand").populate("productCategories");
   next();
 };
 
