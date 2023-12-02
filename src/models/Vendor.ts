@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import mongooseUniqueValidator from "mongoose-unique-validator";
 
 interface VendorDoc extends Document {
   name: string;
@@ -18,7 +19,7 @@ const VendorSchema = new Schema(
     name: { type: String, require: true },
     address: { type: String },
     phone: { type: String, require: true },
-    email: { type: String, require: true },
+    email: { type: String, require: true, unique: true },
     password: { type: String, require: true },
     salt: { type: String, require: true },
     coverImage: { type: String },
@@ -47,6 +48,8 @@ const VendorSchema = new Schema(
     timestamps: true,
   }
 );
+
+VendorSchema.plugin(mongooseUniqueValidator);
 
 VendorSchema.virtual("id").get(function () {
   return this._id.toHexString();

@@ -1,14 +1,15 @@
 import mongoose, { Document, Schema } from "mongoose";
+import mongooseUniqueValidator from "mongoose-unique-validator";
 
 interface BlogCategoryDoc extends Document {
   title: string;
   description: string;
-  blogs: any[]
+  blogs: any[];
 }
 
 const BlogCategorySchema = new Schema(
   {
-    title: { type: String, require: true },
+    title: { type: String, require: true, unique: true },
     description: { type: String, require: true },
     blogs: [
       {
@@ -27,6 +28,8 @@ const BlogCategorySchema = new Schema(
     timestamps: true,
   }
 );
+
+BlogCategorySchema.plugin(mongooseUniqueValidator);
 
 BlogCategorySchema.virtual("id").get(function () {
   return this._id.toHexString();

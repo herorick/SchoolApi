@@ -1,15 +1,16 @@
 import mongoose, { Document, Schema } from "mongoose";
+import uniqueValidator from "mongoose-unique-validator";
 
 interface ProductCategoryDoc extends Document {
   title: string;
   description: string;
-  products: any[]
+  products: any[];
   image: string;
 }
 
 const ProductCategorySchema = new Schema(
   {
-    title: { type: String, require: true },
+    title: { type: String, require: true, unique: true },
     description: { type: String, require: true },
     image: { type: String, require: true },
     products: [
@@ -29,6 +30,8 @@ const ProductCategorySchema = new Schema(
     timestamps: true,
   }
 );
+
+ProductCategorySchema.plugin(uniqueValidator);
 
 ProductCategorySchema.virtual("id").get(function () {
   return this._id.toHexString();

@@ -22,21 +22,32 @@ export const GetProductCategoryById = asyncHandler(
 
 export const UpdateProductCategory = asyncHandler(
   async (req: Request, res: Response) => {
-    const { params, body } = req;
+    const { params, body, files } = req;
+    const images = files as [Express.Multer.File];
+    const imageNames = images.map((file) => file.filename);
     const { id } = params;
-    const results = await ProductCategory.findByIdAndUpdate(id, body, {
-      new: true,
-    });
+    const results = await ProductCategory.findByIdAndUpdate(
+      id,
+      { ...body, image: imageNames[0] },
+      {
+        new: true,
+      }
+    );
     res.json({ results });
   }
 );
 
 export const CreateProductCategory = asyncHandler(
   async (req: Request, res: Response) => {
-    const { body } = req;
-    const results = await ProductCategory.create({
-      ...body,
-    });
+    const { body, files } = req;
+    const images = files as [Express.Multer.File];
+    console.log({ images });
+    const imageNames = images.map((file) => file.filename);
+
+    const doc = new ProductCategory({ ...body, image: imageNames[0] });
+    await doc.validate(); // Does not throw an error
+    const results = await doc.save();
+
     res.json({ results });
   }
 );

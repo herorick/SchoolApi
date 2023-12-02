@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import mongooseUniqueValidator from "mongoose-unique-validator";
 
 interface CustomerDoc extends Document {
   email: string;
@@ -13,7 +14,7 @@ interface CustomerDoc extends Document {
 
 const CustomerSchema = new Schema(
   {
-    email: { type: String, require: true },
+    email: { type: String, require: true, unique: true },
     password: { type: String, require: true },
     salt: { type: String, require: true },
     phone: { type: String, require: true },
@@ -43,6 +44,8 @@ const CustomerSchema = new Schema(
     timestamps: true,
   }
 );
+
+CustomerSchema.plugin(mongooseUniqueValidator);
 
 CustomerSchema.virtual("id").get(function () {
   return this._id.toHexString();

@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import mongooseUniqueValidator from "mongoose-unique-validator";
 
 interface CouponDoc extends Document {
   code: String;
@@ -9,7 +10,7 @@ interface CouponDoc extends Document {
 
 const CouponSchema = new Schema(
   {
-    code: { type: String, require: true },
+    code: { type: String, require: true, unique: true },
     limit: { type: Number, require: true },
     discountPercentage: { type: Number, require: true },
     expirationDate: { type: Date, require: true },
@@ -24,6 +25,8 @@ const CouponSchema = new Schema(
     timestamps: true,
   }
 );
+
+CouponSchema.plugin(mongooseUniqueValidator);
 
 CouponSchema.virtual("id").get(function () {
   return this._id.toHexString();

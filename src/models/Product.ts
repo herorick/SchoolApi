@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import mongooseUniqueValidator from "mongoose-unique-validator";
 
 interface ProductDoc extends Document {
   vendor: any;
@@ -14,8 +15,8 @@ interface ProductDoc extends Document {
 
 const ProductSchema = new Schema(
   {
+    name: { type: String, require: true, unique: true },
     vendor: { type: String, require: true },
-    name: { type: String, require: true },
     description: { type: String, require: true },
     category: { type: String, require: true },
     price: { type: Number, require: true },
@@ -42,6 +43,8 @@ const ProductSchema = new Schema(
     timestamps: true,
   }
 );
+
+ProductSchema.plugin(mongooseUniqueValidator);
 
 ProductSchema.virtual("id").get(function () {
   return this._id.toHexString();
