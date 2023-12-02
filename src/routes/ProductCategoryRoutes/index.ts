@@ -6,6 +6,7 @@ import {
   GetProductCategories,
   GetProductCategoryById,
   UpdateProductCategory,
+  DeleteBlogCategories
 } from "controllers/ProductCategoryController";
 import { CreateProductCategoryDTO } from "dtos/ProductCategoryDto";
 import { ValidateObjectId } from "middlewares/ValidateObjectId";
@@ -31,5 +32,6 @@ router.patch(
   UpdateProductCategory
 );
 router.delete("/:id", ValidateObjectId, Authenticate, DeleteProductCategory);
+router.delete("/", Authenticate, DeleteBlogCategories);
 
 export { router as ProductCategoryRoute };

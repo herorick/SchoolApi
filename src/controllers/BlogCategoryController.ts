@@ -64,3 +64,10 @@ export const DeleteBlogCategory = asyncHandler(
     res.json(deletedRecord);
   }
 );
+
+export const DeleteBlogCategories = asyncHandler(
+  async (req: Request, res: Response) => {
+    const deletedRecord = await BlogCategory.deleteMany();
+    res.json(deletedRecord);
+  }
+);

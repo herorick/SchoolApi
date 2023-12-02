@@ -9,6 +9,7 @@ import {
   GetCategories,
 } from "controllers/BlogCategoryController";
 import { ValidateObjectId } from "middlewares/ValidateObjectId";
+import { DeleteBlogCategories } from "controllers/ProductCategoryController";
 
 const router = express.Router();
 
@@ -28,5 +29,7 @@ router.patch(
   UpdateBlogCategory
 );
 router.delete("/:id", DeleteBlogCategory);
+
+router.delete("/", DeleteBlogCategories)
 
 export { router as BlogCategoryRoutes };
