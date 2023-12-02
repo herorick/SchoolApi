@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
@@ -17,6 +17,7 @@ import {
   CouponRoutes,
 } from "routes";
 import { errorHandler, notFoundHandler } from "./middlewares";
+import { BannerRoutes } from "routes/BannerRoutes";
 
 
 dotenv.config();
@@ -53,6 +54,8 @@ app.use("/blog", BlogRoutes);
 app.use("/blog-category", BlogCategoryRoutes);
 app.use("/brand", BrandRoutes);
 app.use("/coupon", CouponRoutes)
+app.use("/banner", BannerRoutes)
+
 
 // ERROR HANDLER MIDDLEWARE (Last middleware to use)
 app.use(errorHandler);

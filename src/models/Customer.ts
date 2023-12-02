@@ -36,7 +36,7 @@ const CustomerSchema = new Schema(
   {
     toJSON: {
       transform(doc, record) {
-        delete record.__v, delete record.createAt, delete record.updateAt;
+        delete record.password, delete record.salt;
       },
       virtuals: true,
     },
