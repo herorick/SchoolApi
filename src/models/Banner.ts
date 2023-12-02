@@ -35,6 +35,6 @@ BannerSchema.virtual("id").get(function () {
   return this._id.toHexString();
 });
 
-const Banner = mongoose.model<BannerDoc>("address", BannerSchema);
+const Banner = mongoose.model<BannerDoc>("banner", BannerSchema);
 
 export { Banner };

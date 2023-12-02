@@ -11,4 +11,7 @@ export class CreateProductCategoryDTO {
   @Trim()
   @MinLength(5, { message: "Description should be minimum of 5 characters" })
   description?: string;
+
+  @IsString()
+  image?: string;
 }
