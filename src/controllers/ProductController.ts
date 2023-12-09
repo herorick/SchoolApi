@@ -11,8 +11,11 @@ export const GetProducts = asyncHandler(async (req: Request, res: Response) => {
 export const GetProductById = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const product = await Product.findById(id);
-    res.json({ product });
+    const product = await Product.findById(id)
+      .populate("brand")
+      .populate("productCategories")
+      .exec();
+    res.json({ results: product });
   }
 );
 
@@ -49,19 +52,25 @@ export const CreateProduct = asyncHandler(
 
 export const UpdateProduct = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { name, brand, description, price, productCategories } = req.body;
+    const { files, params, body } = req;
+    const { id } = params;
+    const { name, brand, description, price, productCategories } = body;
     const oldProduct = await Product.findById(id);
     const oldBrand = oldProduct?.brand;
     const oldCategories = oldProduct!.productCategories;
     if (!oldProduct) throw new NotFound();
+    const images = files as [Express.Multer.File];
+    const imageNames = images.map((file) => file.filename);
+
     Object.assign(oldProduct, {
       name,
       brand,
       description,
       price,
+      images: [...oldProduct.images, ...imageNames],
       productCategories,
     });
+
     const newProduct = await oldProduct.save();
     const added = difference(productCategories, oldCategories);
     const removed = difference(oldCategories, productCategories);
@@ -104,6 +113,28 @@ export const DeleteProduct = asyncHandler(
       { _id: product.productCategories },
       { $pull: { products: product._id } }
     );
+    res.json({ message: "Remove is successfully" });
+  }
+);
+
+export const DeleteProducts = asyncHandler(
+  async (req: Request, res: Response) => {
+    const results = await Product.deleteMany();
+    res.json(results);
+  }
+);
+
+// TODO: remove image
+export const DeleteProductImage = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { productId, imageId } = req.query;
+    const product = await Product.findById(productId);
+    if (!product) throw new NotFound();
+    console.log(product.images.filter((item) => item !== imageId));
+    const newImages = product.images.filter((item) => item !== imageId);
+    await product.updateOne({
+      images: newImages,
+    });
     res.json({ message: "Remove is successfully" });
   }
 );

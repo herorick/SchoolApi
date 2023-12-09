@@ -117,3 +117,10 @@ export const UpdateVendorPassword = asyncHandler(
     res.json(results);
   }
 );
+
+export const RemoveVendors = asyncHandler(
+  async (req: Request, res: Response) => {
+    const results = await Vendor.deleteMany();
+    res.json(results);
+  }
+);

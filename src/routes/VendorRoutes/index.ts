@@ -6,6 +6,7 @@ import {
   UpdateVendorProfile,
   UpdateVendorCoverImage,
   UpdateVendorPassword,
+  DeleteAllVendors,
 } from "controllers";
 import { Authenticate, DtoValidationMiddleware } from "middlewares";
 import { initMulter } from "config/multer";
@@ -35,5 +36,7 @@ router.post(
   DtoValidationMiddleware(UpdateVendorPasswordDTO),
   UpdateVendorPassword
 );
+router.delete("/", Authenticate, DeleteAllVendors);
+
 
 export { router as VendorRoutes };

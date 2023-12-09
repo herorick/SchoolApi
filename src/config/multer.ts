@@ -9,6 +9,7 @@ const FILE_TYPE_MAP: any = {
 };
 
 const fileFilter = (req: Request, file: Express.Multer.File, callback: any) => {
+  console.log({ file });
   const isValid = FILE_TYPE_MAP[file.mimetype];
   let uploadError: Error | null = null;
   if (file.mimetype.split("/")[0] !== "image") {
@@ -38,5 +39,5 @@ export const initMulter = () => {
       callback(null, Date.now() + file.originalname);
     },
   });
-  return multer({ storage: imageStorage, fileFilter }).array("files");
+  return multer({ storage: imageStorage, fileFilter }).array("images");
 };

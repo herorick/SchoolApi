@@ -6,6 +6,8 @@ import {
   GetProductById,
   GetProducts,
   UpdateProduct,
+  DeleteProducts,
+  DeleteProductImage,
 } from "controllers";
 import { CreateProductDTO } from "dtos/ProductDto";
 import { initMulter } from "config/multer";
@@ -33,6 +35,8 @@ router.patch(
   DtoValidationMiddleware(CreateProductDTO),
   UpdateProduct
 );
+router.delete("/product-image", Authenticate, DeleteProductImage);
 router.delete("/:id", ValidateObjectId, Authenticate, DeleteProduct);
+router.delete("/", Authenticate, DeleteProducts);
 
 export { router as ProductRoutes };
