@@ -28,7 +28,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, callback: any) => {
 //   fileSize: 1000000000,
 // };
 
-export const initMulter = () => {
+export const initMulter = (field = "images") => {
   const imageStorage = multer.diskStorage({
     destination: function (req, file, callback) {
       fs.mkdir("./src/uploads/", (err) => {
@@ -39,5 +39,5 @@ export const initMulter = () => {
       callback(null, Date.now() + file.originalname);
     },
   });
-  return multer({ storage: imageStorage, fileFilter }).array("images");
+  return multer({ storage: imageStorage, fileFilter }).array(field);
 };

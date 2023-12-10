@@ -13,7 +13,7 @@ import { ValidateObjectId } from "middlewares/ValidateObjectId";
 import { initMulter } from "config/multer";
 
 const router = express.Router();
-const imagesMiddleware = initMulter();
+const imagesMiddleware = initMulter("image");
 
 router.get("", GetProductCategories);
 router.get("/:id", ValidateObjectId, GetProductCategoryById);

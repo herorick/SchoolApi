@@ -17,8 +17,7 @@ export const GetProductCategoryById = asyncHandler(
     const results = await ProductCategory.findById(id)
       .populate("products")
       .exec();
-    if (!results)
-      throw new NotFound("category is not found with id: " + id);
+    if (!results) throw new NotFound("category is not found with id: " + id);
 
     res.json({ results });
   }
@@ -44,12 +43,14 @@ export const UpdateProductCategory = asyncHandler(
 export const CreateProductCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { body, files } = req;
+    console.log("chay vao day");
     const images = files as [Express.Multer.File];
     const imageNames = images.map((file) => file.filename);
 
-    const doc = new ProductCategory({ ...body, image: imageNames[0] });
-    await doc.validate(); // Does not throw an error
-    const results = await doc.save();
+    const results = await ProductCategory.create({
+      ...body,
+      image: imageNames[0],
+    });
 
     res.json({ results });
   }
