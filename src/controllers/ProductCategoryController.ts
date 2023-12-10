@@ -5,8 +5,7 @@ import { NotFound } from "utilities";
 
 export const GetProductCategories = asyncHandler(
   async (req: Request, res: Response) => {
-    const results = await ProductCategory.find();
-    res.json({ results });
+    res.json(res.paginatedData);
   }
 );
 
@@ -43,7 +42,6 @@ export const UpdateProductCategory = asyncHandler(
 export const CreateProductCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { body, files } = req;
-    console.log("chay vao day");
     const images = files as [Express.Multer.File];
     const imageNames = images.map((file) => file.filename);
 
