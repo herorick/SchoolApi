@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Product, ProductCategory } from "models";
 import asyncHandler from "express-async-handler";
+import { NotFound } from "utilities";
 
 export const GetProductCategories = asyncHandler(
   async (req: Request, res: Response) => {
@@ -11,12 +12,15 @@ export const GetProductCategories = asyncHandler(
 
 export const GetProductCategoryById = asyncHandler(
   async (req: Request, res: Response) => {
-    const { params, body } = req;
+    const { params } = req;
     const { id } = params;
     const results = await ProductCategory.findById(id)
       .populate("products")
       .exec();
-    res.json(results);
+    if (!results)
+      throw new NotFound("category is not found with id: " + id);
+
+    res.json({ results });
   }
 );
 
@@ -41,7 +45,6 @@ export const CreateProductCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { body, files } = req;
     const images = files as [Express.Multer.File];
-    console.log({ images });
     const imageNames = images.map((file) => file.filename);
 
     const doc = new ProductCategory({ ...body, image: imageNames[0] });
@@ -54,19 +57,19 @@ export const CreateProductCategory = asyncHandler(
 
 export const DeleteProductCategory = asyncHandler(
   async (req: Request, res: Response) => {
-    const { params, body } = req;
+    const { params } = req;
     const { id } = params;
     const deletedRecord = await ProductCategory.findByIdAndDelete(id);
     const productIds = deletedRecord?.products || [];
     await ProductCategory.findByIdAndDelete(id);
     await Product.deleteMany({ _id: productIds });
-    res.json(deletedRecord);
+    res.json({ results: deletedRecord });
   }
 );
 
 export const DeleteBlogCategories = asyncHandler(
   async (req: Request, res: Response) => {
     const deletedRecord = await ProductCategory.deleteMany();
-    res.json(deletedRecord);
+    res.json({ results: deletedRecord });
   }
 );
