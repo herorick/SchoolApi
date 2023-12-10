@@ -15,6 +15,7 @@ export const GetProductById = asyncHandler(
       .populate("brand")
       .populate("productCategories")
       .exec();
+    if(!product) throw new NotFound("Product not found by id: " + id);
     res.json({ results: product });
   }
 );
