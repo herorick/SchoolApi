@@ -22,7 +22,7 @@ const VendorSchema = new Schema(
     email: { type: String, require: true, unique: true },
     password: { type: String, require: true },
     salt: { type: String, require: true },
-    coverImage: { type: String },
+    coverImage: { type: String, require: true },
     rating: { type: Number },
     products: [
       {

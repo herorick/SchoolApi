@@ -9,11 +9,12 @@ import {
 } from "controllers/AdminController";
 import { CreateVendorDTO } from "dtos";
 import express from "express";
-import { DtoValidationMiddleware } from "middlewares";
+import { Authenticate, DtoValidationMiddleware } from "middlewares";
 import { ValidateObjectId } from "middlewares/ValidateObjectId";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();
+
 router.post(
   "/vendors",
   imagesMiddleware,
@@ -21,10 +22,10 @@ router.post(
   CreateVendor
 );
 
-router.get("/vendors", GetVendors);
-router.get("/vendors/:id", ValidateObjectId, GetVendorById);
-router.patch("/vendors/:id", ValidateObjectId, UpdateVendor);
-router.delete("/vendors:/id", ValidateObjectId, DeleteVendorById);
-router.delete("/vendors", DeleteAllVendors);
+router.get("/vendors", Authenticate, GetVendors);
+router.get("/vendors/:id", Authenticate, ValidateObjectId, GetVendorById);
+router.patch("/vendors/:id", Authenticate, ValidateObjectId, UpdateVendor);
+router.delete("/vendors:/id", Authenticate, ValidateObjectId, DeleteVendorById);
+router.delete("/vendors", Authenticate, DeleteAllVendors);
 
 export { router as AdminRoutes };
