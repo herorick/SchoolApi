@@ -6,7 +6,7 @@ import { Conflict, GenerateSalt, NotFound, generatePassword } from "utilities";
 export const CreateVendor = asyncHandler(
   async (req: Request, res: Response) => {
     const { body, files } = req;
-    const { name, address, email, password, phone } = body;
+    const { name, address, email, password, phone, isAdmin = false } = body;
 
     const images = files as [Express.Multer.File];
     const imageNames = images.map((file) => file.filename);
@@ -34,6 +34,7 @@ export const CreateVendor = asyncHandler(
       coverImage: imageNames[0],
       products: [],
       blogs: [],
+      isAdmin
     });
 
     res.json(createdVendor);

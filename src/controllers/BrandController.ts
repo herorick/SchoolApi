@@ -32,8 +32,7 @@ export const DeleteBrand = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const GetAllBrand = asyncHandler(async (req: Request, res: Response) => {
-  const results = await Brand.find();
-  res.json({ results });
+  res.json(res.paginatedData);
 });
 
 export const GetBrand = asyncHandler(async (req: Request, res: Response) => {

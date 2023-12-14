@@ -9,6 +9,8 @@ import {
 } from "controllers/BrandController";
 import { CreateBrandDTO } from "dtos/BrandDto";
 import { ValidateObjectId } from "middlewares/ValidateObjectId";
+import { PaginateResultsMiddleware } from "middlewares/PaginationMiddleware";
+import { Brand } from "models";
 
 const router = express.Router();
 
@@ -23,7 +25,7 @@ router.patch("/:id", ValidateObjectId, Authenticate, UpdateBrand);
 
 router.delete("/:id", ValidateObjectId, Authenticate, DeleteBrand);
 
-router.get("/", GetAllBrand);
+router.get("/", PaginateResultsMiddleware(Brand), GetAllBrand);
 
 router.get("/:id", ValidateObjectId, GetBrand);
 

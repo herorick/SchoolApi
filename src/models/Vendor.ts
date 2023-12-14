@@ -12,6 +12,7 @@ interface VendorDoc extends Document {
   rating: number;
   blogs: any[];
   products: any[];
+  isAdmin: boolean
 }
 
 const VendorSchema = new Schema(
@@ -24,6 +25,7 @@ const VendorSchema = new Schema(
     salt: { type: String, require: true },
     coverImage: { type: String, require: true },
     rating: { type: Number },
+    isAdmin: { type: Boolean, default: false },
     products: [
       {
         type: mongoose.SchemaTypes.ObjectId,
