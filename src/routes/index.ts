@@ -6,3 +6,4 @@ export * from "./BlogRoutes";
 export * from "./BlogCategoryRoutes";
 export * from "./CouponRoutes";
 export * from "./BrandRoutes";
+export * from "./CustomerRoutes";

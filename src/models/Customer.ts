@@ -2,6 +2,8 @@ import mongoose, { Document, Schema } from "mongoose";
 import mongooseUniqueValidator from "mongoose-unique-validator";
 
 interface CustomerDoc extends Document {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   salt: string;
@@ -10,10 +12,22 @@ interface CustomerDoc extends Document {
   cart: any[];
   wishlist: any[];
   orders: any[];
+  lat: number;
+  lng: number;
+  otp: number;
+  otp_expiry: number;
+  verified: boolean;
 }
 
 const CustomerSchema = new Schema(
   {
+    firstName: { type: String, require: true },
+    lastName: { type: String, require: true },
+    lat: { type: Number },
+    lng: { type: Number },
+    otp: { type: Number },
+    otp_expiry: { type: Number },
+    verified: { type: Boolean },
     email: { type: String, require: true, unique: true },
     password: { type: String, require: true },
     salt: { type: String, require: true },
@@ -37,7 +51,11 @@ const CustomerSchema = new Schema(
   {
     toJSON: {
       transform(doc, record) {
-        delete record.password, delete record.salt;
+        delete record.password,
+          delete record.salt,
+          delete record.__v,
+          delete record.createAt,
+          delete record.updateAt;
       },
       virtuals: true,
     },
