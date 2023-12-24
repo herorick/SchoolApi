@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 import mongooseUniqueValidator from "mongoose-unique-validator";
 
-interface ProductDoc extends Document {
+export interface IProduct {
   vendor: any;
   name: string;
   description: string;
@@ -12,6 +12,8 @@ interface ProductDoc extends Document {
   brand: any;
   productCategories: any[];
 }
+
+export interface ProductDoc extends IProduct, Document {}
 
 const ProductSchema = new Schema(
   {

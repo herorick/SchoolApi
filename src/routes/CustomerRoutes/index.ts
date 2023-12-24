@@ -6,6 +6,12 @@ import {
   CustomerRequestOTP,
   CustomerGetProfile,
   CustomerEditProfile,
+  CreateOrder,
+  GetOrders,
+  GetOrderById,
+  GetCart,
+  DeleteCart,
+  AddToCart,
 } from "controllers";
 import { initMulter } from "config/multer";
 import { AuthenticateCustomer, DtoValidationMiddleware } from "middlewares";
@@ -24,5 +30,15 @@ router.get("/verify", AuthenticateCustomer, CustomerVerify);
 router.patch("/otp", AuthenticateCustomer, CustomerRequestOTP);
 router.get("/profile", AuthenticateCustomer, CustomerGetProfile);
 router.patch("/profile", AuthenticateCustomer, CustomerEditProfile);
+
+//Order
+router.post('/create-order', CreateOrder);
+router.get('/orders', GetOrders);
+router.get('/order/:id', GetOrderById)
+
+//Cart
+router.post('/cart', AddToCart)
+router.get('/cart', GetCart)
+router.delete('/cart', DeleteCart)
 
 export { router as CustomerRoutes };

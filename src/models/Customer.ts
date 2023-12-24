@@ -1,23 +1,8 @@
+import { ICustomer } from "@/interfaces/Customer";
 import mongoose, { Document, Schema } from "mongoose";
 import mongooseUniqueValidator from "mongoose-unique-validator";
 
-interface CustomerDoc extends Document {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  salt: string;
-  phone: string;
-  address: any[];
-  cart: any[];
-  wishlist: any[];
-  orders: any[];
-  lat: number;
-  lng: number;
-  otp: number;
-  otp_expiry: Date;
-  verified: boolean;
-}
+export interface CustomerDoc extends ICustomer, Document {}
 
 const CustomerSchema = new Schema(
   {

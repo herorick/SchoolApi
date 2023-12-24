@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { Coupon, Customer } from "models";
+import { Coupon, Customer, Order } from "models";
 import asyncHandler from "express-async-handler";
 import {
   Conflict,
@@ -10,6 +10,10 @@ import {
   generateSignature,
 } from "utilities";
 import { GenerateOtp, onRequestOTP } from "utilities/NotificationUtility";
+import { ICartItem } from "interfaces/Cart";
+import { OrderService, ProductService } from "services";
+import { CartService } from "@/services/CartService";
+import { ICreateOrder } from "@/interfaces/Order";
 
 export const CustomerSignUp = asyncHandler(
   async (req: Request, res: Response) => {
@@ -101,7 +105,6 @@ export const CustomerVerify = asyncHandler(
 export const CustomerRequestOTP = asyncHandler(
   async (req: Request, res: Response) => {
     const customer = req.user;
-
     if (!customer) {
       throw new NotFound("please check token");
     }
@@ -116,11 +119,9 @@ export const CustomerRequestOTP = asyncHandler(
 
     await profile.save();
     const sendCode = await onRequestOTP(otp, profile.phone);
-
     if (!sendCode) {
       res.status(400).json({ message: "Failed to verify your phone number" });
     }
-
     res
       .status(200)
       .json({ message: "OTP sent to your registered Mobile Number!" });
@@ -160,68 +161,47 @@ export const CustomerEditProfile = asyncHandler(
 );
 
 export const GetCart = asyncHandler(async (req: Request, res: Response) => {
-  const customer = req.user;
-  if (!customer) {
-    throw new NotFound("please check token");
-  }
-  const profile = await Customer.findById(customer.id);
-  if (!profile) {
-    throw new NotFound("customer not found by id" + customer.id);
-  }
+  const profile = req.profile!;
   res.status(200).json(profile.cart);
 });
 
 export const DeleteCart = asyncHandler(async (req: Request, res: Response) => {
-  const customer = req.user;
-  if (!customer) {
-    throw new NotFound("please check token");
-  }
-  const profile = await Customer.findById(customer.id)
-    .populate("cart.product")
-    .exec();
-  if (!profile) {
-    throw new NotFound("customer not found by id" + customer.id);
-  }
-  profile.cart = [] as any;
-  const cartResult = await profile.save();
-
+  const profile = req.profile!;
+  const cartResult = await CartService.deleteCart(profile);
   res.status(200).json(cartResult);
 });
 
-// Order
-export const GetOrders = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const customer = req.user;
-    if (!customer) {
-      throw new NotFound("please check token");
-    }
+export const AddToCart = asyncHandler(async (req: Request, res: Response) => {
+  const profile = req.profile!;
+  const cartItem = req.body as ICartItem;
+  const cartResult = await CartService.addToCart(cartItem, profile);
+  res.status(200).json(cartResult.cart);
+});
 
-    const profile = await Customer.findById(customer.id).populate("orders");
-    if (!profile) {
-      throw new NotFound("customer not found by id" + customer.id);
-    }
-    res.status(200).json(profile.orders);
-  }
-);
+// Order
+export const GetOrders = asyncHandler(async (req: Request, res: Response) => {
+  const customer = req.user!;
+  const profile = await OrderService.getOrdersByCustomer(customer.id);
+  res.status(200).json(profile.orders);
+});
 
 export const GetOrderById = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const orderId = req.params.id;
-    const customer = req.user;
-    if (!customer) {
-      throw new NotFound("please check token");
-    }
-    if (!orderId) {
-      throw new NotFound("order detail not found by id" + customer.id);
-    }
-    const profile = await Customer.findById(customer.id).populate("orders");
-    if (!profile) {
-      throw new NotFound("customer not found by id" + customer.id);
-    }
-    const order = await Customer.findById(orderId).populate("items.product");
-    if (!order) {
-      throw new NotFound("order not found by id" + orderId);
-    }
-    res.status(200).json(order);
+    const order = await OrderService.getOrderById(orderId);
+    res.status(200).json({
+      results: order,
+    });
   }
 );
+
+export const CreateOrder = asyncHandler(async (req: Request, res: Response) => {
+  const profile = req.profile!;
+  const { txnId, amount, items } = req.body as ICreateOrder;
+  try {
+    const response = OrderService.createOrder(items, txnId, amount, profile)
+    res.status(201).json(response)
+  } catch(err) {
+    throw new Error("Some thing was wrong!!!");
+  }
+});

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthPayload } from "interfaces/Auth";
-import { Customer } from "models";
+import { Customer, CustomerDoc } from "models";
 import { NotFound, validateSignature } from "utilities";
 export {};
 
@@ -8,6 +8,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: AuthPayload;
+      profile?: CustomerDoc;
     }
     interface Response {
       paginatedData: any;
@@ -40,6 +41,7 @@ export const AuthenticateCustomer = async (
     if (!profile) {
       throw new NotFound("customer not found by id" + customer.id);
     }
+    req.profile = profile;
     next();
   } else {
     return res.json({ message: "user not Authenticated" });
