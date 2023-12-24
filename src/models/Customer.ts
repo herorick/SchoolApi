@@ -15,7 +15,7 @@ interface CustomerDoc extends Document {
   lat: number;
   lng: number;
   otp: number;
-  otp_expiry: number;
+  otp_expiry: Date;
   verified: boolean;
 }
 
@@ -26,7 +26,7 @@ const CustomerSchema = new Schema(
     lat: { type: Number },
     lng: { type: Number },
     otp: { type: Number },
-    otp_expiry: { type: Number },
+    otp_expiry: { type: Date },
     verified: { type: Boolean },
     email: { type: String, require: true, unique: true },
     password: { type: String, require: true },

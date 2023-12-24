@@ -63,6 +63,6 @@ app.use("/customer", CustomerRoutes)
 app.use(errorHandler);
 app.use(notFoundHandler);
 
-app.listen(8000, () => {
-  console.log("App is learning port 8000");
+app.listen(process.env.PORT, () => {
+  console.log("App is learning port " + process.env.PORT);
 });

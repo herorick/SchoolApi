@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthPayload } from "interfaces/Auth";
-import { validateSignature } from "utilities";
+import { Customer } from "models";
+import { NotFound, validateSignature } from "utilities";
 export {};
 
 declare global {
@@ -9,7 +10,7 @@ declare global {
       user?: AuthPayload;
     }
     interface Response {
-      paginatedData: any
+      paginatedData: any;
     }
   }
 }
@@ -27,3 +28,20 @@ export const Authenticate = async (
   }
 };
 
+export const AuthenticateCustomer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const customer = req.user;
+  const validate = await validateSignature(req);
+  if (validate && customer) {
+    const profile = await Customer.findById(customer.id);
+    if (!profile) {
+      throw new NotFound("customer not found by id" + customer.id);
+    }
+    next();
+  } else {
+    return res.json({ message: "user not Authenticated" });
+  }
+};

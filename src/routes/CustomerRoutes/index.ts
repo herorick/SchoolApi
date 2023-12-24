@@ -8,7 +8,7 @@ import {
   CustomerEditProfile,
 } from "controllers";
 import { initMulter } from "config/multer";
-import { DtoValidationMiddleware } from "middlewares";
+import { AuthenticateCustomer, DtoValidationMiddleware } from "middlewares";
 import { CreateCustomerDTO } from "dtos/CustomerDto";
 
 const router = express.Router();
@@ -20,9 +20,9 @@ router.post(
   CustomerSignUp
 );
 router.post("/signIn", CustomerSignIn);
-router.get("/verify", CustomerVerify);
-router.patch("/otp", CustomerRequestOTP);
-router.get("/profile", CustomerGetProfile);
-router.patch("/profile", CustomerEditProfile);
+router.get("/verify", AuthenticateCustomer, CustomerVerify);
+router.patch("/otp", AuthenticateCustomer, CustomerRequestOTP);
+router.get("/profile", AuthenticateCustomer, CustomerGetProfile);
+router.patch("/profile", AuthenticateCustomer, CustomerEditProfile);
 
 export { router as CustomerRoutes };
