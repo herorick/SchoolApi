@@ -2,7 +2,7 @@ import { ICustomer } from "@/interfaces/Customer";
 import mongoose, { Document, Schema } from "mongoose";
 import mongooseUniqueValidator from "mongoose-unique-validator";
 
-export interface CustomerDoc extends ICustomer, Document {}
+export interface CustomerDoc extends ICustomer, Document { }
 
 const CustomerSchema = new Schema(
   {
@@ -31,7 +31,7 @@ const CustomerSchema = new Schema(
         require: true,
       },
     ],
-    orders: [{ type: Schema.Types.ObjectId, ref: "order", require: true }],
+    orders: [{ type: Schema.Types.ObjectId, ref: "order" }],
   },
   {
     toJSON: {

@@ -4,9 +4,14 @@ interface OrderDoc extends Document {
   orderId: string;
   customerId: string;
   amount: number;
+  paidAmount: number;
   status: string;
   address: any[];
   items: any[];
+  remarks: string;
+  date: Date;
+  paidThrough: string; // COD, Credit Card, Wallt,
+  paymentResponse: string; // {status: true, reponse: some bank response}
 }
 
 const OrderSchema = new Schema(
@@ -14,7 +19,9 @@ const OrderSchema = new Schema(
     orderId: { type: String, require: true },
     customerId: { type: String, require: true },
     amount: { type: Number, require: true },
+    paidAmount: { type: Number, require: true },
     status: { type: String, require: true },
+    remarks: { type: String, require: true },
     address: [{ type: Schema.Types.ObjectId, ref: "address", require: true }],
     items: [
       {

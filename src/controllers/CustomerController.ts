@@ -46,6 +46,7 @@ export const CustomerSignUp = asyncHandler(
       wishlist: [],
       cart: [],
       address: [],
+      orders: []
     });
 
     if (result) {
@@ -152,7 +153,7 @@ export const CustomerGetProfile = asyncHandler(
     if (!customer) {
       throw new NotFound("please check token");
     }
-    const profile = await Customer.findById(customer.id);
+    const profile = await Customer.findById(customer.id).populate("orders");
     if (!profile) {
       throw new NotFound("customer not found by id" + customer.id);
     }
@@ -214,12 +215,14 @@ export const GetOrderById = asyncHandler(
 );
 
 export const CreateOrder = asyncHandler(async (req: Request, res: Response) => {
-  const profile = req.profile!;
+  const customer = req.user!;
+  const profile = await OrderService.getOrdersByCustomer(customer.id);
   const { txnId, amount, items } = req.body as ICreateOrder;
   try {
     const response = OrderService.createOrder(items, txnId, amount, profile)
     res.status(201).json(response)
   } catch (err) {
+    console.log(err)
     throw new Error("Some thing was wrong!!!");
   }
 });

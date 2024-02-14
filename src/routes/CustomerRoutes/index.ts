@@ -32,6 +32,7 @@ router.get("/profile", AuthenticateCustomer, CustomerGetProfile);
 router.patch("/profile", AuthenticateCustomer, CustomerEditProfile);
 
 //Order
+router.use(AuthenticateCustomer);
 router.post('/create-order', CreateOrder);
 router.get('/orders', GetOrders);
 router.get('/order/:id', GetOrderById)

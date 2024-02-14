@@ -6,12 +6,13 @@ import { ICartItem } from "@/interfaces/Cart";
 
 class OrderService {
   static getOrderById = async (orderId: string) => {
-    const order = await Customer.findById(orderId).populate("items.product");
+    const order = await Order.findById(orderId).populate("items.product");
     if (!order) {
       throw new NotFound("order not found by id" + orderId);
     }
     return order;
   };
+
   static getOrdersByCustomer = async (customerId: string) => {
     const profile = await Customer.findById(customerId).populate("orders");
     if (!profile) {
@@ -19,6 +20,19 @@ class OrderService {
     }
     return profile;
   };
+  /**
+   * 
+   * @param items 
+   * @param txnId 
+   * @param amount 
+   * @param profile 
+   * @description
+   *  - verify customer token
+   *  - calculate order amount
+   *  - create order with item description
+   *  - Update order to user account
+   * @returns 
+   */
   static createOrder = async (
     items: ICartItem[],
     txnId: string,
@@ -38,9 +52,10 @@ class OrderService {
     const products = await ProductService.findProductByIds(
       items.map((item) => item.id)
     );
+    console.log({ items });
 
-    products.map((product) => {
-      items.map(({ id, unit }) => {
+    products.forEach((product) => {
+      items.forEach(({ id, unit }) => {
         if (ProductService.getProductId(product) === id) {
           vendorId = product.vendor;
           netAmount += product.price * unit;
@@ -53,13 +68,12 @@ class OrderService {
       orderId,
       vendorId,
       items: cartItems,
-      totalAmount: netAmount,
+      amount: netAmount,
       paidAmount: amount,
-      orderDate: new Date(),
-      orderStatus: "Waiting",
+      date: new Date(),
+      status: "Waiting",
       remarks: "",
       deliveryId: "",
-      readyTime: 45,
     });
 
     profile.cart = [] as any;
