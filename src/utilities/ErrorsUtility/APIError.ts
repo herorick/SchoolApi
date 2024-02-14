@@ -3,7 +3,7 @@ import { BaseError } from "./BaseError";
 
 export class APIError extends BaseError {
   constructor(
-    name: string,
+    name: string = 'api error',
     httpCode: HttpStatusCode = HttpStatusCode.INTERNAL_SERVER,
     description: string = "internal server error",
     isOperational: boolean = true

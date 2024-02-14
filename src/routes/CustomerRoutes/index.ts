@@ -26,7 +26,7 @@ router.post(
   CustomerSignUp
 );
 router.post("/signIn", CustomerSignIn);
-router.get("/verify", AuthenticateCustomer, CustomerVerify);
+router.post("/verify", AuthenticateCustomer, CustomerVerify);
 router.patch("/otp", AuthenticateCustomer, CustomerRequestOTP);
 router.get("/profile", AuthenticateCustomer, CustomerGetProfile);
 router.patch("/profile", AuthenticateCustomer, CustomerEditProfile);

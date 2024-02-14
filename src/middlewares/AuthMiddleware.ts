@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AuthPayload } from "interfaces/Auth";
 import { Customer, CustomerDoc } from "models";
 import { NotFound, validateSignature } from "utilities";
-export {};
+export { };
 
 declare global {
   namespace Express {
@@ -34,9 +34,9 @@ export const AuthenticateCustomer = async (
   res: Response,
   next: NextFunction
 ) => {
-  const customer = req.user;
   const validate = await validateSignature(req);
-  if (validate && customer) {
+  if (validate) {
+    const customer = req.user!;
     const profile = await Customer.findById(customer.id);
     if (!profile) {
       throw new NotFound("customer not found by id" + customer.id);

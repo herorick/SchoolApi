@@ -1,16 +1,17 @@
 {
-  "name": "food",
+  "name": "tdt_project",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "set NODE_ENV=development && nodemon",
+    "dev": "set NODE_ENV=development && nodemon",
+    "start": "set NODE_ENV=development && nodemon dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p .",
     "postinstall": "npm run build"
   },
   "engines": {
-    "node": "18.17.1",
+    "node": "18.19.0",
     "npm": "9.6.7"
   },
   "author": "",

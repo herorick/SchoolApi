@@ -1,17 +1,19 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { Coupon, Customer, Order } from "models";
 import asyncHandler from "express-async-handler";
 import {
+  APIError,
   Conflict,
   GenerateSalt,
   NotFound,
   Unauthorized,
   generatePassword,
   generateSignature,
+  validatePassword,
 } from "utilities";
 import { GenerateOtp, onRequestOTP } from "utilities/NotificationUtility";
 import { ICartItem } from "interfaces/Cart";
-import { OrderService, ProductService } from "services";
+import { OrderService } from "services";
 import { CartService } from "@/services/CartService";
 import { ICreateOrder } from "@/interfaces/Order";
 
@@ -64,10 +66,26 @@ export const CustomerSignUp = asyncHandler(
 
 export const CustomerSignIn = asyncHandler(
   async (req: Request, res: Response) => {
-    const results = await Coupon.create({
-      ...req.body,
-    });
-    res.json({ results });
+    try {
+      const { email, password } = req.body;
+      const customer = await Customer.findOne({ email: email });
+      if (customer) {
+        const validation = await validatePassword(password, customer.password, customer.salt);
+        if (!validation) throw new Unauthorized();
+        const signature = generateSignature({
+          id: customer._id,
+          email: customer.email,
+          verified: customer.verified
+        })
+        res.status(200).json({
+          signature,
+          email: customer.email,
+          verified: customer.verified
+        })
+      }
+    } catch (err) {
+      res.status(404).json("some thing wrong")
+    }
   }
 );
 
@@ -201,7 +219,7 @@ export const CreateOrder = asyncHandler(async (req: Request, res: Response) => {
   try {
     const response = OrderService.createOrder(items, txnId, amount, profile)
     res.status(201).json(response)
-  } catch(err) {
+  } catch (err) {
     throw new Error("Some thing was wrong!!!");
   }
 });
