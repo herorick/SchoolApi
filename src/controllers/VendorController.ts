@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
+  APIError,
   GenerateSalt,
   NotFound,
   Unauthorized,
@@ -9,7 +10,8 @@ import {
 } from "utilities";
 import { removeImage } from "utilities/FileUntility";
 import asyncHandler from "express-async-handler";
-import { Vendor } from "models";
+import { Customer, Order, Vendor } from "models";
+import { OrderService } from "@/services";
 
 export const VendorGetAll = asyncHandler(
   async (req: Request, res: Response) => {
@@ -75,7 +77,6 @@ export const UpdateVendorCoverImage = asyncHandler(
   async (req: Request, res: Response) => {
     const user = req.user!;
     const files = req.files as [Express.Multer.File];
-    console.log({files})
     const existingVendor = await Vendor.findOne({ email: user.email });
     if (!existingVendor) {
       throw new NotFound("Vendor not found with email: " + user.email);
@@ -124,3 +125,79 @@ export const RemoveVendors = asyncHandler(
     res.json(results);
   }
 );
+
+// Order
+export const GetVendorOrders = async (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user;
+  if (user) {
+    const orders = await Order.find({ vendorId: user.id }).populate('items.product');
+    if (orders != null) {
+      return res.status(200).json(orders);
+    }
+  }
+  return res.json({ message: 'Orders Not found' });
+}
+
+export const GetOrderDetails = async (req: Request, res: Response, next: NextFunction) => {
+  const orderId = req.params.id;
+  if (orderId) {
+    const order = await Order.findById(orderId).populate('items.food');
+    if (order != null) {
+      return res.status(200).json(order);
+    }
+  }
+
+  return res.json({ message: 'Order Not found' });
+}
+
+export const ProcessOrder = async (req: Request, res: Response, next: NextFunction) => {
+  const orderId = req.params.id;
+  const { status, remarks } = req.body;
+  if (orderId) {
+    const order = await Order.findById(orderId).populate('items.product')!;
+    if (order === null) throw new NotFound("");
+    order.status = status;
+    order.remarks = remarks;
+    const orderResult = await order.save();
+    if (orderResult != null) {
+      return res.status(200).json(orderResult);
+    }
+  }
+  return res.json({ message: 'Unable to process order' });
+}
+
+
+// Offers
+export const GetOffers = asyncHandler(async (req: Request, res: Response,) => {
+  try {
+    const user = req.user;
+    if (!user) throw new Unauthorized("Not have permission");
+    let currentOffer = Array();
+    // get all vendor
+
+  } catch (err) {
+    throw new APIError()
+  }
+});
+
+export const GetOfferDetail = asyncHandler(async (req: Request, res: Response,) => {
+  try {
+    const orderId = req.params.id;
+    if (!orderId) throw new NotFound('Order Not found')
+    const order = await OrderService.getOrderById(orderId);
+    res.status(200).json(order);
+  } catch (err) {
+    throw new APIError()
+  }
+});
+
+export const AddOffer = asyncHandler(async (req: Request, res: Response) => {
+})
+
+export const EditOffer = asyncHandler(async (req: Request, res: Response) => {
+  try {
+
+  } catch (err) {
+    throw new APIError()
+  }
+})

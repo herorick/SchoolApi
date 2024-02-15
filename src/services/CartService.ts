@@ -5,8 +5,7 @@ class CartService {
   static addToCart = async (cartItem: ICartItem, profile: CustomerDoc) => {
     try {
       const { id, unit } = cartItem;
-      let cartItems = [];
-      cartItems = profile.cart;
+      const cartItems = profile.cart || [];
       if (cartItems.length > 0) {
         let existFoodItems = cartItems.filter(
           (item) => item.id.toString() === id

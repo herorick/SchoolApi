@@ -12,6 +12,10 @@ interface OrderDoc extends Document {
   date: Date;
   paidThrough: string; // COD, Credit Card, Wallt,
   paymentResponse: string; // {status: true, reponse: some bank response}
+  deliveryId: string;
+  appliedOffers: boolean;
+  offerId: string;
+  vendorId: string;
 }
 
 const OrderSchema = new Schema(
@@ -22,6 +26,10 @@ const OrderSchema = new Schema(
     paidAmount: { type: Number, require: true },
     status: { type: String, require: true },
     remarks: { type: String, require: true },
+    deliveryId: { type: String },
+    appliedOffers: { type: Boolean },
+    offerId: { type: String },
+    vendorId: { type: String, require: true },
     address: [{ type: Schema.Types.ObjectId, ref: "address", require: true }],
     items: [
       {

@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { Coupon, Customer, Order } from "models";
 import asyncHandler from "express-async-handler";
 import {
-  APIError,
   Conflict,
   GenerateSalt,
   NotFound,
@@ -13,7 +12,7 @@ import {
 } from "utilities";
 import { GenerateOtp, onRequestOTP } from "utilities/NotificationUtility";
 import { ICartItem } from "interfaces/Cart";
-import { OrderService } from "services";
+import { CustomerService, OrderService } from "services";
 import { CartService } from "@/services/CartService";
 import { ICreateOrder } from "@/interfaces/Order";
 
@@ -200,14 +199,14 @@ export const AddToCart = asyncHandler(async (req: Request, res: Response) => {
 // Order
 export const GetOrders = asyncHandler(async (req: Request, res: Response) => {
   const customer = req.user!;
-  const profile = await OrderService.getOrdersByCustomer(customer.id);
+  const profile = await CustomerService.getOrders(customer.id);
   res.status(200).json(profile.orders);
 });
 
 export const GetOrderById = asyncHandler(
   async (req: Request, res: Response) => {
     const orderId = req.params.id;
-    const order = await OrderService.getOrderById(orderId);
+    const order = await CustomerService.getOrderById(orderId);
     res.status(200).json({
       results: order,
     });
@@ -216,7 +215,7 @@ export const GetOrderById = asyncHandler(
 
 export const CreateOrder = asyncHandler(async (req: Request, res: Response) => {
   const customer = req.user!;
-  const profile = await OrderService.getOrdersByCustomer(customer.id);
+  const profile = await CustomerService.getOrders(customer.id);
   const { txnId, amount, items } = req.body as ICreateOrder;
   try {
     const response = OrderService.createOrder(items, txnId, amount, profile)

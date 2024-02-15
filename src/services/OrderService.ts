@@ -12,14 +12,8 @@ class OrderService {
     }
     return order;
   };
+  
 
-  static getOrdersByCustomer = async (customerId: string) => {
-    const profile = await Customer.findById(customerId).populate("orders");
-    if (!profile) {
-      throw new NotFound("customer not found by id" + customerId);
-    }
-    return profile;
-  };
   /**
    * 
    * @param items 
@@ -52,11 +46,10 @@ class OrderService {
     const products = await ProductService.findProductByIds(
       items.map((item) => item.id)
     );
-    console.log({ items });
-
     products.forEach((product) => {
       items.forEach(({ id, unit }) => {
         if (ProductService.getProductId(product) === id) {
+          console.log({product});
           vendorId = product.vendor;
           netAmount += product.price * unit;
           cartItems.push({ product, unit });

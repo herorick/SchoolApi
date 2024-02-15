@@ -7,36 +7,51 @@ import {
   UpdateVendorCoverImage,
   UpdateVendorPassword,
   DeleteAllVendors,
+  GetOffers,
+  AddOffer,
+  EditOffer,
+  GetOrders,
+  ProcessOrder,
+  GetOrderDetails,
+  GetVendorOrders,
 } from "controllers";
 import { Authenticate, DtoValidationMiddleware } from "middlewares";
 import { initMulter } from "config/multer";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();
-
-router.get("/", Authenticate, GetVendorProfile);
-
 router.post("/login", DtoValidationMiddleware(LoginVendorDTO), VendorLogin);
-router.get("/profile", Authenticate, GetVendorProfile);
+
+router.use(Authenticate)
+router.get("/", GetVendorProfile);
+
+router.get("/profile", GetVendorProfile);
 router.patch(
   "/coverImage",
-  Authenticate,
   imagesMiddleware,
   UpdateVendorCoverImage
 );
 router.patch(
   "/profile",
-  Authenticate,
   DtoValidationMiddleware(UpdateVendorDTO),
   UpdateVendorProfile
 );
 router.post(
   "/profile/updatePassword",
-  Authenticate,
   DtoValidationMiddleware(UpdateVendorPasswordDTO),
   UpdateVendorPassword
 );
-router.delete("/", Authenticate, DeleteAllVendors);
+router.delete("/", DeleteAllVendors);
 
+
+// Orders
+router.get('/orders', GetVendorOrders);
+router.put('/order/:id/process', ProcessOrder);
+router.get('/order/:id', GetOrderDetails)
+
+//Offers
+router.get('/offers', GetOffers);
+router.post('/offer', AddOffer);
+router.put('/offer/:id', EditOffer)
 
 export { router as VendorRoutes };
