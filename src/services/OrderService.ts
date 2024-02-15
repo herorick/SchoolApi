@@ -1,8 +1,9 @@
 import { Customer, CustomerDoc, Order } from "@/models";
-import { NotFound } from "@/utilities";
+import { APIError, NotFound } from "@/utilities";
 import { v4 as uuidv4 } from "uuid";
 import { ProductService } from "./ProductService";
 import { ICartItem } from "@/interfaces/Cart";
+import { TransactionService } from "./Transaction";
 
 class OrderService {
   static getOrderById = async (orderId: string) => {
@@ -12,7 +13,6 @@ class OrderService {
     }
     return order;
   };
-  
 
   /**
    * 
@@ -33,23 +33,23 @@ class OrderService {
     amount: number,
     profile: CustomerDoc
   ) => {
-    //  const { status, currentTransaction } =  await validateTransaction(txnId);
+    const { status, currentTransaction } = await TransactionService.ValidateTransaction(txnId);
 
-    //  if(!status){
-    //      return res.status(404).json({ message: 'Error while Creating Order!'})
-    //  }
+    if (!status) {
+      throw new APIError('Error while Creating Order!')
+    }
 
     const orderId = uuidv4();
     let cartItems = Array();
     let netAmount = 0.0;
-    let vendorId;
+    let vendorId: string = '';
     const products = await ProductService.findProductByIds(
       items.map((item) => item.id)
     );
     products.forEach((product) => {
       items.forEach(({ id, unit }) => {
         if (ProductService.getProductId(product) === id) {
-          console.log({product});
+          console.log({ product });
           vendorId = product.vendor;
           netAmount += product.price * unit;
           cartItems.push({ product, unit });
@@ -72,11 +72,12 @@ class OrderService {
     profile.cart = [] as any;
     profile.orders.push(currentOrder);
 
-    //  currentTransaction.vendorId = vendorId;
-    //  currentTransaction.orderId = orderId;
-    //  currentTransaction.status = 'CONFIRMED'
-
-    //  await currentTransaction.save();
+    if (currentTransaction !== null) {
+      currentTransaction.vendorId = vendorId;
+      currentTransaction.orderId = orderId;
+      currentTransaction.status = 'CONFIRMED'
+      await currentTransaction.save();
+    }
 
     //  await assignOrderForDelivery(currentOrder._id, vendorId);
 

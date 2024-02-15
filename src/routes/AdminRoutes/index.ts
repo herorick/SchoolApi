@@ -3,6 +3,8 @@ import {
   CreateVendor,
   DeleteAllVendors,
   DeleteVendorById,
+  GetTransactionById,
+  GetTransactions,
   GetVendorById,
   GetVendors,
   UpdateVendor,
@@ -27,5 +29,9 @@ router.get("/vendors/:id", Authenticate, ValidateObjectId, GetVendorById);
 router.patch("/vendors/:id", Authenticate, ValidateObjectId, UpdateVendor);
 router.delete("/vendors:/id", Authenticate, ValidateObjectId, DeleteVendorById);
 router.delete("/vendors", Authenticate, DeleteAllVendors);
+
+// transaction
+router.get('/transactions', GetTransactions)
+router.get('/transaction/:id', GetTransactionById)
 
 export { router as AdminRoutes };

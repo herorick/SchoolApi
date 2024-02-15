@@ -14,6 +14,7 @@ import {
   ProcessOrder,
   GetOrderDetails,
   GetVendorOrders,
+  DeleteOffer,
 } from "controllers";
 import { Authenticate, DtoValidationMiddleware } from "middlewares";
 import { initMulter } from "config/multer";
@@ -53,5 +54,6 @@ router.get('/order/:id', GetOrderDetails)
 router.get('/offers', GetOffers);
 router.post('/offer', AddOffer);
 router.put('/offer/:id', EditOffer)
+router.delete('/offer/:id', DeleteOffer)
 
 export { router as VendorRoutes };

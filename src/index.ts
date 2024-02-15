@@ -15,7 +15,8 @@ import {
   ProductCategoryRoute,
   BrandRoutes,
   CouponRoutes,
-  CustomerRoutes
+  CustomerRoutes,
+  ShoppingRoutes
 } from "routes";
 import { errorHandler, notFoundHandler } from "./middlewares";
 import { BannerRoutes } from "routes/BannerRoutes";
@@ -57,6 +58,7 @@ app.use("/brand", BrandRoutes);
 app.use("/coupon", CouponRoutes)
 app.use("/banner", BannerRoutes)
 app.use("/customer", CustomerRoutes)
+app.use(ShoppingRoutes);
 
 
 // ERROR HANDLER MIDDLEWARE (Last middleware to use)

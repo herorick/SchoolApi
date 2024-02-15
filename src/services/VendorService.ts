@@ -1,10 +1,15 @@
-import { Customer, CustomerDoc, Order } from "@/models";
+import { CustomerDoc, Vendor } from "@/models";
 import { NotFound } from "@/utilities";
-import { v4 as uuidv4 } from "uuid";
-import { ProductService } from "./ProductService";
 import { ICartItem } from "@/interfaces/Cart";
 
-class OrderService {
+class VendorService {
+  static GetVendorById = async (vendorId: string) => {
+    const existingVendor = await Vendor.findById(vendorId);
+    if (!existingVendor) {
+      throw new NotFound("Vendor not found with id: " + vendorId);
+    }
+    return existingVendor;
+  }
 
   static GetOffers = async (
     items: ICartItem[],
@@ -12,7 +17,7 @@ class OrderService {
     amount: number,
     profile: CustomerDoc
   ) => {
-   
+
   };
 
   static AddOffer = async (
@@ -21,7 +26,7 @@ class OrderService {
     amount: number,
     profile: CustomerDoc
   ) => {
-   
+
   };
 
   static EditOffer = async (
@@ -30,8 +35,8 @@ class OrderService {
     amount: number,
     profile: CustomerDoc
   ) => {
-   
+
   };
 }
 
-export { OrderService };
+export { VendorService };

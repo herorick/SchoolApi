@@ -12,6 +12,9 @@ import { removeImage } from "utilities/FileUntility";
 import asyncHandler from "express-async-handler";
 import { Customer, Order, Vendor } from "models";
 import { OrderService } from "@/services";
+import { Offer } from "@/models/Offer";
+import { VendorService } from "@/services/VendorService";
+import { CreateOfferInputs } from "@/dtos/Offer";
 
 export const VendorGetAll = asyncHandler(
   async (req: Request, res: Response) => {
@@ -141,7 +144,7 @@ export const GetVendorOrders = async (req: Request, res: Response, next: NextFun
 export const GetOrderDetails = async (req: Request, res: Response, next: NextFunction) => {
   const orderId = req.params.id;
   if (orderId) {
-    const order = await Order.findById(orderId).populate('items.food');
+    const order = await Order.findById(orderId).populate('items.product');
     if (order != null) {
       return res.status(200).json(order);
     }
@@ -170,11 +173,25 @@ export const ProcessOrder = async (req: Request, res: Response, next: NextFuncti
 // Offers
 export const GetOffers = asyncHandler(async (req: Request, res: Response,) => {
   try {
-    const user = req.user;
-    if (!user) throw new Unauthorized("Not have permission");
+    const user = req.user!;
     let currentOffer = Array();
-    // get all vendor
-
+    const offers = await Offer.find().populate('vendors');
+    console.log({ offers });
+    if (offers) {
+      offers.map(item => {
+        if (item.vendors) {
+          item.vendors.map(vendor => {
+            if (vendor._id.toString() === user.id) {
+              currentOffer.push(item);
+            }
+          })
+        }
+        if (item.offerType === "GENERIC") {
+          currentOffer.push(item)
+        }
+      })
+    }
+    res.status(200).json(currentOffer);
   } catch (err) {
     throw new APIError()
   }
@@ -182,21 +199,73 @@ export const GetOffers = asyncHandler(async (req: Request, res: Response,) => {
 
 export const GetOfferDetail = asyncHandler(async (req: Request, res: Response,) => {
   try {
-    const orderId = req.params.id;
-    if (!orderId) throw new NotFound('Order Not found')
-    const order = await OrderService.getOrderById(orderId);
-    res.status(200).json(order);
   } catch (err) {
     throw new APIError()
   }
 });
 
 export const AddOffer = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const { title, description, offerType, offerAmount,
+      promocode, promoType, startValidity, endValidity, bank, bins, minValue, isActive } = <CreateOfferInputs>req.body;
+    const vendor = await VendorService.GetVendorById(user.id);
+    console.log({ vendor, userId: user.id })
+    if (!vendor) throw new NotFound('vendor not found by id: ' + user.id)
+    const offer = await Offer.create({
+      bins,
+      promocode,
+      title,
+      description,
+      offerType,
+      offerAmount,
+      promoType,
+      startValidity,
+      endValidity,
+      bank,
+      isActive,
+      minValue,
+      vendors: [vendor]
+    })
+    res.status(200).json(offer);
+  } catch (err) {
+    throw new APIError('Unable to add Offer!')
+  }
 })
 
 export const EditOffer = asyncHandler(async (req: Request, res: Response) => {
   try {
+    const user = req.user!;
+    const offerId = req.params.id;
+    const { title, description, offerType, offerAmount,
+      promocode, promoType, startValidity, endValidity, bank, bins, minValue, isActive } = <CreateOfferInputs>req.body;
+    const currentOffer = await Offer.findById(offerId);
+    const vendor = await VendorService.GetVendorById(user.id);
+    if (!currentOffer) throw new NotFound("Not found offer with id: " + offerId)
+    if (!vendor) throw new NotFound("Not found offer with id: " + user.id)
 
+    currentOffer.bins = bins
+    currentOffer.title = title
+    currentOffer.promocode = promocode
+    currentOffer.description = description
+    currentOffer.offerType = offerType
+    currentOffer.offerAmount = offerAmount
+    currentOffer.promoType = promoType
+    currentOffer.startValidity = startValidity
+    currentOffer.endValidity = endValidity
+    currentOffer.bank = bank
+    currentOffer.isActive = isActive
+    currentOffer.minValue = minValue
+    const result = await currentOffer.save();
+    res.status(200).json(result);
+
+  } catch (err) {
+    throw new APIError('Unable to edit Offer!')
+  }
+})
+
+export const DeleteOffer = asyncHandler(async (req: Request, res: Response) => {
+  try {
   } catch (err) {
     throw new APIError()
   }

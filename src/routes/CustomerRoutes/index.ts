@@ -12,6 +12,8 @@ import {
   GetCart,
   DeleteCart,
   AddToCart,
+  VerifyOffer,
+  CreatePayment,
 } from "controllers";
 import { initMulter } from "config/multer";
 import { AuthenticateCustomer, DtoValidationMiddleware } from "middlewares";
@@ -41,5 +43,11 @@ router.get('/order/:id', GetOrderById)
 router.post('/cart', AddToCart)
 router.get('/cart', GetCart)
 router.delete('/cart', DeleteCart)
+
+//Verify Offer
+router.get('/offer/verify/:id', VerifyOffer);
+
+//Payment
+router.post('/create-payment', CreatePayment);
 
 export { router as CustomerRoutes };

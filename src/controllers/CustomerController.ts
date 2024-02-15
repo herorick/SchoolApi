@@ -15,6 +15,8 @@ import { ICartItem } from "interfaces/Cart";
 import { CustomerService, OrderService } from "services";
 import { CartService } from "@/services/CartService";
 import { ICreateOrder } from "@/interfaces/Order";
+import { Offer } from "@/models/Offer";
+import { Transaction } from "@/models/Transaction";
 
 export const CustomerSignUp = asyncHandler(
   async (req: Request, res: Response) => {
@@ -218,10 +220,50 @@ export const CreateOrder = asyncHandler(async (req: Request, res: Response) => {
   const profile = await CustomerService.getOrders(customer.id);
   const { txnId, amount, items } = req.body as ICreateOrder;
   try {
-    const response = OrderService.createOrder(items, txnId, amount, profile)
+    const response = await OrderService.createOrder(items, txnId, amount, profile)
     res.status(201).json(response)
   } catch (err) {
-    console.log(err)
     throw new Error("Some thing was wrong!!!");
   }
 });
+
+export const VerifyOffer = async (req: Request, res: Response) => {
+  const offerId = req.params.id;
+  const appliedOffer = await Offer.findById(offerId);
+  if (appliedOffer) {
+    if (appliedOffer.isActive) {
+      return res.status(200).json({ message: 'Offer is Valid', offer: appliedOffer });
+    }
+  }
+
+  return res.status(400).json({ msg: 'Offer is Not Valid' });
+}
+
+export const CreatePayment = async (req: Request, res: Response) => {
+  const customer = req.user!;
+  const { amount, paymentMode, offerId } = req.body;
+  let payableAmount = Number(amount);
+  if (!offerId) throw new NotFound("not found offerId: " + offerId);
+  const appliedOffer = await Offer.findById(offerId);
+  if (appliedOffer === null) throw new NotFound("not found offerId: " + offerId);
+
+  if (appliedOffer.isActive) {
+    payableAmount = (payableAmount - appliedOffer.offerAmount);
+  }
+  // perform payment gateway charge api
+
+  // create record on transaction
+  const transaction = await Transaction.create({
+      customer: customer.id,
+      vendorId: '',
+      orderId: '',
+      orderValue: payableAmount,
+      offerUsed: offerId || 'NA',
+      status: 'OPEN',
+      paymentMode,
+      paymentResponse: 'Payment is cash on Delivery'
+  })
+
+  return res.status(200).json(transaction);
+
+}

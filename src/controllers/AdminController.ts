@@ -1,3 +1,4 @@
+import { Transaction } from "@/models/Transaction";
 import { Request, Response, NextFunction } from "express";
 import asyncHandler from "express-async-handler";
 import { Vendor } from "models";
@@ -52,7 +53,7 @@ export const UpdateVendor = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => { };
 
 export const GetVendorById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -69,7 +70,7 @@ export const DeleteVendorById = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => { };
 
 export const DeleteAllVendors = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -77,3 +78,23 @@ export const DeleteAllVendors = asyncHandler(
     res.json({ message: "remove successfully" });
   }
 );
+
+// transactions
+export const GetTransactions = async (req: Request, res: Response, next: NextFunction) => {
+  const transactions = await Transaction.find({});
+  if (transactions) {
+    return res.status(200).json(transactions)
+  }
+  return res.json({ "message": "Transactions data not available" })
+}
+
+
+export const GetTransactionById = async (req: Request, res: Response, next: NextFunction) => {
+  const id = req.params.id;
+  const transaction = await Transaction.findById(id);
+  if (transaction) {
+    return res.status(200).json(transaction)
+  }
+  return res.json({ "message": "Transaction data not available" })
+}
+// end transactions
