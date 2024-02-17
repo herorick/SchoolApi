@@ -80,7 +80,7 @@ export const DeleteAllVendors = asyncHandler(
 );
 
 // transactions
-export const GetTransactions = async (req: Request, res: Response, next: NextFunction) => {
+export const AdminGetTransactions = async (req: Request, res: Response, next: NextFunction) => {
   const transactions = await Transaction.find({});
   if (transactions) {
     return res.status(200).json(transactions)

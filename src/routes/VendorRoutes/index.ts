@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import { LoginVendorDTO, UpdateVendorDTO, UpdateVendorPasswordDTO } from "dtos";
 import {
   VendorLogin,
@@ -10,11 +10,11 @@ import {
   GetOffers,
   AddOffer,
   EditOffer,
-  GetOrders,
   ProcessOrder,
   GetOrderDetails,
   GetVendorOrders,
   DeleteOffer,
+  GetTransactions,
 } from "controllers";
 import { Authenticate, DtoValidationMiddleware } from "middlewares";
 import { initMulter } from "config/multer";
@@ -55,5 +55,8 @@ router.get('/offers', GetOffers);
 router.post('/offer', AddOffer);
 router.put('/offer/:id', EditOffer)
 router.delete('/offer/:id', DeleteOffer)
+
+// Transaction
+router.get('/transactions', GetTransactions)
 
 export { router as VendorRoutes };

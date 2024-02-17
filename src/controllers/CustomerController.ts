@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Customer, DeliveryUser, Order } from "models";
 import asyncHandler from "express-async-handler";
 import {
+  APIError,
   Conflict,
   GenerateSalt,
   NotFound,
@@ -277,3 +278,89 @@ export const CustomerGetDeliveryUsers = asyncHandler(async (req: Request, res: R
   res.json({ message: 'Unable to get Delivery Users' });
 });
 // end delivery
+
+// wishlist
+export const CustomerAddWishList = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const { productId } = req.body
+    const customer = await Customer.findById(user.id)!;
+    if (customer !== null) {
+      const wishList = customer?.wishlist || [];
+      customer.wishlist = [...wishList, productId];
+      const result = await customer.save();
+      res.json({ result })
+    }
+  } catch (err) {
+    throw new APIError("can't add wishlisth")
+  }
+})
+
+export const CustomerRemoveWishList = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const { productId } = req.body
+    const customer = await Customer.findById(user.id)!;
+    if (customer !== null) {
+      const wishList = customer?.wishlist || [];
+      console.log({wishList, productId})
+      customer.wishlist = wishList.filter(item => item.toString() !== productId);
+      const result = await customer.save();
+      res.json({ result })
+    }
+  } catch (err) {
+    throw new APIError("can't add wishlisth")
+  }
+})
+// end wishlist
+
+// setting
+export const CustomerUpdateSetting = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const { setting } = req.body
+    const customer = await Customer.findById(user.id)!;
+    if (customer !== null) {
+      customer.setting = {
+        ...customer.setting,
+        ...setting
+      }
+      const result = await customer.save();
+      res.json({ result })
+    }
+  } catch (err) {
+    throw new APIError("can't add wishlisth")
+  }
+})
+// end setting
+
+// favorite vendor
+export const CustomerAddFavoriteVendor = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const { vendorId } = req.body
+    const customer = await Customer.findById(user.id);
+    if (customer !== null) {
+      customer.favoriteVendor = [...customer.favoriteVendor, vendorId]
+      const result = await customer.save();
+      res.json({ result })
+    }
+  } catch (err) {
+    throw new APIError("can't add wishlisth")
+  }
+})
+
+export const CustomerRemoveFavoriteVendor = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const { vendorId } = req.body
+    const customer = await Customer.findById(user.id)!;
+    if (customer !== null) {
+      customer.favoriteVendor = customer.favoriteVendor.filter(item => item.toString() !== vendorId)
+      const result = await customer.save();
+      res.json({ result })
+    }
+  } catch (err) {
+    throw new APIError("can't add wishlisth")
+  }
+})

@@ -17,6 +17,12 @@ const CustomerSchema = new Schema(
     password: { type: String, require: true },
     salt: { type: String, require: true },
     phone: { type: String, require: true },
+    setting: { type: Object },
+    favoriteVendor: [
+      {
+        type: Schema.Types.ObjectId, ref: "vendor"
+      }
+    ],
     address: [{ type: Schema.Types.ObjectId, ref: "address", require: true }],
     cart: [
       {

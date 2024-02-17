@@ -10,11 +10,11 @@ import {
 } from "utilities";
 import { removeImage } from "utilities/FileUntility";
 import asyncHandler from "express-async-handler";
-import { Customer, Order, Vendor } from "models";
-import { OrderService } from "@/services";
+import { Order, Vendor } from "models";
 import { Offer } from "@/models/Offer";
 import { VendorService } from "@/services/VendorService";
 import { CreateOfferInputs } from "@/dtos/Offer";
+import { Transaction } from "@/models/Transaction";
 
 export const VendorGetAll = asyncHandler(
   async (req: Request, res: Response) => {
@@ -100,7 +100,6 @@ export const UpdateVendorPassword = asyncHandler(
     if (!existingVendor) {
       throw new NotFound("Vendor not found with email: " + user.email);
     }
-    console.log({ existingVendor, currentPassword });
     const isValidPassword = await validatePassword(
       currentPassword,
       existingVendor.password,
@@ -168,6 +167,8 @@ export const ProcessOrder = async (req: Request, res: Response, next: NextFuncti
   }
   return res.json({ message: 'Unable to process order' });
 }
+
+// End Order
 
 
 // Offers
@@ -270,3 +271,18 @@ export const DeleteOffer = asyncHandler(async (req: Request, res: Response) => {
     throw new APIError()
   }
 })
+
+// End Offers
+
+// Transaction
+export const GetTransactions = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const vendor = req.user!;
+    const transactions = await Transaction.find({ vendorId: vendor.id });
+    res.json(transactions)
+  } catch (err) {
+    throw new APIError("can't get transaction")
+  }
+})
+
+// End Transaction  

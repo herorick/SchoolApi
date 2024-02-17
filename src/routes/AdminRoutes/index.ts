@@ -1,11 +1,11 @@
 import { initMulter } from "config/multer";
 import {
   AdminGetDeliveryUsers,
+  AdminGetTransactions,
   CreateVendor,
   DeleteAllVendors,
   DeleteVendorById,
   GetTransactionById,
-  GetTransactions,
   GetVendorById,
   GetVendors,
   UpdateVendor,
@@ -33,7 +33,7 @@ router.delete("/vendors:/id", Authenticate, ValidateObjectId, DeleteVendorById);
 router.delete("/vendors", Authenticate, DeleteAllVendors);
 
 // transaction
-router.get('/transactions', GetTransactions)
+router.get('/transactions', AdminGetTransactions)
 router.get('/transaction/:id', GetTransactionById)
 
 // delivery

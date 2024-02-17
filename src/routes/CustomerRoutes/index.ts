@@ -14,6 +14,11 @@ import {
   AddToCart,
   VerifyOffer,
   CreatePayment,
+  CustomerAddWishList,
+  CustomerRemoveWishList,
+  CustomerUpdateSetting,
+  CustomerAddFavoriteVendor,
+  CustomerRemoveFavoriteVendor,
 } from "controllers";
 import { initMulter } from "config/multer";
 import { AuthenticateCustomer, DtoValidationMiddleware } from "middlewares";
@@ -49,5 +54,17 @@ router.get('/offer/verify/:id', VerifyOffer);
 
 //Payment
 router.post('/create-payment', CreatePayment);
+
+//WishList
+router.post('/wishlist/add', CustomerAddWishList)
+router.post('/wishlist/remove', CustomerRemoveWishList)
+
+//Setting
+router.put('/setting', CustomerUpdateSetting)
+
+//Favorite
+router.post('/favorite/add', CustomerAddFavoriteVendor)
+router.post('/favorite/remove', CustomerRemoveFavoriteVendor)
+
 
 export { router as CustomerRoutes };

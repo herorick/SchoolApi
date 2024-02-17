@@ -22,4 +22,6 @@ export interface ICustomer {
   otp: number;
   otp_expiry: Date;
   verified: boolean;
+  setting: any;
+  favoriteVendor: any[];
 }
