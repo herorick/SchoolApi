@@ -1,5 +1,6 @@
 import { initMulter } from "config/multer";
 import {
+  AdminGetDeliveryUsers,
   CreateVendor,
   DeleteAllVendors,
   DeleteVendorById,
@@ -8,6 +9,7 @@ import {
   GetVendorById,
   GetVendors,
   UpdateVendor,
+  VerifyDeliveryUser,
 } from "controllers/AdminController";
 import { CreateVendorDTO } from "dtos";
 import express from "express";
@@ -33,5 +35,9 @@ router.delete("/vendors", Authenticate, DeleteAllVendors);
 // transaction
 router.get('/transactions', GetTransactions)
 router.get('/transaction/:id', GetTransactionById)
+
+// delivery
+router.put('/delivery/verify', VerifyDeliveryUser)
+router.get('/delivery/users', AdminGetDeliveryUsers);
 
 export { router as AdminRoutes };

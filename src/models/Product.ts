@@ -10,6 +10,8 @@ export interface IProduct {
   rating: number;
   images: [string];
   brand: any;
+  blogs: any[];
+  reviews: any[];
   productCategories: any[];
 }
 
@@ -32,6 +34,18 @@ const ProductSchema = new Schema(
       {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "productCategory",
+      },
+    ],
+    reviews: [
+      {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "review",
+      },
+    ],
+    blogs: [
+      {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "blog",
       },
     ],
   },

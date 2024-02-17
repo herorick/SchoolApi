@@ -14,9 +14,9 @@ import {
   BlogRoutes,
   ProductCategoryRoute,
   BrandRoutes,
-  CouponRoutes,
   CustomerRoutes,
-  ShoppingRoutes
+  ShoppingRoutes,
+  DeliveryRoutes
 } from "routes";
 import { errorHandler, notFoundHandler } from "./middlewares";
 import { BannerRoutes } from "routes/BannerRoutes";
@@ -55,9 +55,9 @@ app.use("/product-category", ProductCategoryRoute);
 app.use("/blog", BlogRoutes);
 app.use("/blog-category", BlogCategoryRoutes);
 app.use("/brand", BrandRoutes);
-app.use("/coupon", CouponRoutes)
 app.use("/banner", BannerRoutes)
 app.use("/customer", CustomerRoutes)
+app.use("/delivery", DeliveryRoutes)
 app.use(ShoppingRoutes);
 
 

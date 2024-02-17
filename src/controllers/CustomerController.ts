@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Coupon, Customer, Order } from "models";
+import { Customer, DeliveryUser, Order } from "models";
 import asyncHandler from "express-async-handler";
 import {
   Conflict,
@@ -218,28 +218,28 @@ export const GetOrderById = asyncHandler(
 export const CreateOrder = asyncHandler(async (req: Request, res: Response) => {
   const customer = req.user!;
   const profile = await CustomerService.getOrders(customer.id);
-  const { txnId, amount, items } = req.body as ICreateOrder;
+  const { txnId, amount, items, deliveryId } = req.body as ICreateOrder;
   try {
-    const response = await OrderService.createOrder(items, txnId, amount, profile)
+    const response = await OrderService.createOrder(items, txnId, amount, deliveryId, profile)
     res.status(201).json(response)
   } catch (err) {
     throw new Error("Some thing was wrong!!!");
   }
 });
 
-export const VerifyOffer = async (req: Request, res: Response) => {
+export const VerifyOffer = asyncHandler(async (req: Request, res: Response) => {
   const offerId = req.params.id;
   const appliedOffer = await Offer.findById(offerId);
   if (appliedOffer) {
     if (appliedOffer.isActive) {
-      return res.status(200).json({ message: 'Offer is Valid', offer: appliedOffer });
+      res.status(200).json({ message: 'Offer is Valid', offer: appliedOffer });
     }
   }
 
-  return res.status(400).json({ msg: 'Offer is Not Valid' });
-}
+  res.status(400).json({ msg: 'Offer is Not Valid' });
+});
 
-export const CreatePayment = async (req: Request, res: Response) => {
+export const CreatePayment = asyncHandler(async (req: Request, res: Response) => {
   const customer = req.user!;
   const { amount, paymentMode, offerId } = req.body;
   let payableAmount = Number(amount);
@@ -254,16 +254,26 @@ export const CreatePayment = async (req: Request, res: Response) => {
 
   // create record on transaction
   const transaction = await Transaction.create({
-      customer: customer.id,
-      vendorId: '',
-      orderId: '',
-      orderValue: payableAmount,
-      offerUsed: offerId || 'NA',
-      status: 'OPEN',
-      paymentMode,
-      paymentResponse: 'Payment is cash on Delivery'
+    customer: customer.id,
+    vendorId: '',
+    orderId: '',
+    orderValue: payableAmount,
+    offerUsed: offerId || 'NA',
+    status: 'OPEN',
+    paymentMode,
+    paymentResponse: 'Payment is cash on Delivery'
   })
 
-  return res.status(200).json(transaction);
+  res.status(200).json(transaction);
 
-}
+})
+
+// start delivery
+export const CustomerGetDeliveryUsers = asyncHandler(async (req: Request, res: Response) => {
+  const deliveryUsers = await DeliveryUser.find({ isAvailable: true, verified: true });
+  if (deliveryUsers) {
+    res.status(200).json(deliveryUsers);
+  }
+  res.json({ message: 'Unable to get Delivery Users' });
+});
+// end delivery

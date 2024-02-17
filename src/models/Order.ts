@@ -16,6 +16,7 @@ interface OrderDoc extends Document {
   appliedOffers: boolean;
   offerId: string;
   vendorId: string;
+  verifyImage: string[];
 }
 
 const OrderSchema = new Schema(
@@ -30,6 +31,7 @@ const OrderSchema = new Schema(
     appliedOffers: { type: Boolean },
     offerId: { type: String },
     vendorId: { type: String, require: true },
+    verifyImage: [{ type: String }],
     address: [{ type: Schema.Types.ObjectId, ref: "address", require: true }],
     items: [
       {

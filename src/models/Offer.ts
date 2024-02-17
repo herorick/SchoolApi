@@ -11,7 +11,7 @@ export interface OfferDoc extends Document {
     startValidity: Date;
     endValidity: Date;
     promocode: string;
-    promoType: string; // USER // ALL // BANK // CARRD
+    promoType: string;
     bank: [any];
     bins: [any];
     isActive: boolean;
@@ -31,7 +31,7 @@ const OfferSchema = new Schema({
     startValidity: Date,
     endValidity: Date,
     promocode: { type: String, require: true },
-    promoType: { type: String, require: true },
+    promoType: { type: String, require: true, enum: ['USER', 'ALL', 'BANK', 'CARRD'] },
     bank: [{ type: String }],
     bins: [{ type: Number }],
     isActive: { type: Boolean }

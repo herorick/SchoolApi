@@ -12,7 +12,8 @@ interface VendorDoc extends Document {
   rating: number;
   blogs: any[];
   products: any[];
-  isAdmin: boolean
+  isAdmin: boolean;
+  status: "Active" | "Inactive";
 }
 
 const VendorSchema = new Schema(
@@ -38,6 +39,7 @@ const VendorSchema = new Schema(
         ref: "blog",
       },
     ],
+    status: { type: String, require: true, enum: ["Active", "Inactive"] },
   },
   {
     toJSON: {

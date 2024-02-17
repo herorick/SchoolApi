@@ -1,7 +1,7 @@
 import { Transaction } from "@/models/Transaction";
 import { Request, Response, NextFunction } from "express";
 import asyncHandler from "express-async-handler";
-import { Vendor } from "models";
+import { DeliveryUser, Vendor } from "models";
 import { Conflict, GenerateSalt, NotFound, generatePassword } from "utilities";
 
 export const CreateVendor = asyncHandler(
@@ -98,3 +98,29 @@ export const GetTransactionById = async (req: Request, res: Response, next: Next
   return res.json({ "message": "Transaction data not available" })
 }
 // end transactions
+
+
+// delivery
+export const VerifyDeliveryUser = async (req: Request, res: Response, next: NextFunction) => {
+  const { id, status } = req.body;
+  if (id) {
+    const profile = await DeliveryUser.findById(id);
+    if (profile) {
+      profile.verified = status;
+      const result = await profile.save();
+      return res.status(200).json(result);
+    }
+  }
+  return res.json({ message: 'Unable to verify Delivery User' });
+}
+
+
+
+export const AdminGetDeliveryUsers = async (req: Request, res: Response, next: NextFunction) => {
+  const deliveryUsers = await DeliveryUser.find();
+  if (deliveryUsers) {
+    return res.status(200).json(deliveryUsers);
+  }
+  return res.json({ message: 'Unable to get Delivery Users' });
+}
+// end delivery

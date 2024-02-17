@@ -14,6 +14,14 @@ class OrderService {
     return order;
   };
 
+  static assignOrderForDelivery = async(orderId: string, deliveryId: string) => {
+    const order = await OrderService.getOrderById(orderId)
+    if(order !== null) {
+      order.deliveryId = deliveryId; 
+      await order.save();
+    }
+  }
+
   /**
    * 
    * @param items 
@@ -31,6 +39,7 @@ class OrderService {
     items: ICartItem[],
     txnId: string,
     amount: number,
+    deliveryId: string,
     profile: CustomerDoc
   ) => {
     const { status, currentTransaction } = await TransactionService.ValidateTransaction(txnId);
@@ -66,8 +75,10 @@ class OrderService {
       date: new Date(),
       status: "Waiting",
       remarks: "",
-      deliveryId: "",
+      deliveryId,
     });
+
+    console.log({deliveryId});
 
     profile.cart = [] as any;
     profile.orders.push(currentOrder);
@@ -79,7 +90,7 @@ class OrderService {
       await currentTransaction.save();
     }
 
-    //  await assignOrderForDelivery(currentOrder._id, vendorId);
+    //  await this.assignOrderForDelivery(currentOrder.id,  );
 
     return await profile.save();
   };
