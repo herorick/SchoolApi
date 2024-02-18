@@ -18,6 +18,8 @@ import {
 } from "controllers";
 import { Authenticate, DtoValidationMiddleware } from "middlewares";
 import { initMulter } from "config/multer";
+import { Order } from "@/models";
+import { PaginateResultsMiddleware } from "@/middlewares/PaginationMiddleware";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();
@@ -46,7 +48,7 @@ router.delete("/", DeleteAllVendors);
 
 
 // Orders
-router.get('/orders', GetVendorOrders);
+router.get('/orders', PaginateResultsMiddleware(Order), GetVendorOrders);
 router.put('/order/:id/process', ProcessOrder);
 router.get('/order/:id', GetOrderDetails)
 

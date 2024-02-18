@@ -10,11 +10,12 @@ import {
 } from "utilities";
 import { removeImage } from "utilities/FileUntility";
 import asyncHandler from "express-async-handler";
-import { Order, Vendor } from "models";
+import { Order, OrderDoc, Vendor } from "models";
 import { Offer } from "@/models/Offer";
 import { VendorService } from "@/services/VendorService";
 import { CreateOfferInputs } from "@/dtos/Offer";
 import { Transaction } from "@/models/Transaction";
+import { PaginatedData } from "@/middlewares/PaginationMiddleware";
 
 export const VendorGetAll = asyncHandler(
   async (req: Request, res: Response) => {
@@ -129,16 +130,42 @@ export const RemoveVendors = asyncHandler(
 );
 
 // Order
-export const GetVendorOrders = async (req: Request, res: Response, next: NextFunction) => {
-  const user = req.user;
-  if (user) {
-    const orders = await Order.find({ vendorId: user.id }).populate('items.product');
-    if (orders != null) {
-      return res.status(200).json(orders);
+export const GetVendorOrders = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user!;
+  const page: number = parseInt(req.query.page as string) || 1;
+  const limit: number = parseInt(req.query.limit as string) || 10;
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  const results: PaginatedData<OrderDoc> = {
+    results: [],
+  };
+  try {
+    // Count the total number of documents in the collection
+    const totalDocuments = await Order.countDocuments({ vendorId: user.id }).exec();
+
+    if (startIndex > 0) {
+      results.hasPrevious = true;
     }
+
+    if (endIndex < totalDocuments) {
+      results.hasNext = true;
+    }
+
+    results.totalPage = Math.ceil(totalDocuments / limit);
+
+    results.page = page;
+
+    // Query the database for paginated results
+    results.results = await Order.find({ vendorId: user.id }).skip(startIndex).limit(limit).exec();
+
+    res.status(200).json(results);
+  } catch (err) {
+    console.log(err)
+    throw new APIError("some thing error");
   }
-  return res.json({ message: 'Orders Not found' });
-}
+})
 
 export const GetOrderDetails = async (req: Request, res: Response, next: NextFunction) => {
   const orderId = req.params.id;

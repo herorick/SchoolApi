@@ -1,7 +1,7 @@
 import type { NextFunction, Request, RequestHandler, Response } from "express";
 import { Model, Document } from "mongoose";
 
-interface PaginatedData<T> {
+export interface PaginatedData<T> {
   results: T[];
   hasPrevious?: boolean;
   hasNext?: boolean;
