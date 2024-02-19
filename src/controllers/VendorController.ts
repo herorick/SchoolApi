@@ -204,7 +204,6 @@ export const GetOffers = asyncHandler(async (req: Request, res: Response,) => {
     const user = req.user!;
     let currentOffer = Array();
     const offers = await Offer.find().populate('vendors');
-    console.log({ offers });
     if (offers) {
       offers.map(item => {
         if (item.vendors) {
@@ -235,14 +234,14 @@ export const GetOfferDetail = asyncHandler(async (req: Request, res: Response,) 
 export const AddOffer = asyncHandler(async (req: Request, res: Response) => {
   try {
     const user = req.user!;
-    const { title, description, offerType, offerAmount,
-      promocode, promoType, startValidity, endValidity, bank, bins, minValue, isActive } = <CreateOfferInputs>req.body;
+    const { status, title, description, offerType, offerAmount,
+      promoCode, promoType, startValidity, endValidity, bank, bins, minValue, isActive, numberOfTimes, isUnlimited } = <CreateOfferInputs>req.body;
     const vendor = await VendorService.GetVendorById(user.id);
     console.log({ vendor, userId: user.id })
     if (!vendor) throw new NotFound('vendor not found by id: ' + user.id)
     const offer = await Offer.create({
       bins,
-      promocode,
+      promoCode,
       title,
       description,
       offerType,
@@ -253,7 +252,11 @@ export const AddOffer = asyncHandler(async (req: Request, res: Response) => {
       bank,
       isActive,
       minValue,
-      vendors: [vendor]
+      vendors: [vendor],
+      isUnlimited,
+      numberOfTimes,
+      draft: "draft",
+      status
     })
     res.status(200).json(offer);
   } catch (err) {
@@ -266,7 +269,7 @@ export const EditOffer = asyncHandler(async (req: Request, res: Response) => {
     const user = req.user!;
     const offerId = req.params.id;
     const { title, description, offerType, offerAmount,
-      promocode, promoType, startValidity, endValidity, bank, bins, minValue, isActive } = <CreateOfferInputs>req.body;
+      promoCode, promoType, startValidity, endValidity, bank, bins, minValue, isActive } = <CreateOfferInputs>req.body;
     const currentOffer = await Offer.findById(offerId);
     const vendor = await VendorService.GetVendorById(user.id);
     if (!currentOffer) throw new NotFound("Not found offer with id: " + offerId)
@@ -274,7 +277,7 @@ export const EditOffer = asyncHandler(async (req: Request, res: Response) => {
 
     currentOffer.bins = bins
     currentOffer.title = title
-    currentOffer.promocode = promocode
+    currentOffer.promoCode = promoCode
     currentOffer.description = description
     currentOffer.offerType = offerType
     currentOffer.offerAmount = offerAmount
