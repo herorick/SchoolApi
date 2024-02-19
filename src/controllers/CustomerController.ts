@@ -18,6 +18,7 @@ import { CartService } from "@/services/CartService";
 import { ICreateOrder } from "@/interfaces/Order";
 import { Offer } from "@/models/Offer";
 import { Transaction } from "@/models/Transaction";
+import { validationResult } from "express-validator";
 
 export const CustomerSignUp = asyncHandler(
   async (req: Request, res: Response) => {
@@ -70,6 +71,10 @@ export const CustomerSignUp = asyncHandler(
 export const CustomerSignIn = asyncHandler(
   async (req: Request, res: Response) => {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+      }
       const { email, password } = req.body;
       const customer = await Customer.findOne({ email: email });
       if (customer) {
