@@ -49,7 +49,7 @@ export const CustomerSignUp = asyncHandler(
       wishlist: [],
       cart: [],
       address: [],
-      orders: []
+      orders: [],
     });
 
     if (result) {
@@ -78,21 +78,25 @@ export const CustomerSignIn = asyncHandler(
       const { email, password } = req.body;
       const customer = await Customer.findOne({ email: email });
       if (customer) {
-        const validation = await validatePassword(password, customer.password, customer.salt);
+        const validation = await validatePassword(
+          password,
+          customer.password,
+          customer.salt
+        );
         if (!validation) throw new Unauthorized();
         const signature = generateSignature({
           id: customer._id,
           email: customer.email,
-          verified: customer.verified
-        })
+          verified: customer.verified,
+        });
         res.status(200).json({
           signature,
           email: customer.email,
-          verified: customer.verified
-        })
+          verified: customer.verified,
+        });
       }
     } catch (err) {
-      res.status(404).json("some thing wrong")
+      res.status(404).json("some thing wrong");
     }
   }
 );
@@ -226,10 +230,16 @@ export const CreateOrder = asyncHandler(async (req: Request, res: Response) => {
   const profile = await CustomerService.getOrders(customer.id);
   const { txnId, amount, items, deliveryId } = req.body as ICreateOrder;
   try {
-    const response = await OrderService.createOrder(items, txnId, amount, deliveryId, profile)
-    res.status(201).json(response)
+    const response = await OrderService.createOrder(
+      items,
+      txnId,
+      amount,
+      deliveryId,
+      profile
+    );
+    res.status(201).json(response);
   } catch (err) {
-    throw new Error("Some thing was wrong!!!");
+    res.json({ error: err });
   }
 });
 
@@ -238,134 +248,153 @@ export const VerifyOffer = asyncHandler(async (req: Request, res: Response) => {
   const appliedOffer = await Offer.findById(offerId);
   if (appliedOffer) {
     if (appliedOffer.isActive) {
-      res.status(200).json({ message: 'Offer is Valid', offer: appliedOffer });
+      res.status(200).json({ message: "Offer is Valid", offer: appliedOffer });
     }
   }
 
-  res.status(400).json({ msg: 'Offer is Not Valid' });
+  res.status(400).json({ msg: "Offer is Not Valid" });
 });
 
-export const CreatePayment = asyncHandler(async (req: Request, res: Response) => {
-  const customer = req.user!;
-  const { amount, paymentMode, offerId } = req.body;
-  let payableAmount = Number(amount);
-  if (!offerId) throw new NotFound("not found offerId: " + offerId);
-  const appliedOffer = await Offer.findById(offerId);
-  if (appliedOffer === null) throw new NotFound("not found offerId: " + offerId);
+export const CreatePayment = asyncHandler(
+  async (req: Request, res: Response) => {
+    const customer = req.user!;
+    const { amount, paymentMode, offerId } = req.body;
+    let payableAmount = Number(amount);
+    if (!offerId) throw new NotFound("not found offerId: " + offerId);
+    const appliedOffer = await Offer.findById(offerId);
+    if (appliedOffer === null)
+      throw new NotFound("not found offerId: " + offerId);
 
-  if (appliedOffer.isActive) {
-    payableAmount = (payableAmount - appliedOffer.offerAmount);
+    if (appliedOffer.isActive) {
+      payableAmount = payableAmount - appliedOffer.offerAmount;
+    }
+    // perform payment gateway charge api
+
+    // create record on transaction
+    const transaction = await Transaction.create({
+      customer: customer.id,
+      orderValue: payableAmount,
+      offerUsed: offerId || "NA",
+      status: "OPEN",
+      paymentMode,
+      paymentResponse: "Payment is cash on Delivery",
+    });
+
+    res.status(200).json(transaction);
   }
-  // perform payment gateway charge api
-
-  // create record on transaction
-  const transaction = await Transaction.create({
-    customer: customer.id,
-    vendorId: '',
-    orderId: '',
-    orderValue: payableAmount,
-    offerUsed: offerId || 'NA',
-    status: 'OPEN',
-    paymentMode,
-    paymentResponse: 'Payment is cash on Delivery'
-  })
-
-  res.status(200).json(transaction);
-
-})
+);
 
 // start delivery
-export const CustomerGetDeliveryUsers = asyncHandler(async (req: Request, res: Response) => {
-  const deliveryUsers = await DeliveryUser.find({ isAvailable: true, verified: true });
-  if (deliveryUsers) {
-    res.status(200).json(deliveryUsers);
+export const CustomerGetDeliveryUsers = asyncHandler(
+  async (req: Request, res: Response) => {
+    const deliveryUsers = await DeliveryUser.find({
+      isAvailable: true,
+      verified: true,
+    });
+    if (deliveryUsers) {
+      res.status(200).json(deliveryUsers);
+    }
+    res.json({ message: "Unable to get Delivery Users" });
   }
-  res.json({ message: 'Unable to get Delivery Users' });
-});
+);
 // end delivery
 
 // wishlist
-export const CustomerAddWishList = asyncHandler(async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
-    const { productId } = req.body
-    const customer = await Customer.findById(user.id)!;
-    if (customer !== null) {
-      const wishList = customer?.wishlist || [];
-      customer.wishlist = [...wishList, productId];
-      const result = await customer.save();
-      res.json({ result })
+export const CustomerAddWishList = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const user = req.user!;
+      const { productId } = req.body;
+      const customer = await Customer.findById(user.id)!;
+      if (customer !== null) {
+        const wishList = customer?.wishlist || [];
+        customer.wishlist = [...wishList, productId];
+        const result = await customer.save();
+        res.json({ result });
+      }
+    } catch (err) {
+      throw new APIError("can't add wishlisth");
     }
-  } catch (err) {
-    throw new APIError("can't add wishlisth")
   }
-})
+);
 
-export const CustomerRemoveWishList = asyncHandler(async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
-    const { productId } = req.body
-    const customer = await Customer.findById(user.id)!;
-    if (customer !== null) {
-      const wishList = customer?.wishlist || [];
-      console.log({wishList, productId})
-      customer.wishlist = wishList.filter(item => item.toString() !== productId);
-      const result = await customer.save();
-      res.json({ result })
+export const CustomerRemoveWishList = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const user = req.user!;
+      const { productId } = req.body;
+      const customer = await Customer.findById(user.id)!;
+      if (customer !== null) {
+        const wishList = customer?.wishlist || [];
+        console.log({ wishList, productId });
+        customer.wishlist = wishList.filter(
+          (item) => item.toString() !== productId
+        );
+        const result = await customer.save();
+        res.json({ result });
+      }
+    } catch (err) {
+      throw new APIError("can't add wishlisth");
     }
-  } catch (err) {
-    throw new APIError("can't add wishlisth")
   }
-})
+);
 // end wishlist
 
 // setting
-export const CustomerUpdateSetting = asyncHandler(async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
-    const { setting } = req.body
-    const customer = await Customer.findById(user.id)!;
-    if (customer !== null) {
-      customer.setting = {
-        ...customer.setting,
-        ...setting
+export const CustomerUpdateSetting = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const user = req.user!;
+      const { setting } = req.body;
+      const customer = await Customer.findById(user.id)!;
+      if (customer !== null) {
+        customer.setting = {
+          ...customer.setting,
+          ...setting,
+        };
+        const result = await customer.save();
+        res.json({ result });
       }
-      const result = await customer.save();
-      res.json({ result })
+    } catch (err) {
+      throw new APIError("can't add wishlisth");
     }
-  } catch (err) {
-    throw new APIError("can't add wishlisth")
   }
-})
+);
 // end setting
 
 // favorite vendor
-export const CustomerAddFavoriteVendor = asyncHandler(async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
-    const { vendorId } = req.body
-    const customer = await Customer.findById(user.id);
-    if (customer !== null) {
-      customer.favoriteVendor = [...customer.favoriteVendor, vendorId]
-      const result = await customer.save();
-      res.json({ result })
+export const CustomerAddFavoriteVendor = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const user = req.user!;
+      const { vendorId } = req.body;
+      const customer = await Customer.findById(user.id);
+      if (customer !== null) {
+        customer.favoriteVendor = [...customer.favoriteVendor, vendorId];
+        const result = await customer.save();
+        res.json({ result });
+      }
+    } catch (err) {
+      throw new APIError("can't add wishlisth");
     }
-  } catch (err) {
-    throw new APIError("can't add wishlisth")
   }
-})
+);
 
-export const CustomerRemoveFavoriteVendor = asyncHandler(async (req: Request, res: Response) => {
-  try {
-    const user = req.user!;
-    const { vendorId } = req.body
-    const customer = await Customer.findById(user.id)!;
-    if (customer !== null) {
-      customer.favoriteVendor = customer.favoriteVendor.filter(item => item.toString() !== vendorId)
-      const result = await customer.save();
-      res.json({ result })
+export const CustomerRemoveFavoriteVendor = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const user = req.user!;
+      const { vendorId } = req.body;
+      const customer = await Customer.findById(user.id)!;
+      if (customer !== null) {
+        customer.favoriteVendor = customer.favoriteVendor.filter(
+          (item) => item.toString() !== vendorId
+        );
+        const result = await customer.save();
+        res.json({ result });
+      }
+    } catch (err) {
+      throw new APIError("can't add wishlisth");
     }
-  } catch (err) {
-    throw new APIError("can't add wishlisth")
   }
-})
+);

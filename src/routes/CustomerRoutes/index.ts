@@ -22,7 +22,7 @@ import {
 } from "controllers";
 import { initMulter } from "config/multer";
 import { AuthenticateCustomer, DtoValidationMiddleware } from "middlewares";
-import { CreateCustomerDTO, CustomSignUpValidator } from "dtos/CustomerDto";
+import { CreateCustomerDTO, CustomSignInValidator, CustomSignUpValidator } from "dtos/CustomerDto";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();
@@ -32,7 +32,7 @@ router.post(
   DtoValidationMiddleware(CreateCustomerDTO),
   CustomerSignUp
 );
-router.post("/signIn", CustomSignUpValidator, CustomerSignIn);
+router.post("/signIn", CustomSignInValidator, CustomerSignIn);
 router.post("/verify", AuthenticateCustomer, CustomerVerify);
 router.patch("/otp", AuthenticateCustomer, CustomerRequestOTP);
 router.get("/profile", AuthenticateCustomer, CustomerGetProfile);

@@ -130,60 +130,75 @@ export const RemoveVendors = asyncHandler(
 );
 
 // Order
-export const GetVendorOrders = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const user = req.user!;
-  const page: number = parseInt(req.query.page as string) || 1;
-  const limit: number = parseInt(req.query.limit as string) || 10;
+export const GetVendorOrders = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user!;
+    const page: number = parseInt(req.query.page as string) || 1;
+    const limit: number = parseInt(req.query.limit as string) || 10;
 
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
 
-  const results: PaginatedData<OrderDoc> = {
-    results: [],
-  };
-  try {
-    // Count the total number of documents in the collection
-    const totalDocuments = await Order.countDocuments({ vendorId: user.id }).exec();
+    const results: PaginatedData<OrderDoc> = {
+      results: [],
+    };
+    try {
+      // Count the total number of documents in the collection
+      const totalDocuments = await Order.countDocuments({
+        vendorId: user.id,
+      }).exec();
 
-    if (startIndex > 0) {
-      results.hasPrevious = true;
+      if (startIndex > 0) {
+        results.hasPrevious = true;
+      }
+
+      if (endIndex < totalDocuments) {
+        results.hasNext = true;
+      }
+
+      results.totalPage = Math.ceil(totalDocuments / limit);
+
+      results.page = page;
+
+      // Query the database for paginated results
+      results.results = await Order.find({ vendorId: user.id })
+        .skip(startIndex)
+        .limit(limit)
+        .exec();
+
+      res.status(200).json(results);
+    } catch (err) {
+      console.log(err);
+      throw new APIError("some thing error");
     }
-
-    if (endIndex < totalDocuments) {
-      results.hasNext = true;
-    }
-
-    results.totalPage = Math.ceil(totalDocuments / limit);
-
-    results.page = page;
-
-    // Query the database for paginated results
-    results.results = await Order.find({ vendorId: user.id }).skip(startIndex).limit(limit).exec();
-
-    res.status(200).json(results);
-  } catch (err) {
-    console.log(err)
-    throw new APIError("some thing error");
   }
-})
+);
 
-export const GetOrderDetails = async (req: Request, res: Response, next: NextFunction) => {
+export const GetOrderDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const orderId = req.params.id;
   if (orderId) {
-    const order = await Order.findById(orderId).populate('items.product');
+    const order = await Order.findById(orderId).populate("items.product");
     if (order != null) {
       return res.status(200).json(order);
     }
   }
 
-  return res.json({ message: 'Order Not found' });
-}
+  return res.json({ message: "Order Not found" });
+};
 
-export const ProcessOrder = async (req: Request, res: Response, next: NextFunction) => {
+export const ProcessOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const orderId = req.params.id;
   const { status, remarks } = req.body;
   if (orderId) {
-    const order = await Order.findById(orderId).populate('items.product')!;
+    const order = await Order.findById(orderId).populate("items.product")!;
     if (order === null) throw new NotFound("");
     order.status = status;
     order.remarks = remarks;
@@ -192,53 +207,69 @@ export const ProcessOrder = async (req: Request, res: Response, next: NextFuncti
       return res.status(200).json(orderResult);
     }
   }
-  return res.json({ message: 'Unable to process order' });
-}
+  return res.json({ message: "Unable to process order" });
+};
 
 // End Order
 
-
 // Offers
-export const GetOffers = asyncHandler(async (req: Request, res: Response,) => {
+export const GetOffers = asyncHandler(async (req: Request, res: Response) => {
   try {
     const user = req.user!;
     let currentOffer = Array();
-    const offers = await Offer.find().populate('vendors');
+    const offers = await Offer.find().populate("vendors");
     if (offers) {
-      offers.map(item => {
+      offers.map((item) => {
         if (item.vendors) {
-          item.vendors.map(vendor => {
+          item.vendors.map((vendor) => {
             if (vendor._id.toString() === user.id) {
               currentOffer.push(item);
             }
-          })
+          });
         }
         if (item.offerType === "GENERIC") {
-          currentOffer.push(item)
+          currentOffer.push(item);
         }
-      })
+      });
     }
     res.status(200).json(currentOffer);
   } catch (err) {
-    throw new APIError()
+    throw new APIError();
   }
 });
 
-export const GetOfferDetail = asyncHandler(async (req: Request, res: Response,) => {
-  try {
-  } catch (err) {
-    throw new APIError()
+export const GetOfferDetail = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+    } catch (err) {
+      throw new APIError();
+    }
   }
-});
+);
 
 export const AddOffer = asyncHandler(async (req: Request, res: Response) => {
   try {
     const user = req.user!;
-    const { status, title, description, offerType, offerAmount,
-      promoCode, promoType, startValidity, endValidity, bank, bins, minValue, isActive, numberOfTimes, isUnlimited } = <CreateOfferInputs>req.body;
+    const {
+      status,
+      title,
+      description,
+      offerType,
+      offerAmount,
+      promoCode,
+      promoType,
+      startValidity,
+      endValidity,
+      bank,
+      bins,
+      minValue,
+      isActive,
+      numberOfTimes,
+      isUnlimited,
+    } = <CreateOfferInputs>req.body;
     const vendor = await VendorService.GetVendorById(user.id);
-    console.log({ vendor, userId: user.id })
-    if (!vendor) throw new NotFound('vendor not found by id: ' + user.id)
+    console.log({ vendor, userId: user.id });
+    if (!vendor) throw new NotFound("vendor not found by id: " + user.id);
     const offer = await Offer.create({
       bins,
       promoCode,
@@ -256,63 +287,83 @@ export const AddOffer = asyncHandler(async (req: Request, res: Response) => {
       isUnlimited,
       numberOfTimes,
       draft: "draft",
-      status
-    })
+      status,
+    });
     res.status(200).json(offer);
   } catch (err) {
-    throw new APIError('Unable to add Offer!')
+    throw new APIError("Unable to add Offer!");
   }
-})
+});
 
 export const EditOffer = asyncHandler(async (req: Request, res: Response) => {
   try {
     const user = req.user!;
     const offerId = req.params.id;
-    const { title, description, offerType, offerAmount,
-      promoCode, promoType, startValidity, endValidity, bank, bins, minValue, isActive } = <CreateOfferInputs>req.body;
+    const {
+      title,
+      description,
+      offerType,
+      offerAmount,
+      promoCode,
+      promoType,
+      startValidity,
+      endValidity,
+      bank,
+      bins,
+      minValue,
+      isActive,
+    } = <CreateOfferInputs>req.body;
     const currentOffer = await Offer.findById(offerId);
     const vendor = await VendorService.GetVendorById(user.id);
-    if (!currentOffer) throw new NotFound("Not found offer with id: " + offerId)
-    if (!vendor) throw new NotFound("Not found offer with id: " + user.id)
+    if (!currentOffer)
+      throw new NotFound("Not found offer with id: " + offerId);
+    if (!vendor) throw new NotFound("Not found offer with id: " + user.id);
 
-    currentOffer.bins = bins
-    currentOffer.title = title
-    currentOffer.promoCode = promoCode
-    currentOffer.description = description
-    currentOffer.offerType = offerType
-    currentOffer.offerAmount = offerAmount
-    currentOffer.promoType = promoType
-    currentOffer.startValidity = startValidity
-    currentOffer.endValidity = endValidity
-    currentOffer.bank = bank
-    currentOffer.isActive = isActive
-    currentOffer.minValue = minValue
+    currentOffer.bins = bins;
+    currentOffer.title = title;
+    currentOffer.promoCode = promoCode;
+    currentOffer.description = description;
+    currentOffer.offerType = offerType;
+    currentOffer.offerAmount = offerAmount;
+    currentOffer.promoType = promoType;
+    currentOffer.startValidity = startValidity;
+    currentOffer.endValidity = endValidity;
+    currentOffer.bank = bank;
+    currentOffer.isActive = isActive;
+    currentOffer.minValue = minValue;
     const result = await currentOffer.save();
     res.status(200).json(result);
-
   } catch (err) {
-    throw new APIError('Unable to edit Offer!')
+    throw new APIError("Unable to edit Offer!");
   }
-})
+});
 
 export const DeleteOffer = asyncHandler(async (req: Request, res: Response) => {
   try {
   } catch (err) {
-    throw new APIError()
+    throw new APIError();
   }
-})
+});
 
 // End Offers
 
 // Transaction
-export const GetTransactions = asyncHandler(async (req: Request, res: Response) => {
-  try {
-    const vendor = req.user!;
-    const transactions = await Transaction.find({ vendorId: vendor.id });
-    res.json(transactions)
-  } catch (err) {
-    throw new APIError("can't get transaction")
+export const GetTransactions = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const vendor = req.user!;
+      const data = await Transaction.find({});
+      console.log({ data, vendor: vendor.id });
+      const transactions = await Transaction.find({})
+        .populate("vendorId")
+        .populate("orderId")
+        .exec();
+      res.json(transactions);
+    } catch (err) {
+      console.log(err);
+      throw new APIError("can't get transaction");
+    }
   }
-})
+);
 
-// End Transaction  
+// End Transaction

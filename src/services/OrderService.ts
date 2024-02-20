@@ -14,26 +14,29 @@ class OrderService {
     return order;
   };
 
-  static assignOrderForDelivery = async(orderId: string, deliveryId: string) => {
-    const order = await OrderService.getOrderById(orderId)
-    if(order !== null) {
-      order.deliveryId = deliveryId; 
+  static assignOrderForDelivery = async (
+    orderId: string,
+    deliveryId: string
+  ) => {
+    const order = await OrderService.getOrderById(orderId);
+    if (order !== null) {
+      order.deliveryId = deliveryId;
       await order.save();
     }
-  }
+  };
 
   /**
-   * 
-   * @param items 
-   * @param txnId 
-   * @param amount 
-   * @param profile 
+   *
+   * @param items
+   * @param txnId
+   * @param amount
+   * @param profile
    * @description
    *  - verify customer token
    *  - calculate order amount
    *  - create order with item description
    *  - Update order to user account
-   * @returns 
+   * @returns
    */
   static createOrder = async (
     items: ICartItem[],
@@ -42,16 +45,17 @@ class OrderService {
     deliveryId: string,
     profile: CustomerDoc
   ) => {
-    const { status, currentTransaction } = await TransactionService.ValidateTransaction(txnId);
+    const { status, currentTransaction } =
+      await TransactionService.ValidateTransaction(txnId);
 
     if (!status) {
-      throw new APIError('Error while Creating Order!')
+      throw new APIError("Error while Creating Order!");
     }
 
     const orderId = uuidv4();
     let cartItems = Array();
     let netAmount = 0.0;
-    let vendorId: string = '';
+    let vendorId: string = "";
     const products = await ProductService.findProductByIds(
       items.map((item) => item.id)
     );
@@ -78,15 +82,16 @@ class OrderService {
       deliveryId,
     });
 
-    console.log({deliveryId});
+    console.log({ deliveryId });
+    console.log({ currentOrder });
 
     profile.cart = [] as any;
     profile.orders.push(currentOrder);
 
     if (currentTransaction !== null) {
       currentTransaction.vendorId = vendorId;
-      currentTransaction.orderId = orderId;
-      currentTransaction.status = 'CONFIRMED'
+      currentTransaction.orderId = currentOrder._id.toString();
+      currentTransaction.status = "CONFIRMED";
       await currentTransaction.save();
     }
 
