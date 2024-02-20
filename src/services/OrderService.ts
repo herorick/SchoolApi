@@ -89,6 +89,9 @@ class OrderService {
     profile.orders.push(currentOrder);
 
     if (currentTransaction !== null) {
+      currentTransaction.vendor = vendorId;
+      currentTransaction.order = currentOrder._id.toString();
+
       currentTransaction.vendorId = vendorId;
       currentTransaction.orderId = currentOrder._id.toString();
       currentTransaction.status = "CONFIRMED";

@@ -352,11 +352,10 @@ export const GetTransactions = asyncHandler(
   async (req: Request, res: Response) => {
     try {
       const vendor = req.user!;
-      const data = await Transaction.find({});
-      console.log({ data, vendor: vendor.id });
-      const transactions = await Transaction.find({})
-        .populate("vendorId")
-        .populate("orderId")
+      const transactions = await Transaction.find({vendorId: vendor.id})
+        .populate("vendor")
+        .populate("order")
+        .populate("customer")
         .exec();
       res.json(transactions);
     } catch (err) {

@@ -1,21 +1,29 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface TransactionDoc extends Document {
-  customer: string;
-  vendorId: string;
-  orderId: string;
   orderValue: number;
   offerUsed: string;
   status: string;
   paymentMode: string;
   paymentResponse: string;
+  customerId: string;
+  vendorId: string;
+  orderId: string;
+  customer: any;
+  vendor: any;
+  order: any;
 }
 
 const TransactionSchema = new Schema(
   {
+    customerId: { type: String },
+    vendorId: { type: String },
+    orderId: { type: String },
+
+    order: { type: Schema.Types.ObjectId, ref: "order" },
+    vendor: { type: Schema.Types.ObjectId, ref: "vendor" },
     customer: { type: Schema.Types.ObjectId, ref: "customer", require: true },
-    vendorId: { type: Schema.Types.ObjectId, ref: "vendor" },
-    orderId: { type: Schema.Types.ObjectId, ref: "order" },
+
     orderValue: Number,
     offerUsed: String,
     status: String,
