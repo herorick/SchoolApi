@@ -35,7 +35,7 @@ export const CreateVendor = asyncHandler(
       coverImage: imageNames[0],
       products: [],
       blogs: [],
-      isAdmin
+      isAdmin,
     });
 
     res.json(createdVendor);
@@ -53,7 +53,7 @@ export const UpdateVendor = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => { };
+) => {};
 
 export const GetVendorById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -70,7 +70,7 @@ export const DeleteVendorById = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => { };
+) => {};
 
 export const DeleteAllVendors = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -80,28 +80,38 @@ export const DeleteAllVendors = asyncHandler(
 );
 
 // transactions
-export const AdminGetTransactions = async (req: Request, res: Response, next: NextFunction) => {
+export const AdminGetTransactions = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const transactions = await Transaction.find({});
   if (transactions) {
-    return res.status(200).json(transactions)
+    return res.status(200).json(transactions);
   }
-  return res.json({ "message": "Transactions data not available" })
-}
+  return res.json({ message: "Transactions data not available" });
+};
 
-
-export const GetTransactionById = async (req: Request, res: Response, next: NextFunction) => {
+export const GetTransactionById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const id = req.params.id;
   const transaction = await Transaction.findById(id);
   if (transaction) {
-    return res.status(200).json(transaction)
+    return res.status(200).json(transaction);
   }
-  return res.json({ "message": "Transaction data not available" })
-}
+  return res.json({ message: "Transaction data not available" });
+};
 // end transactions
 
-
 // delivery
-export const VerifyDeliveryUser = async (req: Request, res: Response, next: NextFunction) => {
+export const VerifyDeliveryUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id, status } = req.body;
   if (id) {
     const profile = await DeliveryUser.findById(id);
@@ -111,16 +121,12 @@ export const VerifyDeliveryUser = async (req: Request, res: Response, next: Next
       return res.status(200).json(result);
     }
   }
-  return res.json({ message: 'Unable to verify Delivery User' });
-}
+  return res.json({ message: "Unable to verify Delivery User" });
+};
 
-
-
-export const AdminGetDeliveryUsers = async (req: Request, res: Response, next: NextFunction) => {
-  const deliveryUsers = await DeliveryUser.find();
-  if (deliveryUsers) {
-    return res.status(200).json(deliveryUsers);
+export const AdminGetDeliveryUsers = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    res.json(res.paginatedData);
   }
-  return res.json({ message: 'Unable to get Delivery Users' });
-}
+);
 // end delivery

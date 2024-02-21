@@ -14,7 +14,7 @@ import { Order, OrderDoc, Vendor } from "models";
 import { Offer } from "@/models/Offer";
 import { VendorService } from "@/services/VendorService";
 import { CreateOfferInputs } from "@/dtos/Offer";
-import { Transaction } from "@/models/Transaction";
+import { Transaction, TransactionDoc } from "@/models/Transaction";
 import { PaginatedData } from "@/middlewares/PaginationMiddleware";
 
 export const VendorGetAll = asyncHandler(
@@ -351,13 +351,42 @@ export const DeleteOffer = asyncHandler(async (req: Request, res: Response) => {
 export const GetTransactions = asyncHandler(
   async (req: Request, res: Response) => {
     try {
-      const vendor = req.user!;
-      const transactions = await Transaction.find({vendorId: vendor.id})
+      const user = req.user!;
+      const page: number = parseInt(req.query.page as string) || 1;
+      const limit: number = parseInt(req.query.limit as string) || 10;
+
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+
+      const results: PaginatedData<TransactionDoc> = {
+        results: [],
+      }; // Count the total number of documents in the collection
+      const totalDocuments = await Transaction.countDocuments({
+        vendorId: user.id,
+      }).exec();
+
+      if (startIndex > 0) {
+        results.hasPrevious = true;
+      }
+
+      if (endIndex < totalDocuments) {
+        results.hasNext = true;
+      }
+
+      results.totalPage = Math.ceil(totalDocuments / limit);
+
+      results.page = page;
+
+      // Query the database for paginated results
+      results.results = await Transaction.find({ vendorId: user.id })
+        .skip(startIndex)
+        .limit(limit)
         .populate("vendor")
         .populate("order")
         .populate("customer")
         .exec();
-      res.json(transactions);
+
+      res.status(200).json(results);
     } catch (err) {
       console.log(err);
       throw new APIError("can't get transaction");

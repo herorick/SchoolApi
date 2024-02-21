@@ -131,7 +131,6 @@ export const DeleteProductImage = asyncHandler(
     const { productId, imageId } = req.query;
     const product = await Product.findById(productId);
     if (!product) throw new NotFound();
-    console.log(product.images.filter((item) => item !== imageId));
     const newImages = product.images.filter((item) => item !== imageId);
     await product.updateOne({
       images: newImages,

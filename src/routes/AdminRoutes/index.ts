@@ -1,3 +1,5 @@
+import { PaginateResultsMiddleware } from "@/middlewares/PaginationMiddleware";
+import { DeliveryUser } from "@/models";
 import { initMulter } from "config/multer";
 import {
   AdminGetDeliveryUsers,
@@ -33,11 +35,15 @@ router.delete("/vendors:/id", Authenticate, ValidateObjectId, DeleteVendorById);
 router.delete("/vendors", Authenticate, DeleteAllVendors);
 
 // transaction
-router.get('/transactions', AdminGetTransactions)
-router.get('/transaction/:id', GetTransactionById)
+router.get("/transactions", AdminGetTransactions);
+router.get("/transaction/:id", GetTransactionById);
 
 // delivery
-router.put('/delivery/verify', VerifyDeliveryUser)
-router.get('/delivery/users', AdminGetDeliveryUsers);
+router.put("/delivery/verify", VerifyDeliveryUser);
+router.get(
+  "/delivery/users",
+  PaginateResultsMiddleware(DeliveryUser),
+  AdminGetDeliveryUsers
+);
 
 export { router as AdminRoutes };
