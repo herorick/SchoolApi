@@ -58,7 +58,7 @@ export const DeleteProductCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { params } = req;
     const { id } = params;
-    const deletedRecord = await ProductCategory.findByIdAndDelete(id);
+    const deletedRecord = await ProductCategory.findById(id);
     const productIds = deletedRecord?.products || [];
     await ProductCategory.findByIdAndDelete(id);
     await Product.deleteMany({ _id: productIds });
