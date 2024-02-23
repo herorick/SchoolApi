@@ -4,3 +4,11 @@ kill PORT: sudo kill -9 $(sudo lsof -t -i:8000)
 mv .env.example .env
 
 postinstall: is action happens while an app is being used   
+
+
+# install docker
+
+# non root: https://docs.docker.com/engine/install/linux-postinstall/
+
+
+how to run: docker-compose up
