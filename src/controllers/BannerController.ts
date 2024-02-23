@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import asyncHandler from "express-async-handler";
-import { Banner } from "models/Banner";
+import { Banner } from "../models/Banner";
 
 export const GetBanners = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

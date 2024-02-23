@@ -7,15 +7,15 @@ import {
   generatePassword,
   generateSignature,
   validatePassword,
-} from "utilities";
-import { removeImage } from "utilities/FileUntility";
+} from "../utilities";
+import { removeImage } from "../utilities/FileUntility";
 import asyncHandler from "express-async-handler";
-import { Order, OrderDoc, Vendor } from "models";
-import { Offer } from "@/models/Offer";
-import { VendorService } from "@/services/VendorService";
-import { CreateOfferInputs } from "@/dtos/Offer";
-import { Transaction, TransactionDoc } from "@/models/Transaction";
-import { PaginatedData } from "@/middlewares/PaginationMiddleware";
+import { Order, OrderDoc, Vendor } from "../models";
+import { Offer } from "../models/Offer";
+import { VendorService } from "../services/VendorService";
+import { CreateOfferInputs } from "../dtos/Offer";
+import { Transaction, TransactionDoc } from "../models/Transaction";
+import { PaginatedData } from "../middlewares/PaginationMiddleware";
 
 export const VendorGetAll = asyncHandler(
   async (req: Request, res: Response) => {

@@ -1,5 +1,5 @@
-import { Customer } from "@/models";
-import { NotFound } from "@/utilities";
+import { Customer } from "../models";
+import { NotFound } from "../utilities";
 
 class CustomerService {
   static getOrderById = async (orderId: string) => {

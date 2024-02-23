@@ -1,4 +1,4 @@
-import { HttpStatusCode } from "enums/Common";
+import { HttpStatusCode } from "../../enums/Common";
 import { BaseError } from "./BaseError";
 
 export class Unauthorized extends BaseError {

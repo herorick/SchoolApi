@@ -1,6 +1,6 @@
 import fs from "fs";
 import { unlink } from "fs/promises";
-import { uploadPath } from "index";
+import { uploadPath } from "../index";
 
 export const removeImage = async (imageName: string) => {
   const path = uploadPath + imageName;

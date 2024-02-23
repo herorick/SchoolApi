@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Customer, DeliveryUser, Order } from "models";
+import { Customer, DeliveryUser, Order } from "../models";
 import asyncHandler from "express-async-handler";
 import {
   APIError,
@@ -10,14 +10,14 @@ import {
   generatePassword,
   generateSignature,
   validatePassword,
-} from "utilities";
-import { GenerateOtp, onRequestOTP } from "utilities/NotificationUtility";
-import { ICartItem } from "interfaces/Cart";
-import { CustomerService, OrderService } from "services";
-import { CartService } from "@/services/CartService";
-import { ICreateOrder } from "@/interfaces/Order";
-import { Offer } from "@/models/Offer";
-import { Transaction } from "@/models/Transaction";
+} from "../utilities";
+import { GenerateOtp, onRequestOTP } from "../utilities/NotificationUtility";
+import { ICartItem } from "../interfaces/Cart";
+import { CustomerService, OrderService } from "../services";
+import { CartService } from "../services/CartService";
+import { ICreateOrder } from "../interfaces/Order";
+import { Offer } from "../models/Offer";
+import { Transaction } from "../models/Transaction";
 import { validationResult } from "express-validator";
 
 export const CustomerSignUp = asyncHandler(

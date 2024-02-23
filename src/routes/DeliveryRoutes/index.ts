@@ -3,9 +3,9 @@ import {
     DeliveryGetOrderById,
     DeliveryLogin,
     DeliverySignUp, EditDeliveryProfile, GetDeliveryProfile, GetOrdersByDelivery, UpdateDeliveryUserStatus, UpdateStatusOrder
-} from '@/controllers';
-import { Authenticate } from '@/middlewares';
-import { initMulter } from '@/config';
+} from '../../controllers';
+import { Authenticate } from '../../middlewares';
+import { initMulter } from '../../config';
 
 const router = express.Router();
 const imagesMiddleware = initMulter();

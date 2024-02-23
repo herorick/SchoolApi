@@ -5,7 +5,7 @@ import cors from "cors";
 import compression from "compression";
 import morgan from "morgan";
 
-import { connectDB } from "config";
+import { connectDB } from "./config";
 import {
   AdminRoutes,
   VendorRoutes,
@@ -17,9 +17,9 @@ import {
   CustomerRoutes,
   ShoppingRoutes,
   DeliveryRoutes
-} from "routes";
+} from "./routes";
 import { errorHandler, notFoundHandler } from "./middlewares";
-import { BannerRoutes } from "routes/BannerRoutes";
+import { BannerRoutes } from "./routes/BannerRoutes";
 
 
 dotenv.config();

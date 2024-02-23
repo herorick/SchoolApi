@@ -1,5 +1,5 @@
 import express from "express";
-import { Authenticate, DtoValidationMiddleware } from "middlewares";
+import { Authenticate, DtoValidationMiddleware } from "../../middlewares";
 import {
   CreateProduct,
   DeleteProduct,
@@ -8,12 +8,12 @@ import {
   UpdateProduct,
   DeleteProducts,
   DeleteProductImage,
-} from "controllers";
-import { CreateProductDTO } from "dtos/ProductDto";
-import { initMulter } from "config/multer";
-import { PaginateResultsMiddleware } from "middlewares/PaginationMiddleware";
-import { Product } from "models";
-import { ValidateObjectId } from "middlewares/ValidateObjectId";
+} from "../../controllers";
+import { CreateProductDTO } from "../../dtos/ProductDto";
+import { initMulter } from "../../config/multer";
+import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
+import { Product } from "../../models";
+import { ValidateObjectId } from "../../middlewares/ValidateObjectId";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();

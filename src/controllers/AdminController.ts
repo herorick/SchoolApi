@@ -1,8 +1,8 @@
-import { Transaction } from "@/models/Transaction";
+import { Transaction } from "../models/Transaction";
 import { Request, Response, NextFunction } from "express";
 import asyncHandler from "express-async-handler";
-import { DeliveryUser, Vendor } from "models";
-import { Conflict, GenerateSalt, NotFound, generatePassword } from "utilities";
+import { DeliveryUser, Vendor } from "../models";
+import { Conflict, GenerateSalt, NotFound, generatePassword } from "../utilities";
 
 export const CreateVendor = asyncHandler(
   async (req: Request, res: Response) => {

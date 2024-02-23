@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { DeliveryUser, Order, } from '../models';
-import { APIError, GenerateSalt, generatePassword, generateSignature, validatePassword } from '@/utilities';
+import { APIError, GenerateSalt, generatePassword, generateSignature, validatePassword } from '../utilities';
 import asyncHandler from 'express-async-handler';
 
 export const DeliverySignUp = async (req: Request, res: Response, next: NextFunction) => {

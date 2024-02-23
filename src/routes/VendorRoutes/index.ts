@@ -1,5 +1,5 @@
 import express from "express";
-import { LoginVendorDTO, UpdateVendorDTO, UpdateVendorPasswordDTO } from "dtos";
+import { LoginVendorDTO, UpdateVendorDTO, UpdateVendorPasswordDTO } from "../../dtos";
 import {
   VendorLogin,
   GetVendorProfile,
@@ -15,11 +15,11 @@ import {
   GetVendorOrders,
   DeleteOffer,
   GetTransactions,
-} from "controllers";
-import { Authenticate, DtoValidationMiddleware } from "middlewares";
-import { initMulter } from "config/multer";
-import { Order } from "@/models";
-import { PaginateResultsMiddleware } from "@/middlewares/PaginationMiddleware";
+} from "../../controllers";
+import { Authenticate, DtoValidationMiddleware } from "../../middlewares";
+import { initMulter } from "../../config/multer";
+import { Order } from "../../models";
+import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();

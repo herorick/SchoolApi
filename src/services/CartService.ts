@@ -1,5 +1,5 @@
-import { ICartItem } from "@/interfaces/Cart";
-import { CustomerDoc } from "@/models";
+import { ICartItem } from "interfaces/Cart";
+import { CustomerDoc } from "../models";
 
 class CartService {
   static addToCart = async (cartItem: ICartItem, profile: CustomerDoc) => {

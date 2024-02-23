@@ -1,6 +1,6 @@
-import { PaginateResultsMiddleware } from "@/middlewares/PaginationMiddleware";
-import { DeliveryUser } from "@/models";
-import { initMulter } from "config/multer";
+import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
+import { DeliveryUser } from "../../models";
+import { initMulter } from "../../config/multer";
 import {
   AdminGetDeliveryUsers,
   AdminGetTransactions,
@@ -12,11 +12,11 @@ import {
   GetVendors,
   UpdateVendor,
   VerifyDeliveryUser,
-} from "controllers/AdminController";
-import { CreateVendorDTO } from "dtos";
+} from "../../controllers/AdminController";
+import { CreateVendorDTO } from "../../dtos";
 import express from "express";
-import { Authenticate, DtoValidationMiddleware } from "middlewares";
-import { ValidateObjectId } from "middlewares/ValidateObjectId";
+import { Authenticate, DtoValidationMiddleware } from "../../middlewares";
+import { ValidateObjectId } from "../../middlewares/ValidateObjectId";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();

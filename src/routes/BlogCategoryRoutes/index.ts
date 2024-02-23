@@ -1,15 +1,15 @@
 import express from "express";
-import { Authenticate, DtoValidationMiddleware } from "middlewares";
-import { CreateBlogCategoryDTO } from "dtos/BlogCategory";
+import { Authenticate, DtoValidationMiddleware } from "../../middlewares";
+import { CreateBlogCategoryDTO } from "../../dtos/BlogCategory";
 import {
   CreateBlogCategory,
   DeleteBlogCategory,
   UpdateBlogCategory,
   GetBlogsByCategory,
   GetCategories,
-} from "controllers/BlogCategoryController";
-import { ValidateObjectId } from "middlewares/ValidateObjectId";
-import { DeleteBlogCategories } from "controllers/ProductCategoryController";
+} from "../../controllers/BlogCategoryController";
+import { ValidateObjectId } from "../../middlewares/ValidateObjectId";
+import { DeleteBlogCategories } from "../../controllers/ProductCategoryController";
 
 const router = express.Router();
 

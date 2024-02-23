@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthPayload } from "interfaces/Auth";
-import { Customer, CustomerDoc } from "models";
-import { NotFound, validateSignature } from "utilities";
+import { Customer, CustomerDoc } from "../models";
+import { NotFound, validateSignature } from "../utilities";
 export { };
 
 declare global {

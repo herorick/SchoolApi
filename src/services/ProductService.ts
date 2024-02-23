@@ -1,5 +1,5 @@
-import { IProduct, Product } from "@/models";
-import { NotFound } from "@/utilities";
+import { IProduct, Product } from "../models";
+import { NotFound } from "../utilities";
 import { get } from "lodash";
 
 class ProductService {

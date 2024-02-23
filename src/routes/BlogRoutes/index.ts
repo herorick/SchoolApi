@@ -1,6 +1,6 @@
 import express from "express";
-import { Authenticate, DtoValidationMiddleware } from "middlewares";
-import { CreateBlogDTO } from "dtos/BlogDto";
+import { Authenticate, DtoValidationMiddleware } from "../../middlewares";
+import { CreateBlogDTO } from "../../dtos/BlogDto";
 
 import {
   CreateBlog,
@@ -8,10 +8,10 @@ import {
   GetBlogById,
   GetAllBlog,
   UpdateBlog,
-} from "controllers/BlogController";
-import { PaginateResultsMiddleware } from "middlewares/PaginationMiddleware";
-import { Blog } from "models";
-import { ValidateObjectId } from "middlewares/ValidateObjectId";
+} from "../../controllers/BlogController";
+import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
+import { Blog } from "../../models";
+import { ValidateObjectId } from "../../middlewares/ValidateObjectId";
 
 const router = express.Router();
 

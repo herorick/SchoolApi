@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { Offer } from '../models/Offer';
-import { Vendor } from '@/models';
+import { Vendor } from '../models';
 import asyncHandler from "express-async-handler";
 
 export const GetProducts = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {

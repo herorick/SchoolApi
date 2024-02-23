@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Brand, Product } from "models";
+import { Brand, Product } from "../models";
 import asyncHandler from "express-async-handler";
 
 export const CreateBrand = asyncHandler(async (req: Request, res: Response) => {

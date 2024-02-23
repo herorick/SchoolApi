@@ -1,4 +1,4 @@
-import { HttpStatusCode } from "enums/Common";
+import { HttpStatusCode } from "../../enums/Common";
 
 export class BaseError extends Error {
   public readonly name: string;

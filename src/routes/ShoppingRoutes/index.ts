@@ -1,4 +1,4 @@
-import { GetAvailableOffers, GetProducts, GetTopVendor, GetVendorById, SearchProducts } from '@/controllers/ShoppingController';
+import { GetAvailableOffers, GetProducts, GetTopVendor, GetVendorById, SearchProducts } from '../../controllers/ShoppingController';
 import express from 'express';
 
 const router = express.Router();

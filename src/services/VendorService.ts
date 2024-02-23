@@ -1,6 +1,6 @@
-import { CustomerDoc, Vendor } from "@/models";
-import { NotFound } from "@/utilities";
-import { ICartItem } from "@/interfaces/Cart";
+import { CustomerDoc, Vendor } from "../models";
+import { NotFound } from "../utilities";
+import { ICartItem } from "../interfaces/Cart";
 
 class VendorService {
   static GetVendorById = async (vendorId: string) => {

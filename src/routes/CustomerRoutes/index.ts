@@ -19,10 +19,10 @@ import {
   CustomerUpdateSetting,
   CustomerAddFavoriteVendor,
   CustomerRemoveFavoriteVendor,
-} from "controllers";
-import { initMulter } from "config/multer";
-import { AuthenticateCustomer, DtoValidationMiddleware } from "middlewares";
-import { CreateCustomerDTO, CustomSignInValidator, CustomSignUpValidator } from "dtos/CustomerDto";
+} from "../../controllers";
+import { initMulter } from "../../config/multer";
+import { AuthenticateCustomer, DtoValidationMiddleware } from "../../middlewares";
+import { CreateCustomerDTO, CustomSignInValidator, CustomSignUpValidator } from "../../dtos/CustomerDto";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();

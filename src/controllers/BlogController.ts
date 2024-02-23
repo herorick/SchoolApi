@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Blog, BlogCategory, Vendor } from "models";
+import { Blog, BlogCategory, Vendor } from "../models";
 import asyncHandler from "express-async-handler";
 
 export const CreateBlog = asyncHandler(async (req: Request, res: Response) => {

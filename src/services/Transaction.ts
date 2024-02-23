@@ -1,5 +1,5 @@
-import { NotFound } from "@/utilities";
-import { Transaction } from "@/models/Transaction";
+import { NotFound } from "../utilities";
+import { Transaction } from "../models/Transaction";
 
 class TransactionService {
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { Product, ProductCategory } from "models";
+import { Product, ProductCategory } from "../models";
 import asyncHandler from "express-async-handler";
-import { NotFound } from "utilities";
+import { NotFound } from "../utilities";
 
 export const GetProductCategories = asyncHandler(
   async (req: Request, res: Response) => {

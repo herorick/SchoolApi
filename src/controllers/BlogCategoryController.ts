@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { Blog, BlogCategory, Vendor } from "models";
-import { NotFound } from "utilities";
+import { Blog, BlogCategory, Vendor } from "../models";
+import { NotFound } from "../utilities";
 import asyncHandler from "express-async-handler";
 
 export const GetCategories = asyncHandler(
@@ -58,7 +58,7 @@ export const DeleteBlogCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { params } = req;
     const { id } = params;
-    const deletedRecord = await BlogCategory.findByIdAndDelete(id);
+    const deletedRecord = await BlogCategory.findById(id);
     const blogs = deletedRecord?.blogs || [];
     await Blog.deleteMany(blogs);
     res.json(deletedRecord);
