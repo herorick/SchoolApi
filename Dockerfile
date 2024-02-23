@@ -2,13 +2,10 @@
 FROM node:18
 
 # Thiết lập thư mục làm việc
-WORKDIR /app
+WORKDIR /app/schoolapi
 
 # Sao chép các tệp package.json và package-lock.json vào thư mục /app
 COPY package*.json ./
-
-# Cài đặt các dependencies
-RUN npm install
 
 # Sao chép toàn bộ mã nguồn vào thư mục /app
 COPY . .
@@ -17,4 +14,4 @@ COPY . .
 EXPOSE 8008
 
 # Chạy ứng dụng Express khi container được khởi chạy
-CMD [ "npm", "dev" ]
+CMD [ "npm", "run", "start" ]
