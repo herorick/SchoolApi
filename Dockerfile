@@ -2,13 +2,14 @@
 FROM node:18
 
 # Thiết lập thư mục làm việc
-WORKDIR /app/schoolapi
+WORKDIR /SchoolApi
 
 # Sao chép các tệp package.json và package-lock.json vào thư mục /app
-COPY package*.json ./
+COPY . ./
 
-# Sao chép toàn bộ mã nguồn vào thư mục /app
-COPY . .
+RUN npm install
+
+RUN npm build
 
 # Expose cổng 8080
 EXPOSE 8008
