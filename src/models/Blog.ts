@@ -6,6 +6,7 @@ interface BlogDoc extends Document {
   tags: string[];
   author: string;
   blogCategory: any;
+  image: string;
 }
 
 const BlogSchema = new Schema(
@@ -21,6 +22,7 @@ const BlogSchema = new Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "blogCategory",
     },
+    image: { type: String, require: true },
   },
   {
     toJSON: {

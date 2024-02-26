@@ -3,7 +3,10 @@ import { Blog, BlogCategory, Vendor } from "../models";
 import asyncHandler from "express-async-handler";
 
 export const CreateBlog = asyncHandler(async (req: Request, res: Response) => {
-  const { body } = req;
+  const { body, files } = req;
+  const images = files as [Express.Multer.File];
+  const imageNames = images.map((file) => file.filename);
+
   const user = req.user!;
   const results = await Blog.create({
     title: body.title,
@@ -11,6 +14,7 @@ export const CreateBlog = asyncHandler(async (req: Request, res: Response) => {
     content: body.content,
     author: user.id,
     blogCategory: body.categoryId,
+    image: imageNames[0],
   });
   await Promise.all([
     Vendor.findByIdAndUpdate(user.id, { $push: { blogs: results._id } }),
@@ -50,8 +54,11 @@ export const DeleteBlogById = asyncHandler(
 );
 
 export const GetAllBlog = asyncHandler(async (req: Request, res: Response) => {
-  const data = await Blog.find().populate("blogCategoryId").exec()
-  res.json(data)
+  const data = await Blog.find({})
+    .populate("blogCategory")
+    .populate("author")
+    .exec();
+  res.json({ results: data });
   // res.json(res.paginatedData);
 });
 
