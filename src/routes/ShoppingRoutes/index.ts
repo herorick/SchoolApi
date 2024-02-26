@@ -1,18 +1,25 @@
-import { GetAvailableOffers, GetProducts, GetTopVendor, GetVendorById, SearchProducts } from '../../controllers/ShoppingController';
-import express from 'express';
+import {
+  GetAvailableOffers,
+  GetBestSale,
+  GetProducts,
+  GetTopVendor,
+  GetVendorById,
+  SearchProducts,
+} from "../../controllers/ShoppingController";
+import express from "express";
 
 const router = express.Router();
 
-router.get('/', GetProducts)
+router.get("/products", GetProducts);
 
-router.get('/top-restaurant/:pincode', GetTopVendor)
+router.get("/products/best-sale", GetBestSale);
 
-router.get('/search/', SearchProducts)
+router.get("/top-restaurant/:pincode", GetTopVendor);
 
+router.get("/search/", SearchProducts);
 
-router.get('/offers/', GetAvailableOffers)
+router.get("/offers/", GetAvailableOffers);
 
+router.get("/restaurant/:id", GetVendorById);
 
-router.get('/restaurant/:id', GetVendorById)
-
-export { router as ShoppingRoutes }
+export { router as ShoppingRoutes };

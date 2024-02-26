@@ -2,10 +2,12 @@ import mongoose, { Document, Schema } from "mongoose";
 
 interface ReviewDoc extends Document {
   product: any;
-  auth: any;
-  description: string;
-  rating: number;
   like: any[];
+  name: string;
+  email: string;
+  rating: number;
+  title: string;
+  body: string;
 }
 
 const ReviewSchema = new Schema(
@@ -15,12 +17,15 @@ const ReviewSchema = new Schema(
       ref: "product",
       require: true,
     },
-    auth: {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "customer",
+    title: {
+      type: String,
       require: true,
     },
-    description: {
+    name: {
+      type: String,
+      require: true,
+    },
+    body: {
       type: String,
       require: true,
     },
@@ -32,7 +37,6 @@ const ReviewSchema = new Schema(
       {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "customer",
-        require: true,
       },
     ],
   },

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AuthPayload } from "interfaces/Auth";
 import { Customer, CustomerDoc } from "../models";
 import { NotFound, validateSignature } from "../utilities";
-export { };
+export {};
 
 declare global {
   namespace Express {
@@ -25,7 +25,7 @@ export const Authenticate = async (
   if (validate) {
     next();
   } else {
-    return res.json({ message: "user not Authenticated" });
+    return res.status(400).json({ message: "user not Authenticated" });
   }
 };
 
@@ -44,6 +44,6 @@ export const AuthenticateCustomer = async (
     req.profile = profile;
     next();
   } else {
-    return res.json({ message: "user not Authenticated" });
+    return res.status(400).json({ message: "user not Authenticated" });
   }
 };

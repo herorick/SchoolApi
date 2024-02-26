@@ -1,12 +1,77 @@
 import { NextFunction, Request, Response } from "express";
-import { NotFound } from "../utilities";
+import { APIError, NotFound } from "../utilities";
 import asyncHandler from "express-async-handler";
-import { Brand, Product, ProductCategory, Vendor } from "../models";
+import { Brand, Product, ProductCategory, ProductDoc, Vendor } from "../models";
 import difference from "lodash/difference";
+import { Review } from "@/models/Review";
+import { PaginatedData } from "@/middlewares/PaginationMiddleware";
 
 export const GetProducts = asyncHandler(async (req: Request, res: Response) => {
-  res.json(res.paginatedData);
+  try {
+    const user = req.user!;
+    const page: number = parseInt(req.query.page as string) || 1;
+    const limit: number = parseInt(req.query.limit as string) || 10;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const results: PaginatedData<ProductDoc> = {
+      results: [],
+    }; // Count the total number of documents in the collection
+    const totalDocuments = await Product.countDocuments({
+      vendorId: user.id,
+    }).exec();
+
+    if (startIndex > 0) {
+      results.hasPrevious = true;
+    }
+
+    if (endIndex < totalDocuments) {
+      results.hasNext = true;
+    }
+
+    results.totalPage = Math.ceil(totalDocuments / limit);
+
+    results.page = page;
+
+    // Query the database for paginated results
+    results.results = await Product.find({ vendorId: user.id })
+      .skip(startIndex)
+      .limit(limit)
+      .populate("review")
+      .populate("brand")
+      .populate("productCategories")
+      .exec();
+
+    res.status(200).json(results);
+  } catch (err) {
+    console.log(err);
+    throw new APIError("can't get transaction");
+  }
 });
+
+export const ReviewProduct = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const product = await Product.findById(id);
+      if (product) {
+        const review = await Review.create({
+          product: id,
+          ...req.body,
+        });
+        console.log({ review });
+        product.reviews.push(review);
+        await product.save();
+        res.json({ results: review });
+      }
+      res.status(400).json({ message: "some thing wrong!" });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ message: "some thing wrong!" });
+    }
+  }
+);
 
 export const GetProductById = asyncHandler(
   async (req: Request, res: Response) => {
@@ -14,8 +79,9 @@ export const GetProductById = asyncHandler(
     const product = await Product.findById(id)
       .populate("brand")
       .populate("productCategories")
+      .populate("reviews")
       .exec();
-    if(!product) throw new NotFound("Product not found by id: " + id);
+    if (!product) throw new NotFound("Product not found by id: " + id);
     res.json({ results: product });
   }
 );

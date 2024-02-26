@@ -66,15 +66,6 @@ ProductSchema.virtual("id").get(function () {
   return this._id.toHexString();
 });
 
-// @ts-ignore
-var autoPopulateLead = function (next) {
-  // @ts-ignore
-  this.populate("brand").populate("productCategories");
-  next();
-};
-
-ProductSchema.pre("find", autoPopulateLead);
-
 const Product = mongoose.model<ProductDoc>("product", ProductSchema);
 
 export { Product };

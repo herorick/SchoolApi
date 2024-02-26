@@ -8,6 +8,7 @@ import {
   UpdateProduct,
   DeleteProducts,
   DeleteProductImage,
+  ReviewProduct,
 } from "../../controllers";
 import { CreateProductDTO } from "../../dtos/ProductDto";
 import { initMulter } from "../../config/multer";
@@ -19,6 +20,9 @@ const router = express.Router();
 const imagesMiddleware = initMulter();
 
 router.get("", PaginateResultsMiddleware(Product), GetProducts);
+
+router.post("/:id/review", ValidateObjectId, ReviewProduct);
+
 router.get("/:id", ValidateObjectId, GetProductById);
 router.post(
   "/",

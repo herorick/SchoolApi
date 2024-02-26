@@ -94,6 +94,8 @@ export const CustomerSignIn = asyncHandler(
           email: customer.email,
           verified: customer.verified,
         });
+      } else {
+        res.status(400).json("Wrong email or password");
       }
     } catch (err) {
       res.status(404).json("some thing wrong");
@@ -300,6 +302,20 @@ export const CustomerGetDeliveryUsers = asyncHandler(
 // end delivery
 
 // wishlist
+export const CustomerGetWishList = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const user = req.user!;
+      const customer = await Customer.findById(user.id).populate("wishlist");
+      if (customer !== null) {
+        res.json({ results: customer.wishlist });
+      }
+    } catch (err) {
+      throw new APIError("can't add wishlist");
+    }
+  }
+);
+
 export const CustomerAddWishList = asyncHandler(
   async (req: Request, res: Response) => {
     try {
