@@ -62,6 +62,19 @@ export const GetAllBlog = asyncHandler(async (req: Request, res: Response) => {
   // res.json(res.paginatedData);
 });
 
+export const GetAllBlogByTag = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { params, query } = req;
+    const { search } = query
+    const data = await Blog.find({ tags: { $in: [search] } })
+      .populate("blogCategory")
+      .populate("author")
+      .exec();
+    res.json({ results: data });
+    // res.json(res.paginatedData);
+  }
+);
+
 export const UpdateBlog = asyncHandler(async (req: Request, res: Response) => {
   const { params, body } = req;
   const { id } = params;
