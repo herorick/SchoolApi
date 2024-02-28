@@ -23,6 +23,7 @@ router.get(
   GetProductCategories
 );
 router.get("/:id", ValidateObjectId, GetProductCategoryById);
+
 router.post(
   "/",
   Authenticate,

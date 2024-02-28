@@ -13,12 +13,12 @@ export const GetProductCategoryById = asyncHandler(
   async (req: Request, res: Response) => {
     const { params } = req;
     const { id } = params;
-    const results = await ProductCategory.findById(id)
+    const data = await ProductCategory.findById(id)
       .populate("products")
       .exec();
-    if (!results) throw new NotFound("category is not found with id: " + id);
+    if (!data) throw new NotFound("category is not found with id: " + id);
 
-    res.json({ results });
+    res.json({ data });
   }
 );
 
