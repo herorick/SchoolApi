@@ -68,3 +68,33 @@ export const UpdateBlog = asyncHandler(async (req: Request, res: Response) => {
   const results = await Blog.findByIdAndUpdate(id, body, { new: true });
   res.json({ results });
 });
+
+export const ReviewPost = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const { params, body, user } = req;
+    const { id } = params;
+    const blog = await Blog.findById(id);
+    if (blog !== null) {
+      blog.reviews.push({ ...body });
+      console.log({ blog });
+      const resp = await blog.save();
+      res.json({ results: resp });
+    }
+    throw new Error("Not Found Post");
+  } catch (err) {
+    res.status(400).json({ message: "Some thing was wrong" });
+  }
+});
+
+export const GetRelativePosts = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const currentId = req.query.id;
+      const query = currentId ? { _id: { $not: currentId } } : {};
+      const blogs = await Blog.find(query).sort({ createdAt: -1 }).limit(9);
+      res.json({ results: blogs });
+    } catch (err) {
+      res.status(400).json({ message: "Some thing was wrong" });
+    }
+  }
+);

@@ -14,6 +14,7 @@ export interface TransactionDoc extends Document {
   order: any;
 }
 
+// create payment  => transaction
 const TransactionSchema = new Schema(
   {
     customerId: { type: String },

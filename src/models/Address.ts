@@ -7,6 +7,9 @@ interface AddressDoc extends Document {
   country: string;
 }
 
+/*
+  tinh shipping
+*/
 const AddressSchema = new Schema(
   {
     street: { type: String, require: true },

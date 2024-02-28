@@ -5,7 +5,8 @@ interface BlogDoc extends Document {
   content: string;
   tags: string[];
   author: string;
-  blogCategory: any;
+  blogCategory: any[];
+  reviews: any;
   image: string;
 }
 
@@ -22,6 +23,11 @@ const BlogSchema = new Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "blogCategory",
     },
+    reviews: [
+      {
+        type: Object,
+      },
+    ],
     image: { type: String, require: true },
   },
   {

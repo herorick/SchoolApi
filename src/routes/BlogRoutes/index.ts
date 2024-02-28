@@ -1,5 +1,9 @@
 import express from "express";
-import { Authenticate, DtoValidationMiddleware } from "../../middlewares";
+import {
+  Authenticate,
+  AuthenticateCustomer,
+  DtoValidationMiddleware,
+} from "../../middlewares";
 import { CreateBlogDTO } from "../../dtos/BlogDto";
 
 import {
@@ -8,6 +12,8 @@ import {
   GetBlogById,
   GetAllBlog,
   UpdateBlog,
+  ReviewPost,
+  GetRelativePosts,
 } from "../../controllers/BlogController";
 import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
 import { Blog } from "../../models";
@@ -39,5 +45,9 @@ router.delete("/:id", ValidateObjectId, Authenticate, DeleteBlogById);
 router.get("/", PaginateResultsMiddleware(Blog), GetAllBlog);
 
 router.get("/:id", ValidateObjectId, GetBlogById);
+
+router.post("/:id/review", ValidateObjectId, ReviewPost);
+
+router.get("/:id/relative-posts", ValidateObjectId, GetRelativePosts);
 
 export { router as BlogRoutes };
