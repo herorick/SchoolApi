@@ -84,12 +84,11 @@ export const UpdateBlog = asyncHandler(async (req: Request, res: Response) => {
 
 export const ReviewPost = asyncHandler(async (req: Request, res: Response) => {
   try {
-    const { params, body, user } = req;
+    const { params, body } = req;
     const { id } = params;
-    const blog = await Blog.findById(id);
-    if (blog !== null) {
-      blog.reviews.push({ ...body });
-      console.log({ blog });
+    const blog = await Blog.findById(id).exec();
+    if (blog) {
+      blog.reviews = blog.reviews.push({ ...body });
       const resp = await blog.save();
       res.json({ results: resp });
     }
