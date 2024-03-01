@@ -3,8 +3,8 @@ import { APIError, NotFound } from "../utilities";
 import asyncHandler from "express-async-handler";
 import { Brand, Product, ProductCategory, ProductDoc, Vendor } from "../models";
 import difference from "lodash/difference";
-import { Review } from "@/models/Review";
-import { PaginatedData } from "@/middlewares/PaginationMiddleware";
+import { Review } from "../models/Review";
+import { PaginatedData } from "../middlewares/PaginationMiddleware";
 
 export const GetProducts = asyncHandler(async (req: Request, res: Response) => {
   try {

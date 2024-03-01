@@ -10,7 +10,7 @@ import {
   GetOrders,
   GetOrderById,
   GetCart,
-  DeleteCart,
+  ClearCart,
   AddToCart,
   VerifyOffer,
   CreatePayment,
@@ -20,6 +20,8 @@ import {
   CustomerAddFavoriteVendor,
   CustomerRemoveFavoriteVendor,
   CustomerGetWishList,
+  UpdateQuantityCartItem,
+  DeleteCartItems,
 } from "../../controllers";
 import { initMulter } from "../../config/multer";
 import {
@@ -55,7 +57,10 @@ router.get("/order/:id", GetOrderById);
 //Cart
 router.post("/cart", AddToCart);
 router.get("/cart", GetCart);
-router.delete("/cart", DeleteCart);
+router.delete("/cart", ClearCart);
+
+router.post("/cart/quantity", UpdateQuantityCartItem)
+router.post("/cart/delete-cart-items", DeleteCartItems)
 
 //Verify Offer
 router.get("/offer/verify/:id", VerifyOffer);

@@ -197,13 +197,17 @@ export const GetCart = asyncHandler(async (req: Request, res: Response) => {
   const result = await Customer.findById(profile.id!)
     .populate("cart.product")
     .exec();
-  res.status(200).json(result);
+  res.status(200).json({ data: result?.cart || [] });
 });
 
-export const DeleteCart = asyncHandler(async (req: Request, res: Response) => {
+export const ClearCart = asyncHandler(async (req: Request, res: Response) => {
   const profile = req.profile!;
-  const cartResult = await CartService.deleteCart(profile);
-  res.status(200).json(cartResult);
+  const result = await Customer.findById(profile.id!).exec();
+  if (result) {
+    result.cart = [];
+    await result.save();
+    res.status(200).json({ data: result });
+  }
 });
 
 export const AddToCart = asyncHandler(async (req: Request, res: Response) => {
@@ -212,6 +216,40 @@ export const AddToCart = asyncHandler(async (req: Request, res: Response) => {
   const cartResult = await CartService.addToCart(cartItem, profile);
   res.status(200).json(cartResult.cart);
 });
+
+export const UpdateQuantityCartItem = asyncHandler(
+  async (req: Request, res: Response) => {
+    const profile = req.profile!;
+    const { product: productId, unit } = req.body as ICartItem;
+    const result = await Customer.findById(profile.id!).exec();
+    if (!!result) {
+      result.cart = (result?.cart || []).map((cart) => {
+        if (cart.product.toString() === productId) {
+          cart.unit = unit;
+          return cart;
+        }
+        return cart;
+      });
+      await result.save();
+    }
+    res.status(200).json({ data: await result?.populate("cart.product") });
+  }
+);
+
+export const DeleteCartItems = asyncHandler(
+  async (req: Request, res: Response) => {
+    const profile = req.profile!;
+    const productIds = req.body.productIds as any[];
+    const result = await Customer.findById(profile.id!).exec();
+    if (!!result) {
+      result.cart = (result.cart || []).filter(
+        (cart) => !productIds.includes(cart.product.toString())
+      );
+      await result.save();
+    }
+    res.status(200).json({ data: await result?.populate("cart.product")  });
+  }
+);
 
 // Order
 export const GetOrders = asyncHandler(async (req: Request, res: Response) => {

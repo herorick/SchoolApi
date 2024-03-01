@@ -19,7 +19,7 @@ import {
 import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
 import { Blog } from "../../models";
 import { ValidateObjectId } from "../../middlewares/ValidateObjectId";
-import { initMulter } from "@/config";
+import { initMulter } from "../../config";
 
 const router = express.Router();
 

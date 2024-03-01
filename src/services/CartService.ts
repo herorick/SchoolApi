@@ -8,7 +8,7 @@ class CartService {
       const cartItems = profile.cart || [];
       if (cartItems.length > 0) {
         let existFoodItems = cartItems.filter(
-          (item) => item.product === product
+          (item) => item.product.toString() === product
         );
         if (existFoodItems.length > 0) {
           const index = cartItems.indexOf(existFoodItems[0]);
@@ -28,16 +28,17 @@ class CartService {
       const cartResult = await profile.save();
       return cartResult;
     } catch (err) {
-      console.log(err)
+      console.log(err);
       throw new Error("something was wrong!!");
     }
   };
   static deleteCart = async (profile: CustomerDoc) => {
     try {
-        profile.cart = [] as ICartItem[];
-        return await profile.save();
-    }catch(err) {
-        throw new Error("Something was wrong")
+      profile.cart = [] as ICartItem[];
+      const response = await profile.save();
+      return response;
+    } catch (err) {
+      throw new Error("Something was wrong");
     }
   };
 }
