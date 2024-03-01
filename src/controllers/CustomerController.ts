@@ -188,13 +188,16 @@ export const CustomerEditProfile = asyncHandler(
         new: true,
       }
     );
-    res.status(201).json({ results });
+    res.status(201).json({ data: results });
   }
 );
 
 export const GetCart = asyncHandler(async (req: Request, res: Response) => {
   const profile = req.profile!;
-  res.status(200).json(profile.cart);
+  const result = await Customer.findById(profile.id!)
+    .populate("cart.product")
+    .exec();
+  res.status(200).json(result);
 });
 
 export const DeleteCart = asyncHandler(async (req: Request, res: Response) => {
@@ -220,7 +223,7 @@ export const GetOrders = asyncHandler(async (req: Request, res: Response) => {
 export const GetOrderById = asyncHandler(
   async (req: Request, res: Response) => {
     const orderId = req.params.id;
-    const order = await CustomerService.getOrderById(orderId);
+    const order = await Order.findById(orderId).populate("items.product");
     res.status(200).json({
       results: order,
     });

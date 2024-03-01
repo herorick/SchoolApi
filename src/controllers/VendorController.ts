@@ -180,6 +180,7 @@ export const GetOrderDetails = async (
   next: NextFunction
 ) => {
   const orderId = req.params.id;
+  console.log(req.params)
   if (orderId) {
     const order = await Order.findById(orderId).populate("items.product");
     if (order != null) {

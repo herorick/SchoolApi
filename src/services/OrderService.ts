@@ -57,11 +57,11 @@ class OrderService {
     let netAmount = 0.0;
     let vendorId: string = "";
     const products = await ProductService.findProductByIds(
-      items.map((item) => item.id)
+      items.map((item) => item.product)
     );
     products.forEach((product) => {
-      items.forEach(({ id, unit }) => {
-        if (ProductService.getProductId(product) === id) {
+      items.forEach(({ product: productId, unit }) => {
+        if (ProductService.getProductId(product) === productId) {
           console.log({ product });
           vendorId = product.vendor;
           netAmount += product.price * unit;
