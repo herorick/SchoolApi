@@ -44,7 +44,7 @@ router.post("/signIn", CustomSignInValidator, CustomerSignIn);
 router.post("/verify", AuthenticateCustomer, CustomerVerify);
 router.patch("/otp", AuthenticateCustomer, CustomerRequestOTP);
 router.get("/profile", AuthenticateCustomer, CustomerGetProfile);
-router.patch("/profile", AuthenticateCustomer, CustomerEditProfile);
+router.put("/profile", AuthenticateCustomer, CustomerEditProfile);
 
 //Order
 router.use(AuthenticateCustomer);

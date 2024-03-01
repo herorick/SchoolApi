@@ -170,7 +170,7 @@ export const CustomerGetProfile = asyncHandler(
     if (!profile) {
       throw new NotFound("customer not found by id" + customer.id);
     }
-    res.status(201).json({ results: profile });
+    res.status(201).json({ data: profile });
   }
 );
 
