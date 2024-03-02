@@ -2,7 +2,6 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface OrderDoc extends Document {
   orderId: string;
-  customerId: string;
   amount: number;
   paidAmount: number;
   status: string;
@@ -15,14 +14,15 @@ export interface OrderDoc extends Document {
   deliveryId: string;
   appliedOffers: boolean;
   offerId: string;
-  vendorId: string;
   verifyImage: string[];
+
+  customerId: string;
+  vendorId: string;
 }
 
 const OrderSchema = new Schema(
   {
     orderId: { type: String, require: true },
-    customerId: { type: String, require: true },
     amount: { type: Number, require: true },
     paidAmount: { type: Number, require: true },
     status: { type: String, require: true },
@@ -30,9 +30,18 @@ const OrderSchema = new Schema(
     deliveryId: { type: String },
     appliedOffers: { type: Boolean },
     offerId: { type: String },
-    vendorId: { type: String, require: true },
     verifyImage: [{ type: String }],
     address: [{ type: Schema.Types.ObjectId, ref: "address", require: true }],
+    vendorId: {
+      type: Schema.Types.ObjectId,
+      ref: "vendor",
+      required: true,
+    },
+    customerId: {
+      type: Schema.Types.ObjectId,
+      ref: "customer",
+      required: true,
+    },
     items: [
       {
         product: {

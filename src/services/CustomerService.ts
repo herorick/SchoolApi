@@ -1,4 +1,4 @@
-import { Customer } from "../models";
+import { Customer, Order } from "../models";
 import { NotFound } from "../utilities";
 
 class CustomerService {
@@ -11,7 +11,15 @@ class CustomerService {
   };
 
   static getOrders = async (customerId: string) => {
-    const profile = await Customer.findById(customerId).populate("orders");
+    const orders = await Order.find({ customerId }).populate("items.product");
+    if (!orders) {
+      throw new NotFound("Order not found by id" + customerId);
+    }
+    return orders;
+  };
+
+  static GetCustomerById = async (customerId: string) => {
+    const profile = await Customer.findById(customerId);
     if (!profile) {
       throw new NotFound("customer not found by id" + customerId);
     }

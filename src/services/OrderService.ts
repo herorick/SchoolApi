@@ -80,10 +80,9 @@ class OrderService {
       status: "Waiting",
       remarks: "",
       deliveryId,
+      customerId: profile.id
     });
 
-    console.log({ deliveryId });
-    console.log({ currentOrder });
 
     profile.cart = [] as any;
     profile.orders.push(currentOrder);

@@ -247,15 +247,15 @@ export const DeleteCartItems = asyncHandler(
       );
       await result.save();
     }
-    res.status(200).json({ data: await result?.populate("cart.product")  });
+    res.status(200).json({ data: await result?.populate("cart.product") });
   }
 );
 
 // Order
 export const GetOrders = asyncHandler(async (req: Request, res: Response) => {
   const customer = req.user!;
-  const profile = await CustomerService.getOrders(customer.id);
-  res.status(200).json(profile.orders);
+  const orders = await CustomerService.getOrders(customer.id);
+  res.status(200).json({ data: orders });
 });
 
 export const GetOrderById = asyncHandler(
@@ -270,7 +270,7 @@ export const GetOrderById = asyncHandler(
 
 export const CreateOrder = asyncHandler(async (req: Request, res: Response) => {
   const customer = req.user!;
-  const profile = await CustomerService.getOrders(customer.id);
+  const profile = await CustomerService.GetCustomerById(customer.id);
   const { txnId, amount, items, deliveryId } = req.body as ICreateOrder;
   try {
     const response = await OrderService.createOrder(
@@ -320,7 +320,7 @@ export const CreatePayment = asyncHandler(
       paymentResponse: "Payment is cash on Delivery",
     });
 
-    res.status(200).json(transaction);
+    res.status(200).json({ data: transaction });
   }
 );
 
