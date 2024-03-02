@@ -32,7 +32,7 @@ export const GetBlogById = asyncHandler(async (req: Request, res: Response) => {
     .populate("author")
     .populate("blogCategory")
     .exec();
-  res.json({ results });
+  res.json({ data: results });
 });
 
 export const DeleteBlogById = asyncHandler(
@@ -65,7 +65,7 @@ export const GetAllBlog = asyncHandler(async (req: Request, res: Response) => {
 export const GetAllBlogByTag = asyncHandler(
   async (req: Request, res: Response) => {
     const { params, query } = req;
-    const { search } = query
+    const { search } = query;
     const data = await Blog.find({ tags: { $in: [search] } })
       .populate("blogCategory")
       .populate("author")
@@ -86,13 +86,15 @@ export const ReviewPost = asyncHandler(async (req: Request, res: Response) => {
   try {
     const { params, body } = req;
     const { id } = params;
-    const blog = await Blog.findById(id).exec();
-    if (blog) {
-      blog.reviews = blog.reviews.push({ ...body });
-      const resp = await blog.save();
-      res.json({ results: resp });
-    }
-    throw new Error("Not Found Post");
+
+    const data = await Blog.findByIdAndUpdate(
+      id,
+      {
+        $push: { reviews: body },
+      },
+      { new: true }
+    );
+    res.json({ data });
   } catch (err) {
     res.status(400).json({ message: "Some thing was wrong" });
   }
