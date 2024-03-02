@@ -303,12 +303,9 @@ export const CreatePayment = asyncHandler(
     const customer = req.user!;
     const { amount, paymentMode, offerId } = req.body;
     let payableAmount = Number(amount);
-    if (!offerId) throw new NotFound("not found offerId: " + offerId);
     const appliedOffer = await Offer.findById(offerId);
-    if (appliedOffer === null)
-      throw new NotFound("not found offerId: " + offerId);
 
-    if (appliedOffer.isActive) {
+    if (appliedOffer?.isActive) {
       payableAmount = payableAmount - appliedOffer.offerAmount;
     }
     // perform payment gateway charge api
