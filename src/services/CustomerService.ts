@@ -11,7 +11,7 @@ class CustomerService {
   };
 
   static getOrders = async (customerId: string) => {
-    const orders = await Order.find({ customerId }).populate("items.product");
+    const orders = await Order.find({ customerId }).populate("items.product").populate("vendorId");
     if (!orders) {
       throw new NotFound("Order not found by id" + customerId);
     }

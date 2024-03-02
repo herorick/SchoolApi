@@ -4,13 +4,13 @@ export interface OrderDoc extends Document {
   orderId: string;
   amount: number;
   paidAmount: number;
-  status: string;
+  status: "waitingApprove" | "waitingDelivery" | "delivered" | "cancelled";
   address: any[];
   items: any[];
   remarks: string;
   date: Date;
   paidThrough: string; // COD, Credit Card, Wallt,
-  paymentResponse: string; // {status: true, reponse: some bank response}
+  paymentResponse: string; // {status: true, response: some bank response}
   deliveryId: string;
   appliedOffers: boolean;
   offerId: string;
@@ -25,7 +25,11 @@ const OrderSchema = new Schema(
     orderId: { type: String, require: true },
     amount: { type: Number, require: true },
     paidAmount: { type: Number, require: true },
-    status: { type: String, require: true },
+    status: {
+      type: String,
+      require: true,
+      enum: ["waitingApprove", "waitingDelivery", "delivered", "cancelled"],
+    },
     remarks: { type: String, require: true },
     deliveryId: { type: String },
     appliedOffers: { type: Boolean },

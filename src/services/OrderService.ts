@@ -77,7 +77,7 @@ class OrderService {
       amount: netAmount,
       paidAmount: amount,
       date: new Date(),
-      status: "Waiting",
+      status: "waitingApprove",
       remarks: "",
       deliveryId,
       customerId: profile.id
