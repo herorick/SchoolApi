@@ -367,7 +367,7 @@ export const CustomerAddWishList = asyncHandler(
         const wishList = customer?.wishlist || [];
         customer.wishlist = [...wishList, productId];
         const result = await customer.save();
-        res.json({ result });
+        res.json({ data: result });
       }
     } catch (err) {
       throw new APIError("can't add wishlisth");
