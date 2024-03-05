@@ -279,8 +279,6 @@ export const AddOffer = asyncHandler(async (req: Request, res: Response) => {
       promoType,
       startValidity,
       endValidity,
-      bank,
-      bins,
       minValue,
       isActive,
       numberOfTimes,
@@ -290,7 +288,6 @@ export const AddOffer = asyncHandler(async (req: Request, res: Response) => {
     console.log({ vendor, userId: user.id });
     if (!vendor) throw new NotFound("vendor not found by id: " + user.id);
     const offer = await Offer.create({
-      bins,
       promoCode,
       title,
       description,
@@ -299,7 +296,6 @@ export const AddOffer = asyncHandler(async (req: Request, res: Response) => {
       promoType,
       startValidity,
       endValidity,
-      bank,
       isActive,
       minValue,
       vendors: [vendor],
@@ -337,8 +333,6 @@ export const EditOffer = asyncHandler(async (req: Request, res: Response) => {
       promoType,
       startValidity,
       endValidity,
-      bank,
-      bins,
       minValue,
       isActive,
     } = <CreateOfferInputs>req.body;
@@ -348,7 +342,6 @@ export const EditOffer = asyncHandler(async (req: Request, res: Response) => {
       throw new NotFound("Not found offer with id: " + offerId);
     if (!vendor) throw new NotFound("Not found offer with id: " + user.id);
 
-    currentOffer.bins = bins;
     currentOffer.title = title;
     currentOffer.promoCode = promoCode;
     currentOffer.description = description;
@@ -357,7 +350,6 @@ export const EditOffer = asyncHandler(async (req: Request, res: Response) => {
     currentOffer.promoType = promoType;
     currentOffer.startValidity = startValidity;
     currentOffer.endValidity = endValidity;
-    currentOffer.bank = bank;
     currentOffer.isActive = isActive;
     currentOffer.minValue = minValue;
     const result = await currentOffer.save();

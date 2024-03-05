@@ -11,8 +11,6 @@ export interface OfferDoc extends Document {
   endValidity: Date;
   promoCode: string;
   promoType: string;
-  bank: [any];
-  bins: [any];
   isActive: boolean;
   numberOfTimes: number;
   isUnlimited: boolean;
@@ -41,8 +39,6 @@ const OfferSchema = new Schema(
       require: true,
       enum: ["draft", "scheduled", "active", "expired"],
     },
-    bank: [{ type: String }],
-    bins: [{ type: Number }],
     isActive: { type: Boolean },
     numberOfTimes: { type: Number },
     isUnlimited: { type: Boolean },
