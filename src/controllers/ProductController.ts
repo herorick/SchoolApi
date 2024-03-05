@@ -5,6 +5,7 @@ import { Brand, Product, ProductCategory, ProductDoc, Vendor } from "../models";
 import difference from "lodash/difference";
 import { Review } from "../models/Review";
 import { PaginatedData } from "../middlewares/PaginationMiddleware";
+import { sumBy } from "lodash";
 
 export const GetProducts = asyncHandler(async (req: Request, res: Response) => {
   try {
@@ -60,10 +61,16 @@ export const ReviewProduct = asyncHandler(
           product: id,
           ...req.body,
         });
-        console.log({ review });
         product.reviews.push(review);
+        const populateProduct = await product.populate("reviews");
+        populateProduct.reviews.forEach((review) => {
+          console.log(review);
+        });
+        const totalStar = sumBy(populateProduct.reviews, (data) => data.rating);
+        const numberReviews = populateProduct.reviews.length;
+        product.rating = numberReviews ? totalStar / numberReviews : 0;
         await product.save();
-        res.json({ results: review });
+        res.json({ data: review });
       }
       res.status(400).json({ message: "some thing wrong!" });
     } catch (err) {

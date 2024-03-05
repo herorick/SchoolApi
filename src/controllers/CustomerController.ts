@@ -385,7 +385,24 @@ export const CustomerRemoveWishList = asyncHandler(
           (item) => item.toString() !== productId
         );
         const result = await customer.save();
-        res.json({ result });
+        res.json({ data: result });
+      }
+    } catch (err) {
+      throw new APIError("can't add wishlisth");
+    }
+  }
+);
+
+export const CustomerClearWishList = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const user = req.user!;
+      const { productId } = req.body;
+      const customer = await Customer.findById(user.id)!;
+      if (customer !== null) {
+        customer.wishlist = [];
+        const result = await customer.save();
+        res.json({ data: result });
       }
     } catch (err) {
       throw new APIError("can't add wishlisth");

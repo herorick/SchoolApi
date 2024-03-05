@@ -22,6 +22,7 @@ import {
   CustomerGetWishList,
   UpdateQuantityCartItem,
   DeleteCartItems,
+  CustomerClearWishList,
 } from "../../controllers";
 import { initMulter } from "../../config/multer";
 import {
@@ -72,6 +73,7 @@ router.post("/create-payment", CreatePayment);
 router.get("/wishlist", CustomerGetWishList);
 router.post("/wishlist/add", CustomerAddWishList);
 router.post("/wishlist/remove", CustomerRemoveWishList);
+router.post("/wishlist/clear", CustomerClearWishList);
 
 //Setting
 router.put("/setting", CustomerUpdateSetting);
