@@ -1,10 +1,17 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+export enum orderStatusEnums {
+  waitingApprove = "waitingApprove",
+  waitingDelivery = "waitingDelivery",
+  delivered = "delivered",
+  cancelled = "cancelled",
+}
+
 export interface OrderDoc extends Document {
   orderId: string;
   amount: number;
   paidAmount: number;
-  status: "waitingApprove" | "waitingDelivery" | "delivered" | "cancelled";
+  status: orderStatusEnums;
   address: any[];
   items: any[];
   remarks: string;

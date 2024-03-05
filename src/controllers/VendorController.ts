@@ -10,7 +10,7 @@ import {
 } from "../utilities";
 import { removeImage } from "../utilities/FileUntility";
 import asyncHandler from "express-async-handler";
-import { Order, OrderDoc, Vendor } from "../models";
+import { Order, OrderDoc, Vendor, orderStatusEnums } from "../models";
 import { Offer } from "../models/Offer";
 import { VendorService } from "../services/VendorService";
 import { CreateOfferInputs } from "../dtos/Offer";
@@ -162,6 +162,7 @@ export const GetVendorOrders = asyncHandler(
 
       // Query the database for paginated results
       results.results = await Order.find({ vendorId: user.id })
+        .populate("customerId")
         .skip(startIndex)
         .limit(limit)
         .exec();
@@ -180,7 +181,6 @@ export const GetOrderDetails = async (
   next: NextFunction
 ) => {
   const orderId = req.params.id;
-  console.log(req.params)
   if (orderId) {
     const order = await Order.findById(orderId).populate("items.product");
     if (order != null) {
@@ -203,6 +203,24 @@ export const ProcessOrder = async (
     if (order === null) throw new NotFound("");
     order.status = status;
     order.remarks = remarks;
+    const orderResult = await order.save();
+    if (orderResult != null) {
+      return res.status(200).json(orderResult);
+    }
+  }
+  return res.json({ message: "Unable to process order" });
+};
+
+export const RejectOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const orderId = req.params.id;
+  if (orderId) {
+    const order = await Order.findById(orderId)!;
+    if (order === null) throw new NotFound("");
+    order.status = orderStatusEnums.cancelled;
     const orderResult = await order.save();
     if (orderResult != null) {
       return res.status(200).json(orderResult);
