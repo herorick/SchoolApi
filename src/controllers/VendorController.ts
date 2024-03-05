@@ -314,6 +314,16 @@ export const AddOffer = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+export const GetOffer = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const offerId = req.params.id;
+    const offer = await Offer.findById(offerId);
+    res.status(200).json({ data: offer });
+  } catch (err) {
+    throw new APIError("Unable to edit Offer!");
+  }
+});
+
 export const EditOffer = asyncHandler(async (req: Request, res: Response) => {
   try {
     const user = req.user!;
@@ -359,6 +369,9 @@ export const EditOffer = asyncHandler(async (req: Request, res: Response) => {
 
 export const DeleteOffer = asyncHandler(async (req: Request, res: Response) => {
   try {
+    const offerId = req.params.id;
+    const offer = await Offer.findByIdAndDelete(offerId);
+    res.status(200).json({ data: offer });
   } catch (err) {
     throw new APIError();
   }

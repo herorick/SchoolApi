@@ -37,10 +37,10 @@ const OfferSchema = new Schema(
       enum: ["USER", "ALL", "BANK", "CARD"],
     },
     status: {
-        type: String,
-        require: true,
-        enum: ["draft", "scheduled", "active", "expired"],
-      },
+      type: String,
+      require: true,
+      enum: ["draft", "scheduled", "active", "expired"],
+    },
     bank: [{ type: String }],
     bins: [{ type: Number }],
     isActive: { type: Boolean },
@@ -59,6 +59,10 @@ const OfferSchema = new Schema(
     timestamps: true,
   }
 );
+
+OfferSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
 
 const Offer = mongoose.model<OfferDoc>("offer", OfferSchema);
 
