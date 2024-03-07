@@ -7,7 +7,7 @@
     "dev": "set NODE_ENV=development && nodemon",
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc -p .",
+    "build": "npx tsc -p ."
   },
   "author": "",
   "license": "ISC",
