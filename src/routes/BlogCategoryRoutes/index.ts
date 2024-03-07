@@ -10,10 +10,12 @@ import {
 } from "../../controllers/BlogCategoryController";
 import { ValidateObjectId } from "../../middlewares/ValidateObjectId";
 import { DeleteBlogCategories } from "../../controllers/ProductCategoryController";
+import { PaginateResultsMiddleware } from "@/middlewares/PaginationMiddleware";
+import { BlogCategory } from "@/models";
 
 const router = express.Router();
 
-router.get("/", GetCategories);
+router.get("/", PaginateResultsMiddleware(BlogCategory), GetCategories);
 router.get("/:id", ValidateObjectId, GetBlogsByCategory);
 
 router.use(Authenticate);
@@ -30,6 +32,6 @@ router.patch(
 );
 router.delete("/:id", DeleteBlogCategory);
 
-router.delete("/", DeleteBlogCategories)
+router.delete("/", DeleteBlogCategories);
 
 export { router as BlogCategoryRoutes };

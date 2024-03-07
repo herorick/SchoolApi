@@ -5,8 +5,7 @@ import asyncHandler from "express-async-handler";
 
 export const GetCategories = asyncHandler(
   async (req: Request, res: Response) => {
-    const categories = await BlogCategory.find({});
-    res.json({ categories: categories });
+    res.json(res.paginatedData);
   }
 );
 
@@ -58,9 +57,11 @@ export const DeleteBlogCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { params } = req;
     const { id } = params;
-    const deletedRecord = await BlogCategory.findById(id);
+    const deletedRecord = await BlogCategory.findByIdAndDelete(id);
     const blogs = deletedRecord?.blogs || [];
-    await Blog.deleteMany(blogs);
+    if(blogs.length) {
+      await Blog.deleteMany(blogs);
+    }
     res.json(deletedRecord);
   }
 );
