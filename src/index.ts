@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Response, Request } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
@@ -45,8 +45,10 @@ app.use(
 export const uploadPath = path.join(__dirname, "/uploads/");
 app.use("/uploads", express.static(uploadPath));
 
-
 app.use(express.static(__dirname + 'uploadPath'))
+app.get("/", (req: Request, res: Response,) => {
+  res.json({data: "12"})
+})
 
 app.use("/admin", AdminRoutes);
 app.use("/vendor", VendorRoutes);
