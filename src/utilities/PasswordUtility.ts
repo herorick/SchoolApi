@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { Request } from "express";
 import { AuthPayload } from "interfaces/Auth";
 import { VendorPayload } from "interfaces/Vendor";
