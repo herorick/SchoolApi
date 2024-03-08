@@ -24,7 +24,7 @@ router.post(
   DtoValidationMiddleware(CreateBlogCategoryDTO),
   CreateBlogCategory
 );
-router.patch(
+router.put(
   "/:id",
   ValidateObjectId,
   DtoValidationMiddleware(CreateBlogCategoryDTO),
