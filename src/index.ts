@@ -22,7 +22,8 @@ import { errorHandler, notFoundHandler } from "./middlewares";
 import { BannerRoutes } from "./routes/BannerRoutes";
 
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+console.log( path.resolve(__dirname, '../.env'))
 connectDB();
 
 const app = express();
