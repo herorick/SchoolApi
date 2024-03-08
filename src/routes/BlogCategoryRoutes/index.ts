@@ -10,8 +10,8 @@ import {
 } from "../../controllers/BlogCategoryController";
 import { ValidateObjectId } from "../../middlewares/ValidateObjectId";
 import { DeleteBlogCategories } from "../../controllers/ProductCategoryController";
-import { PaginateResultsMiddleware } from "middlewares/PaginationMiddleware";
-import { BlogCategory } from "models";
+import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
+import { BlogCategory } from "../../models";
 
 const router = express.Router();
 
