@@ -23,19 +23,17 @@ export const validatePassword = async (
 };
 
 export const generateSignature = (payload: VendorPayload | CustomerPayload) => {
-  console.log({APP_SECRET})
-  return jwt.sign(payload, APP_SECRET, { expiresIn: '90d'});
+  return jwt.sign(payload, "tdt_secret", { expiresIn: '90d'});
 
 };
 
 export const validateSignature = async (req: Request) => {
   const signature = req.get("Authorization");
-  console.log({APP_SECRET})
   if (signature) {
     try {
       const payload = (await jwt.verify(
         signature.split(" ")[1],
-        APP_SECRET
+        "tdt_secret"
       )) as AuthPayload;
       req.user = payload;
       return true;
