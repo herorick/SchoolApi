@@ -98,6 +98,7 @@ export const CustomerSignIn = asyncHandler(
         res.status(400).json("Wrong email or password");
       }
     } catch (err) {
+      console.log(err)
       res.status(404).json("some thing wrong");
     }
   }

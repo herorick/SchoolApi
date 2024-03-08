@@ -20,7 +20,10 @@ export interface ProductDoc extends IProduct, Document {}
 const ProductSchema = new Schema(
   {
     name: { type: String, require: true, unique: true },
-    vendor: { type: String, require: true },
+    vendor: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "vendor",
+    },
     description: { type: String, require: true },
     category: { type: String, require: true },
     price: { type: Number, require: true },
