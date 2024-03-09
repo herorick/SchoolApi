@@ -15,6 +15,6 @@ export class CreateBlogDTO {
   @IsArray()
   tags?: [string];
 
-  @IsString()
-  categoryId?: string;
+  @IsArray()
+  blogCategorys?: string;
 }

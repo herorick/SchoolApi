@@ -6,6 +6,7 @@ import difference from "lodash/difference";
 import { Review } from "../models/Review";
 import { PaginatedData } from "../middlewares/PaginationMiddleware";
 import { sumBy } from "lodash";
+import { removeImages } from "utilities/FileUntility";
 
 export const ReviewProduct = asyncHandler(
   async (req: Request, res: Response) => {
@@ -144,6 +145,9 @@ export const DeleteProduct = asyncHandler(
       { _id: product.productCategories },
       { $pull: { products: product._id } }
     );
+    if (product !== null) {
+      removeImages(product.images);
+    }
     res.json({ message: "Remove is successfully" });
   }
 );

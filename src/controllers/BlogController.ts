@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Blog, BlogCategory, Vendor } from "../models";
 import asyncHandler from "express-async-handler";
+import { removeImages } from "utilities/FileUntility";
 
 export const CreateBlog = asyncHandler(async (req: Request, res: Response) => {
   const { body, files } = req;
@@ -13,15 +14,17 @@ export const CreateBlog = asyncHandler(async (req: Request, res: Response) => {
     tags: body.tags,
     content: body.content,
     author: user.id,
-    blogCategory: body.categoryId,
-    image: imageNames[0],
+    blogCategorys: body.blogCategorys,
+    images: imageNames,
   });
   await Promise.all([
     Vendor.findByIdAndUpdate(user.id, { $push: { blogs: results._id } }),
-    BlogCategory.findByIdAndUpdate(body.categoryId, {
-      $push: { blogs: results._id },
-    }),
   ]);
+  body.blogCategorys.forEach((categoryId: any) => {
+    BlogCategory.findByIdAndUpdate(categoryId, {
+      $push: { blogs: results._id },
+    });
+  });
   res.json({ results });
 });
 
@@ -30,7 +33,7 @@ export const GetBlogById = asyncHandler(async (req: Request, res: Response) => {
   const { id } = params;
   const results = await Blog.findById(id)
     .populate("author")
-    .populate("blogCategory")
+    .populate("blogCategorys")
     .exec();
   res.json({ data: results });
 });
@@ -40,7 +43,7 @@ export const DeleteBlogById = asyncHandler(
     const { params } = req;
     const user = req.user!;
     const { id } = params;
-    await Promise.all([
+    const [blog] = await Promise.all([
       Blog.findByIdAndDelete(id),
       Vendor.findByIdAndUpdate(user.id, {
         $pull: { blogs: id },
@@ -49,13 +52,16 @@ export const DeleteBlogById = asyncHandler(
         $pull: { blogs: id },
       }),
     ]);
+    if (blog !== null) {
+      removeImages(blog.images);
+    }
     res.json({ status: "success" });
   }
 );
 
 export const GetAllBlog = asyncHandler(async (req: Request, res: Response) => {
   const data = await Blog.find({})
-    .populate("blogCategory")
+    .populate("blogCategorys")
     .populate("author")
     .exec();
   res.json({ results: data });
@@ -67,7 +73,7 @@ export const GetAllBlogByTag = asyncHandler(
     const { params, query } = req;
     const { search } = query;
     const data = await Blog.find({ tags: { $in: [search] } })
-      .populate("blogCategory")
+      .populate("blogCategorys")
       .populate("author")
       .exec();
     res.json({ results: data });
