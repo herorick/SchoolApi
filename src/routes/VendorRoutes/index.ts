@@ -21,10 +21,11 @@ import {
   GetTransactions,
   RejectOrder,
   GetOffer,
+  GetVendorProducts,
 } from "../../controllers";
 import { Authenticate, DtoValidationMiddleware } from "../../middlewares";
 import { initMulter } from "../../config/multer";
-import { Order } from "../../models";
+import { Order, Product } from "../../models";
 import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
 
 const router = express.Router();
@@ -63,5 +64,12 @@ router.delete("/offer/:id", DeleteOffer);
 
 // Transaction
 router.get("/transactions", GetTransactions);
+
+router.get(
+  "/product",
+  Authenticate,
+  PaginateResultsMiddleware(Product),
+  GetVendorProducts
+);
 
 export { router as VendorRoutes };

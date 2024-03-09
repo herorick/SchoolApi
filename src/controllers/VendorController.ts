@@ -10,7 +10,14 @@ import {
 } from "../utilities";
 import { removeImage } from "../utilities/FileUntility";
 import asyncHandler from "express-async-handler";
-import { Order, OrderDoc, Vendor, orderStatusEnums } from "../models";
+import {
+  Order,
+  OrderDoc,
+  Product,
+  ProductDoc,
+  Vendor,
+  orderStatusEnums,
+} from "../models";
 import { Offer } from "../models/Offer";
 import { VendorService } from "../services/VendorService";
 import { CreateOfferInputs } from "../dtos/Offer";
@@ -419,3 +426,48 @@ export const GetTransactions = asyncHandler(
 );
 
 // End Transaction
+
+export const GetVendorProducts = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const user = req.user!;
+      const page: number = parseInt(req.query.page as string) || 1;
+      const limit: number = parseInt(req.query.limit as string) || 10;
+
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+
+      const results: PaginatedData<ProductDoc> = {
+        results: [],
+      }; // Count the total number of documents in the collection
+      const totalDocuments = await Product.countDocuments({
+        vendor: user.id,
+      }).exec();
+
+      if (startIndex > 0) {
+        results.hasPrevious = true;
+      }
+
+      if (endIndex < totalDocuments) {
+        results.hasNext = true;
+      }
+
+      results.totalPage = Math.ceil(totalDocuments / limit);
+
+      results.page = page;
+
+      // Query the database for paginated results
+      results.results = await Product.find({ vendor: user.id })
+        .skip(startIndex)
+        .limit(limit)
+        .populate("brand")
+        .populate("productCategories")
+        .exec();
+
+      res.status(200).json(results);
+    } catch (err) {
+      console.log(err);
+      throw new APIError("can't get transaction");
+    }
+  }
+);

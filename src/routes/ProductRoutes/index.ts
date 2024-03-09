@@ -4,7 +4,6 @@ import {
   CreateProduct,
   DeleteProduct,
   GetProductById,
-  GetProducts,
   UpdateProduct,
   DeleteProducts,
   DeleteProductImage,
@@ -12,14 +11,10 @@ import {
 } from "../../controllers";
 import { CreateProductDTO } from "../../dtos/ProductDto";
 import { initMulter } from "../../config/multer";
-import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
-import { Product } from "../../models";
 import { ValidateObjectId } from "../../middlewares/ValidateObjectId";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();
-
-router.get("", PaginateResultsMiddleware(Product), GetProducts);
 
 router.post("/:id/review", ValidateObjectId, ReviewProduct);
 

@@ -16,7 +16,7 @@ export class CreateProductDTO {
   price?: [number];
 
   @IsArray()
-  productCategories?: [string];
+  productCategories?: string;
 
   @IsString()
   brand?: string;
