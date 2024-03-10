@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Blog, BlogCategory, Vendor } from "../models";
 import { NotFound } from "../utilities";
 import asyncHandler from "express-async-handler";
+import { removeImage } from "utilities/FileUntility";
 
 export const GetCategories = asyncHandler(
   async (req: Request, res: Response) => {
@@ -59,9 +60,15 @@ export const DeleteBlogCategory = asyncHandler(
     const { id } = params;
     const deletedRecord = await BlogCategory.findByIdAndDelete(id);
     const blogs = deletedRecord?.blogs || [];
-    if(blogs.length) {
+    if (blogs.length) {
       await Blog.deleteMany(blogs);
+      blogs.forEach((blog) => {
+        blog.images.forEach((image: string) => {
+          removeImage(image);
+        });
+      });
     }
+
     res.json(deletedRecord);
   }
 );

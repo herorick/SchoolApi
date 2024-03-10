@@ -33,7 +33,7 @@ router.post(
   CreateBlog
 );
 
-router.patch(
+router.put(
   "/:id",
   ValidateObjectId,
   Authenticate,
@@ -52,6 +52,5 @@ router.get("/:id", ValidateObjectId, GetBlogById);
 router.post("/:id/review", ValidateObjectId, ReviewPost);
 
 router.get("/:id/relative-posts", ValidateObjectId, GetRelativePosts);
-
 
 export { router as BlogRoutes };
