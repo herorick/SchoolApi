@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Blog, BlogCategory, Vendor } from "../models";
 import asyncHandler from "express-async-handler";
-import { removeImages } from "utilities/FileUntility";
+import { removeImages } from "../utilities/FileUntility";
 
 export const CreateBlog = asyncHandler(async (req: Request, res: Response) => {
   const { body, files } = req;

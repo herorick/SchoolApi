@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Blog, BlogCategory, Vendor } from "../models";
 import { NotFound } from "../utilities";
 import asyncHandler from "express-async-handler";
-import { removeImage } from "utilities/FileUntility";
+import { removeImage } from "../utilities/FileUntility";
 
 export const GetCategories = asyncHandler(
   async (req: Request, res: Response) => {
