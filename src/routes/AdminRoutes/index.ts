@@ -1,5 +1,5 @@
 import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
-import { DeliveryUser } from "../../models";
+import { DeliveryUser, Vendor } from "../../models";
 import { initMulter } from "../../config/multer";
 import {
   AdminGetDeliveryUsers,
@@ -10,8 +10,10 @@ import {
   GetTransactionById,
   GetVendorById,
   GetVendors,
-  UpdateVendor,
+  AdminUpdateVendor,
   VerifyDeliveryUser,
+  AdminInActiveVendor,
+  AdminActiveVendor,
 } from "../../controllers/AdminController";
 import { CreateVendorDTO } from "../../dtos";
 import express from "express";
@@ -28,11 +30,30 @@ router.post(
   CreateVendor
 );
 
-router.get("/vendors", Authenticate, GetVendors);
+router.get(
+  "/vendors",
+  Authenticate,
+  PaginateResultsMiddleware(Vendor),
+  GetVendors
+);
 router.get("/vendors/:id", Authenticate, ValidateObjectId, GetVendorById);
-router.patch("/vendors/:id", Authenticate, ValidateObjectId, UpdateVendor);
+router.patch("/vendors/:id", Authenticate, ValidateObjectId, AdminUpdateVendor);
 router.delete("/vendors:/id", Authenticate, ValidateObjectId, DeleteVendorById);
 router.delete("/vendors", Authenticate, DeleteAllVendors);
+
+router.post(
+  "/vendors/:id/active",
+  Authenticate,
+  ValidateObjectId,
+  AdminActiveVendor
+);
+
+router.post(
+  "/vendors/:id/in-active",
+  Authenticate,
+  ValidateObjectId,
+  AdminInActiveVendor
+);
 
 // transaction
 router.get("/transactions", AdminGetTransactions);

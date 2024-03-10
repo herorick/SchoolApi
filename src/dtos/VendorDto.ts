@@ -1,10 +1,4 @@
-import {
-  IsArray,
-  IsEmail,
-  IsString,
-  MinLength,
-  isEmail,
-} from "class-validator";
+import { IsEmail, IsString, MinLength } from "class-validator";
 import { Trim } from "class-sanitizer";
 
 export class CreateVendorDTO {

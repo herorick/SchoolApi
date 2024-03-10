@@ -2,12 +2,25 @@ import { Transaction } from "../models/Transaction";
 import { Request, Response, NextFunction } from "express";
 import asyncHandler from "express-async-handler";
 import { DeliveryUser, Vendor } from "../models";
-import { Conflict, GenerateSalt, NotFound, generatePassword } from "../utilities";
+import {
+  Conflict,
+  GenerateSalt,
+  NotFound,
+  generatePassword,
+} from "../utilities";
 
 export const CreateVendor = asyncHandler(
   async (req: Request, res: Response) => {
     const { body, files } = req;
-    const { name, address, email, password, phone, isAdmin = false } = body;
+    const {
+      name,
+      address,
+      email,
+      password,
+      phone,
+      isAdmin = false,
+      description,
+    } = body;
 
     const images = files as [Express.Multer.File];
     const imageNames = images.map((file) => file.filename);
@@ -36,6 +49,7 @@ export const CreateVendor = asyncHandler(
       products: [],
       blogs: [],
       isAdmin,
+      description,
     });
 
     res.json(createdVendor);
@@ -44,16 +58,62 @@ export const CreateVendor = asyncHandler(
 
 export const GetVendors = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const vendors = await Vendor.find({}).exec();
-    res.json(vendors);
+    res.json(res.paginatedData);
   }
 );
 
-export const UpdateVendor = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {};
+export const AdminUpdateVendor = asyncHandler(
+  async (req: Request, res: Response) => {
+    const vendorId = req.params.id;
+    const { body } = req;
+    const result = await Vendor.findByIdAndUpdate(
+      vendorId,
+      {
+        description: body.description,
+        name: body.name,
+        address: body.address,
+        phone: body.phone,
+        email: body.email,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json({ data: result });
+  }
+);
+
+export const AdminActiveVendor = asyncHandler(
+  async (req: Request, res: Response) => {
+    const vendorId = req.params.id;
+    const result = await Vendor.findByIdAndUpdate(
+      vendorId,
+      {
+        status: "Active",
+      },
+      {
+        new: true,
+      }
+    );
+    res.json({ data: result });
+  }
+);
+
+export const AdminInActiveVendor = asyncHandler(
+  async (req: Request, res: Response) => {
+    const vendorId = req.params.id;
+    const result = await Vendor.findByIdAndUpdate(
+      vendorId,
+      {
+        status: "Inactive",
+      },
+      {
+        new: true,
+      }
+    );
+    res.json({ data: result });
+  }
+);
 
 export const GetVendorById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -62,7 +122,7 @@ export const GetVendorById = asyncHandler(
     if (vendor === null) {
       throw new NotFound("vendor is not found with id: " + vendorId);
     }
-    res.json(vendor);
+    res.json({ data: vendor });
   }
 );
 
@@ -80,11 +140,7 @@ export const DeleteAllVendors = asyncHandler(
 );
 
 // transactions
-export const AdminGetTransactions = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const AdminGetTransactions = async (req: Request, res: Response) => {
   const transactions = await Transaction.find({});
   if (transactions) {
     return res.status(200).json(transactions);
@@ -92,11 +148,7 @@ export const AdminGetTransactions = async (
   return res.json({ message: "Transactions data not available" });
 };
 
-export const GetTransactionById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const GetTransactionById = async (req: Request, res: Response) => {
   const id = req.params.id;
   const transaction = await Transaction.findById(id);
   if (transaction) {
@@ -107,11 +159,7 @@ export const GetTransactionById = async (
 // end transactions
 
 // delivery
-export const VerifyDeliveryUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const VerifyDeliveryUser = async (req: Request, res: Response) => {
   const { id, status } = req.body;
   if (id) {
     const profile = await DeliveryUser.findById(id);
@@ -125,7 +173,7 @@ export const VerifyDeliveryUser = async (
 };
 
 export const AdminGetDeliveryUsers = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     res.json(res.paginatedData);
   }
 );

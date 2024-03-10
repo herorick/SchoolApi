@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { APIError, NotFound } from "../utilities";
+import { NotFound } from "../utilities";
 import asyncHandler from "express-async-handler";
 import { Brand, Product, ProductCategory, ProductDoc, Vendor } from "../models";
 import difference from "lodash/difference";
 import { Review } from "../models/Review";
-import { PaginatedData } from "../middlewares/PaginationMiddleware";
 import { sumBy } from "lodash";
 import { removeImages } from "../utilities/FileUntility";
 

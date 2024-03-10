@@ -13,6 +13,7 @@ interface VendorDoc extends Document {
   blogs: any[];
   products: any[];
   isAdmin: boolean;
+  description: string;
   status: "Active" | "Inactive";
 }
 
@@ -27,6 +28,7 @@ const VendorSchema = new Schema(
     coverImage: { type: String, require: true },
     rating: { type: Number },
     isAdmin: { type: Boolean, default: false },
+    description: { type: String, require: true },
     products: [
       {
         type: mongoose.SchemaTypes.ObjectId,
@@ -39,7 +41,7 @@ const VendorSchema = new Schema(
         ref: "blog",
       },
     ],
-    status: { type: String, require: true, enum: ["Active", "Inactive"] },
+    status: { type: String, enum: ["Active", "Inactive"], default: "Inactive" },
   },
   {
     toJSON: {
