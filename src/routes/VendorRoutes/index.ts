@@ -27,6 +27,7 @@ import { Authenticate, DtoValidationMiddleware } from "../../middlewares";
 import { initMulter } from "../../config/multer";
 import { Order, Product } from "../../models";
 import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
+import { Offer } from "models/Offer";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();
@@ -56,7 +57,7 @@ router.put("/order/:id/reject", RejectOrder);
 router.get("/order/:id", GetOrderDetails);
 
 //Offers
-router.get("/offers", GetOffers);
+router.get("/offers", PaginateResultsMiddleware(Offer), GetOffers);
 router.get("/offer/:id", GetOffer);
 router.post("/offer", AddOffer);
 router.put("/offer/:id", EditOffer);

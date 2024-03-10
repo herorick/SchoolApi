@@ -33,6 +33,7 @@ const OfferSchema = new Schema(
       type: String,
       require: true,
       enum: ["USER", "ALL", "BANK", "CARD"],
+      default: "ALL",
     },
     status: {
       type: String,
