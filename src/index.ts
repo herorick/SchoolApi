@@ -16,14 +16,13 @@ import {
   BrandRoutes,
   CustomerRoutes,
   ShoppingRoutes,
-  DeliveryRoutes
+  DeliveryRoutes,
 } from "./routes";
 import { errorHandler, notFoundHandler } from "./middlewares";
 import { BannerRoutes } from "./routes/BannerRoutes";
 
-
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
-console.log( path.resolve(__dirname, '../.env'))
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+console.log(path.resolve(__dirname, "../.env"));
 connectDB();
 
 const app = express();
@@ -44,12 +43,13 @@ app.use(
 );
 
 export const uploadPath = path.join(__dirname, "/uploads/");
+console.log({ uploadPath });
 app.use("/uploads", express.static(uploadPath));
 
-app.use(express.static(__dirname + 'uploadPath'))
-app.get("/", (req: Request, res: Response,) => {
-  res.json({data: "12"})
-})
+app.use(express.static(__dirname + "uploadPath"));
+app.get("/", (req: Request, res: Response) => {
+  res.json({ data: "12" });
+});
 
 app.use("/admin", AdminRoutes);
 app.use("/vendor", VendorRoutes);
@@ -58,11 +58,10 @@ app.use("/product-category", ProductCategoryRoute);
 app.use("/blog", BlogRoutes);
 app.use("/blog-category", BlogCategoryRoutes);
 app.use("/brand", BrandRoutes);
-app.use("/banner", BannerRoutes)
-app.use("/customer", CustomerRoutes)
-app.use("/delivery", DeliveryRoutes)
+app.use("/banner", BannerRoutes);
+app.use("/customer", CustomerRoutes);
+app.use("/delivery", DeliveryRoutes);
 app.use(ShoppingRoutes);
-
 
 // ERROR HANDLER MIDDLEWARE (Last middleware to use)
 app.use(errorHandler);
