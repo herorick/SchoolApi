@@ -43,7 +43,6 @@ app.use(
 );
 
 export const uploadPath = path.join(__dirname, "/uploads/");
-console.log({ uploadPath });
 app.use("/uploads", express.static(uploadPath));
 
 app.use(express.static(__dirname + "uploadPath"));
