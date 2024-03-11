@@ -15,6 +15,9 @@ interface VendorDoc extends Document {
   isAdmin: boolean;
   description: string;
   status: "Active" | "Inactive";
+  language: "vn" | "en",
+  currency: "vn" | "en",
+  bannerImages: string[]
 }
 
 const VendorSchema = new Schema(
@@ -42,6 +45,9 @@ const VendorSchema = new Schema(
       },
     ],
     status: { type: String, enum: ["Active", "Inactive"], default: "Inactive" },
+    language: { type: String, enum: ["vn", "en"], default: "en" },
+    currency: { type: String, enum: ["vn", "en"], default: "en" },
+    bannerImages: [{ type: String }],
   },
   {
     toJSON: {

@@ -473,3 +473,21 @@ export const GetVendorProducts = asyncHandler(
     }
   }
 );
+
+export const VendorUpdateSettings = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { language, currency } = req.body;
+    const files = req.files as [Express.Multer.File];
+    const images = files.map((file) => file.filename);
+    const user = req.user!;
+    const existingVendor = await Vendor.findOne({ email: user.email });
+    if (!existingVendor) {
+      throw new NotFound("Vendor not found with email: " + user.email);
+    }
+    existingVendor.language = language;
+    existingVendor.currency = currency;
+    existingVendor.bannerImages = images;
+    const savedResult = await existingVendor.save();
+    res.json(savedResult);
+  }
+);

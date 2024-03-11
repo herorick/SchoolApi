@@ -22,6 +22,7 @@ import {
   RejectOrder,
   GetOffer,
   GetVendorProducts,
+  VendorUpdateSettings,
 } from "../../controllers";
 import { Authenticate, DtoValidationMiddleware } from "../../middlewares";
 import { initMulter } from "../../config/multer";
@@ -71,6 +72,13 @@ router.get(
   Authenticate,
   PaginateResultsMiddleware(Product),
   GetVendorProducts
+);
+
+router.put(
+  "/settings",
+  Authenticate,
+  imagesMiddleware,
+  VendorUpdateSettings
 );
 
 export { router as VendorRoutes };
