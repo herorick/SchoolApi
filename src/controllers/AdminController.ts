@@ -9,6 +9,7 @@ import {
   generatePassword,
   generateSignature,
 } from "../utilities";
+import { removeImage } from "utilities/FileUntility";
 
 export const CreateVendor = asyncHandler(
   async (req: Request, res: Response) => {
@@ -161,7 +162,8 @@ export const GetTransactionById = async (req: Request, res: Response) => {
 
 // delivery
 export const VerifyDeliveryUser = async (req: Request, res: Response) => {
-  const { id, status } = req.body;
+  const { id } = req.params;
+  const { status } = req.body;
   if (id) {
     const profile = await DeliveryUser.findById(id);
     if (profile) {
@@ -169,6 +171,44 @@ export const VerifyDeliveryUser = async (req: Request, res: Response) => {
       const result = await profile.save();
       return res.status(200).json(result);
     }
+  }
+  return res.json({ message: "Unable to verify Delivery User" });
+};
+
+export const ActiveDeliveryUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (id) {
+    const profile = await DeliveryUser.findById(id);
+    if (profile) {
+      profile.verified = true;
+      const result = await profile.save();
+      return res.status(200).json({ data: result });
+    }
+  }
+  return res.json({ message: "Unable to verify Delivery User" });
+};
+
+export const InActiveDeliveryUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (id) {
+    const profile = await DeliveryUser.findById(id);
+    if (profile) {
+      profile.verified = false;
+      const result = await profile.save();
+      return res.status(200).json(result);
+    }
+  }
+  return res.json({ message: "Unable to verify Delivery User" });
+};
+
+export const DeleteDeliveryUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (id) {
+    const profile = await DeliveryUser.findByIdAndDelete(id);
+    if(profile?.images) {
+      await removeImage(profile?.images)
+    }
+    return res.status(200).json({data: profile});
   }
   return res.json({ message: "Unable to verify Delivery User" });
 };
@@ -193,24 +233,24 @@ export const AdminCreateVendor = asyncHandler(
         pincode,
         price,
       } = body;
-  
+
       const salt = await GenerateSalt();
-      console.log({password})
+      console.log({ password });
       const userPassword = await generatePassword(password, salt);
-  
+
       const existingDeliveryUser = await DeliveryUser.findOne({ email: email });
-      console.log({existingDeliveryUser})
-  
+      console.log({ existingDeliveryUser });
+
       if (existingDeliveryUser !== null) {
-        res
-          .status(400)
-          .json({ message: "A Delivery User exist with the provided email ID!" });
+        res.status(400).json({
+          message: "A Delivery User exist with the provided email ID!",
+        });
       }
-  
+
       // image
       const images = files as [Express.Multer.File];
       const imageNames = images.map((file) => file.filename);
-  
+
       const result = await DeliveryUser.create({
         email: email,
         password: userPassword,
@@ -225,9 +265,9 @@ export const AdminCreateVendor = asyncHandler(
         lng: 0,
         images: imageNames[0],
         price,
-        status: ""
+        status: "",
       });
-  
+
       if (result) {
         //Generate the Signature
         const signature = await generateSignature({
@@ -240,10 +280,10 @@ export const AdminCreateVendor = asyncHandler(
           .status(201)
           .json({ signature, verified: result.verified, email: result.email });
       }
-  
+
       res.status(400).json({ msg: "Error while creating Delivery user" });
-    }catch(err) {
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
   }
 );

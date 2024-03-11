@@ -15,6 +15,9 @@ import {
   AdminInActiveVendor,
   AdminActiveVendor,
   AdminCreateVendor,
+  ActiveDeliveryUser,
+  InActiveDeliveryUser,
+  DeleteDeliveryUser,
 } from "../../controllers/AdminController";
 import { CreateVendorDTO } from "../../dtos";
 import express from "express";
@@ -68,5 +71,9 @@ router.get(
   PaginateResultsMiddleware(DeliveryUser),
   AdminGetDeliveryUsers
 );
+
+router.post("/delivery/:id/active", ActiveDeliveryUser);
+router.post("/delivery/:id/in-active", InActiveDeliveryUser);
+router.delete("/delivery/:id", DeleteDeliveryUser);
 
 export { router as AdminRoutes };
