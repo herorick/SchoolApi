@@ -64,7 +64,7 @@ router.post("/cart/quantity", UpdateQuantityCartItem)
 router.post("/cart/delete-cart-items", DeleteCartItems)
 
 //Verify Offer
-router.get("/offer/verify/:id", VerifyOffer);
+router.get("/offer/verify/:promoCode", VerifyOffer);
 
 //Payment
 router.post("/create-payment", CreatePayment);

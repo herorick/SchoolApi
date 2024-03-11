@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import { Offer } from "../models/Offer";
-import { Product, Vendor } from "../models";
+import { DeliveryUser, Product, Vendor } from "../models";
 import asyncHandler from "express-async-handler";
 
 export const GetBestSale = asyncHandler(async (req: Request, res: Response) => {
@@ -17,6 +17,19 @@ export const GetProducts = asyncHandler(async (req: Request, res: Response) => {
   }
   res.status(404).json({ msg: "data Not found!" });
 });
+
+export const getAvaibleDelivery = asyncHandler(
+  async (req: Request, res: Response) => {
+    const results = await DeliveryUser.find({
+      // isValid: true,
+      // isAvailable: true,
+    });
+    if (results.length > 0) {
+      res.status(200).json({data: results});
+    }
+    res.status(404).json({ data: [] });
+  }
+);
 
 export const GetTopVendor = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

@@ -19,6 +19,7 @@ import { ICreateOrder } from "../interfaces/Order";
 import { Offer } from "../models/Offer";
 import { Transaction } from "../models/Transaction";
 import { validationResult } from "express-validator";
+import { compareAsc } from "date-fns";
 
 export const CustomerSignUp = asyncHandler(
   async (req: Request, res: Response) => {
@@ -288,14 +289,17 @@ export const CreateOrder = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const VerifyOffer = asyncHandler(async (req: Request, res: Response) => {
-  const offerId = req.params.id;
-  const appliedOffer = await Offer.findById(offerId);
-  if (appliedOffer) {
-    if (appliedOffer.isActive) {
-      res.status(200).json({ message: "Offer is Valid", offer: appliedOffer });
+  const promoCode = req.params.promoCode;
+  const appliedOffer = await Offer.findOne({promoCode: promoCode}).exec();
+  if (appliedOffer!== null) {
+    const startCompare = compareAsc(new Date(), appliedOffer.startValidity)
+    const endCompare = compareAsc(appliedOffer.endValidity, new Date())
+    if(startCompare === 1 && endCompare === 1) {
+      res.status(200).json({ data: appliedOffer });
+    } else {
+      res.status(400).json({ msg: "Offer is expired" });
     }
   }
-
   res.status(400).json({ msg: "Offer is Not Valid" });
 });
 
