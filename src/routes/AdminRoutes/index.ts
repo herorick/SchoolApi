@@ -14,10 +14,11 @@ import {
   VerifyDeliveryUser,
   AdminInActiveVendor,
   AdminActiveVendor,
-  AdminCreateVendor,
   ActiveDeliveryUser,
   InActiveDeliveryUser,
   DeleteDeliveryUser,
+  AdminCreateDelivery,
+  AdminGetDelivery,
 } from "../../controllers/AdminController";
 import { CreateVendorDTO } from "../../dtos";
 import express from "express";
@@ -64,13 +65,16 @@ router.get("/transactions", AdminGetTransactions);
 router.get("/transaction/:id", GetTransactionById);
 
 // delivery
-router.post("/delivery", imagesMiddleware, Authenticate, AdminCreateVendor);
-router.put("/delivery/verify", VerifyDeliveryUser);
+router.post("/delivery", imagesMiddleware, Authenticate, AdminCreateDelivery);
 router.get(
   "/delivery/users",
   PaginateResultsMiddleware(DeliveryUser),
   AdminGetDeliveryUsers
 );
+router.get("/delivery/:id", Authenticate, AdminGetDelivery);
+router.put("/delivery/verify", VerifyDeliveryUser);
+router.put("/delivery/:id", VerifyDeliveryUser);
+
 
 router.post("/delivery/:id/active", ActiveDeliveryUser);
 router.post("/delivery/:id/in-active", InActiveDeliveryUser);

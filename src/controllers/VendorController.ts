@@ -258,7 +258,9 @@ export const GetOffers = asyncHandler(async (req: Request, res: Response) => {
         }
       });
     }
-    res.status(200).json(currentOffer);
+    res.status(200).json({
+      results: currentOffer
+    });
   } catch (err) {
     throw new APIError();
   }

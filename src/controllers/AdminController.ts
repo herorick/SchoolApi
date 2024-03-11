@@ -175,6 +175,16 @@ export const VerifyDeliveryUser = async (req: Request, res: Response) => {
   return res.json({ message: "Unable to verify Delivery User" });
 };
 
+export const AdminUpdateDelivery = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { body } = req;
+  if (id) {
+    const profile = await DeliveryUser.findByIdAndUpdate(id, ...body);
+    return res.status(200).json({ data: profile });
+  }
+  return res.json({ message: "Unable to verify Delivery User" });
+};
+
 export const ActiveDeliveryUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (id) {
@@ -205,10 +215,10 @@ export const DeleteDeliveryUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (id) {
     const profile = await DeliveryUser.findByIdAndDelete(id);
-    if(profile?.images) {
-      await removeImage(profile?.images)
+    if (profile?.images) {
+      await removeImage(profile?.images);
     }
-    return res.status(200).json({data: profile});
+    return res.status(200).json({ data: profile });
   }
   return res.json({ message: "Unable to verify Delivery User" });
 };
@@ -219,7 +229,15 @@ export const AdminGetDeliveryUsers = asyncHandler(
   }
 );
 
-export const AdminCreateVendor = asyncHandler(
+export const AdminGetDelivery = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const delivery = await DeliveryUser.findById(id);
+    res.json({ data: delivery });
+  }
+);
+
+export const AdminCreateDelivery = asyncHandler(
   async (req: Request, res: Response) => {
     try {
       const { body, files } = req;
