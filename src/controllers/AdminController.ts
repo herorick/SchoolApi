@@ -7,6 +7,7 @@ import {
   GenerateSalt,
   NotFound,
   generatePassword,
+  generateSignature,
 } from "../utilities";
 
 export const CreateVendor = asyncHandler(
@@ -175,6 +176,75 @@ export const VerifyDeliveryUser = async (req: Request, res: Response) => {
 export const AdminGetDeliveryUsers = asyncHandler(
   async (req: Request, res: Response) => {
     res.json(res.paginatedData);
+  }
+);
+
+export const AdminCreateVendor = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const { body, files } = req;
+      const {
+        email,
+        phone,
+        password,
+        address,
+        firstName,
+        lastName,
+        pincode,
+        price,
+      } = body;
+  
+      const salt = await GenerateSalt();
+      console.log({password})
+      const userPassword = await generatePassword(password, salt);
+  
+      const existingDeliveryUser = await DeliveryUser.findOne({ email: email });
+      console.log({existingDeliveryUser})
+  
+      if (existingDeliveryUser !== null) {
+        res
+          .status(400)
+          .json({ message: "A Delivery User exist with the provided email ID!" });
+      }
+  
+      // image
+      const images = files as [Express.Multer.File];
+      const imageNames = images.map((file) => file.filename);
+  
+      const result = await DeliveryUser.create({
+        email: email,
+        password: userPassword,
+        salt: salt,
+        phone: phone,
+        firstName: firstName,
+        lastName: lastName,
+        address: address,
+        pincode: pincode,
+        verified: true,
+        lat: 0,
+        lng: 0,
+        images: imageNames[0],
+        price,
+        status: ""
+      });
+  
+      if (result) {
+        //Generate the Signature
+        const signature = await generateSignature({
+          id: result._id,
+          email: result.email,
+          verified: result.verified,
+        });
+        // Send the result
+        res
+          .status(201)
+          .json({ signature, verified: result.verified, email: result.email });
+      }
+  
+      res.status(400).json({ msg: "Error while creating Delivery user" });
+    }catch(err) {
+      console.log(err)
+    }
   }
 );
 // end delivery

@@ -15,7 +15,8 @@ interface DeliveryUserDoc extends Document {
   lat: number;
   lng: number;
   isAvailable: boolean;
-  coverImage: string;
+  images: string;
+  price: number;
 }
 
 
@@ -34,7 +35,8 @@ const DeliveryUserSchema = new Schema({
   lat: { type: Number },
   lng: { type: Number },
   isAvailable: { type: Boolean, default: false },
-  coverImage: { type: String, require: true },
+  images: { type: String, require: true },
+  price: { type: Number, require: true },
 }, {
   toJSON: {
     transform(doc, ret) {

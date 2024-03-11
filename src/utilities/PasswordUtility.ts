@@ -3,7 +3,6 @@ import { Request } from "express";
 import { AuthPayload } from "interfaces/Auth";
 import { VendorPayload } from "interfaces/Vendor";
 import jwt from "jsonwebtoken";
-import { APP_SECRET } from "./VariableUtility";
 import { CustomerPayload } from "interfaces/Customer";
 
 export const GenerateSalt = async () => {
@@ -19,12 +18,11 @@ export const validatePassword = async (
   savePassword: string,
   salt: string
 ) => {
-  return await generatePassword(enteredPassword, salt) === savePassword;
+  return (await generatePassword(enteredPassword, salt)) === savePassword;
 };
 
 export const generateSignature = (payload: VendorPayload | CustomerPayload) => {
-  return jwt.sign(payload, "tdt_secret", { expiresIn: '90d'});
-
+  return jwt.sign(payload, "tdt_secret", { expiresIn: "90d" });
 };
 
 export const validateSignature = async (req: Request) => {

@@ -14,6 +14,7 @@ import {
   VerifyDeliveryUser,
   AdminInActiveVendor,
   AdminActiveVendor,
+  AdminCreateVendor,
 } from "../../controllers/AdminController";
 import { CreateVendorDTO } from "../../dtos";
 import express from "express";
@@ -60,6 +61,7 @@ router.get("/transactions", AdminGetTransactions);
 router.get("/transaction/:id", GetTransactionById);
 
 // delivery
+router.post("/delivery", imagesMiddleware, Authenticate, AdminCreateVendor);
 router.put("/delivery/verify", VerifyDeliveryUser);
 router.get(
   "/delivery/users",

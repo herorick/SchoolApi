@@ -32,7 +32,7 @@ export const DeliverySignUp = async (req: Request, res: Response, next: NextFunc
 		verified: false,
 		lat: 0,
 		lng: 0,
-		coverImage: imageNames[0],
+		images: imageNames[0],
 	})
 
 	if (result) {
@@ -45,12 +45,9 @@ export const DeliverySignUp = async (req: Request, res: Response, next: NextFunc
 		})
 		// Send the result
 		return res.status(201).json({ signature, verified: result.verified, email: result.email })
-
 	}
 
 	return res.status(400).json({ msg: 'Error while creating Delivery user' });
-
-
 }
 
 export const DeliveryLogin = async (req: Request, res: Response, next: NextFunction) => {
