@@ -259,7 +259,7 @@ export const GetOffers = asyncHandler(async (req: Request, res: Response) => {
       });
     }
     res.status(200).json({
-      results: currentOffer
+      results: currentOffer,
     });
   } catch (err) {
     throw new APIError();
@@ -464,6 +464,7 @@ export const GetVendorProducts = asyncHandler(
         .limit(limit)
         .populate("brand")
         .populate("productCategories")
+        .sort({ createdAt: "desc" })
         .exec();
 
       res.status(200).json(results);

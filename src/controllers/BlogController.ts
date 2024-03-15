@@ -63,6 +63,7 @@ export const GetAllBlog = asyncHandler(async (req: Request, res: Response) => {
   const data = await Blog.find({})
     .populate("blogCategorys")
     .populate("author")
+    .sort({ createdAt: "desc" })
     .exec();
   res.json({ results: data });
   // res.json(res.paginatedData);

@@ -39,7 +39,8 @@ export const PaginateResultsMiddleware = <T extends Document>(
       results.page = page;
 
       // Query the database for paginated results
-      results.results = await model.find().skip(startIndex).limit(limit).exec();
+      results.results = await model.find().sort({ createdAt: "desc" })
+      .skip(startIndex).limit(limit).exec();
 
       res.paginatedData = results;
       next();
