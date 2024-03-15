@@ -9,7 +9,7 @@ import {
   generatePassword,
   generateSignature,
 } from "../utilities";
-import { removeImage } from "utilities/FileUntility";
+import { removeImage } from "../utilities/FileUntility";
 
 export const CreateVendor = asyncHandler(
   async (req: Request, res: Response) => {

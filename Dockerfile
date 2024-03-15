@@ -9,7 +9,7 @@ COPY . ./
 
 RUN npm install
 
-RUN npm build
+RUN npm run build
 
 # Expose cổng 8080
 EXPOSE 8008

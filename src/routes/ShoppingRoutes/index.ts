@@ -17,12 +17,12 @@ router.get("/shopping/delivery", getAvaibleDelivery);
 
 router.get("/products/best-sale", GetBestSale);
 
-router.get("/top-restaurant/:pincode", GetTopVendor);
+router.get("/top-vendor", GetTopVendor);
 
 router.get("/search/", SearchProducts);
 
 router.get("/offers/", GetAvailableOffers);
 
-router.get("/restaurant/:id", GetVendorById);
+router.get("/vendor/:id", GetVendorById);
 
 export { router as ShoppingRoutes };
