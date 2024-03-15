@@ -15,7 +15,7 @@ import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddlewar
 import { ProductCategory } from "../../models";
 
 const router = express.Router();
-const imagesMiddleware = initMulter("image");
+const imagesMiddleware = initMulter("images");
 
 router.get(
   "",
