@@ -28,7 +28,7 @@ import { Authenticate, DtoValidationMiddleware } from "../../middlewares";
 import { initMulter } from "../../config/multer";
 import { Order, Product } from "../../models";
 import { PaginateResultsMiddleware } from "../../middlewares/PaginationMiddleware";
-import { Offer } from "models/Offer";
+import { Offer } from "../../models/Offer";
 
 const router = express.Router();
 const imagesMiddleware = initMulter();
