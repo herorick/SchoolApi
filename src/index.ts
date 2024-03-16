@@ -73,12 +73,12 @@ app.use(ShoppingRoutes);
 app.use(errorHandler);
 app.use(notFoundHandler);
 
-app.listen(process.env.PORT, () => {
-  console.log("App is learning port " + process.env.PORT);
-});
-
-// const sslServer = https.createServer(options, app);
-
-// sslServer.listen(process.env.PORT, () => {
-//   console.log("Secure server is listening on port " + process.env.PORT);
+// app.listen(process.env.PORT, () => {
+//   console.log("App is learning port " + process.env.PORT);
 // });
+
+const sslServer = https.createServer(options, app);
+
+sslServer.listen(process.env.PORT, () => {
+  console.log("Secure server is listening on port " + process.env.PORT);
+});

@@ -33,7 +33,7 @@ export const getAvaibleDelivery = asyncHandler(
 
 export const GetTopVendor = async (req: Request, res: Response) => {
   const vendors = await Vendor.find({});
-  return res.send(vendors);
+  return res.json({ data: vendors });
 };
 
 export const SearchProducts = async (
@@ -59,7 +59,7 @@ export const GetVendorById = async (
   const id = req.params.id;
   const result = await Vendor.findById(id).populate("products");
   if (result) {
-    return res.status(200).json(result);
+    return res.status(200).json({ data: result });
   }
   return res.status(404).json({ msg: "data Not found!" });
 };
