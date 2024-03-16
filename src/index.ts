@@ -23,7 +23,6 @@ import { errorHandler, notFoundHandler } from "./middlewares";
 import { BannerRoutes } from "./routes/BannerRoutes";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
-console.log(path.resolve(__dirname, "../.env"));
 connectDB();
 
 const app = express();
@@ -48,9 +47,7 @@ const options = {
   cert: fs.readFileSync(path.join(__dirname, "../cert/cert.pem")),
 };
 
-export const uploadPath = path.join(__dirname, "../uploads");
-console.log(uploadPath);
-console.log(express.static(uploadPath));
+export const uploadPath = path.resolve(__dirname, "../src/uploads/");
 app.use("/uploads", express.static(uploadPath));
 
 app.get("/", (req: Request, res: Response) => {
@@ -73,12 +70,12 @@ app.use(ShoppingRoutes);
 app.use(errorHandler);
 app.use(notFoundHandler);
 
-// app.listen(process.env.PORT, () => {
-//   console.log("App is learning port " + process.env.PORT);
-// });
-
-const sslServer = https.createServer(options, app);
-
-sslServer.listen(process.env.PORT, () => {
-  console.log("Secure server is listening on port " + process.env.PORT);
+app.listen(process.env.PORT, () => {
+  console.log("App is learning port " + process.env.PORT);
 });
+
+// const sslServer = https.createServer(options, app);
+
+// sslServer.listen(process.env.PORT, () => {
+//   console.log("Secure server is listening on port " + process.env.PORT);
+// });
