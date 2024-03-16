@@ -25,23 +25,16 @@ export const getAvaibleDelivery = asyncHandler(
       // isAvailable: true,
     });
     if (results.length > 0) {
-      res.status(200).json({data: results});
+      res.status(200).json({ data: results });
     }
     res.status(404).json({ data: [] });
   }
 );
 
-export const GetTopVendor = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const result = await Vendor.find({})
-      .sort([["rating", "descending"]])
-      .limit(10);
-    if (result.length > 0) {
-      res.status(200).json(result);
-    }
-    res.status(404).json({ msg: "data Not found!" });
-  }
-);
+export const GetTopVendor = async (req: Request, res: Response) => {
+  const vendors = await Vendor.find({});
+  return res.send(vendors);
+};
 
 export const SearchProducts = async (
   req: Request,
