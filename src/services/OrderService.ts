@@ -2,7 +2,7 @@ import { Customer, CustomerDoc, Order } from "../models";
 import { APIError, NotFound } from "../utilities";
 import { v4 as uuidv4 } from "uuid";
 import { ProductService } from "./ProductService";
-import { ICartItem } from "interfaces/Cart";
+import { ICartItem } from "../interfaces/Cart";
 import { TransactionService } from "./Transaction";
 
 class OrderService {

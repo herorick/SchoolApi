@@ -48,7 +48,7 @@ const options = {
   cert: fs.readFileSync(path.join(__dirname, "../cert/cert.pem")),
 };
 
-export const uploadPath = path.join(__dirname, "/uploads/");
+export const uploadPath = path.join(__dirname, "../uploads/");
 app.use("/uploads", express.static(uploadPath));
 
 app.use(express.static(__dirname + "uploadPath"));

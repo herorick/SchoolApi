@@ -1,4 +1,4 @@
-import { ICustomer } from "interfaces/Customer";
+import { ICustomer } from "../interfaces/Customer";
 import mongoose, { Document, Schema } from "mongoose";
 import mongooseUniqueValidator from "mongoose-unique-validator";
 

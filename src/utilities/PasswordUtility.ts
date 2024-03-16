@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import { Request } from "express";
-import { AuthPayload } from "interfaces/Auth";
-import { VendorPayload } from "interfaces/Vendor";
+import { AuthPayload } from "../interfaces/Auth";
+import { VendorPayload } from "../interfaces/Vendor";
 import jwt from "jsonwebtoken";
-import { CustomerPayload } from "interfaces/Customer";
+import { CustomerPayload } from "../interfaces/Customer";
 
 export const GenerateSalt = async () => {
   return await bcrypt.genSalt();

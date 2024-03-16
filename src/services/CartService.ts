@@ -1,4 +1,4 @@
-import { ICartItem } from "interfaces/Cart";
+import { ICartItem } from "../interfaces/Cart";
 import { CustomerDoc } from "../models";
 
 class CartService {
