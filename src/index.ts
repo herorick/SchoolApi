@@ -4,7 +4,8 @@ import path from "path";
 import cors from "cors";
 import compression from "compression";
 import morgan from "morgan";
-
+import https from "https";
+import fs from "fs";
 import { connectDB } from "./config";
 import {
   AdminRoutes,
@@ -42,10 +43,16 @@ app.use(
   })
 );
 
+const options = {
+  key: fs.readFileSync(path.join(__dirname, "../cert/key.pem")),
+  cert: fs.readFileSync(path.join(__dirname, "../cert/cert.pem")),
+};
+
 export const uploadPath = path.join(__dirname, "/uploads/");
 app.use("/uploads", express.static(uploadPath));
 
 app.use(express.static(__dirname + "uploadPath"));
+
 app.get("/", (req: Request, res: Response) => {
   res.json({ data: "12" });
 });
@@ -66,6 +73,12 @@ app.use(ShoppingRoutes);
 app.use(errorHandler);
 app.use(notFoundHandler);
 
-app.listen(process.env.PORT, () => {
-  console.log("App is learning port " + process.env.PORT);
+// app.listen(process.env.PORT, () => {
+//   console.log("App is learning port " + process.env.PORT);
+// });
+
+const sslServer = https.createServer(options, app);
+
+sslServer.listen(process.env.PORT, () => {
+  console.log("Secure server is listening on port " + process.env.PORT);
 });
